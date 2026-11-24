@@ -675,12 +675,17 @@
       drawExpressivePill(W / 2, H / 2 + 74, "github.com/Acourd/Veyra-Dots", "#FF5470", "#FFFFFF", spring(norm(t, 20.15, 20.85)), -0.015);
     }
 
-    // --- PROCEDURAL WEB AUDIO ENGINE (M3E pops, chimes & flower-wipe shimmers; 100% copyright-free) ---
+    // --- UPBEAT 128 BPM EXPRESSIVE GROOVE + SYNCED SFX (Web Audio API · 100% Copyright-Free) ---
     let soundEnabled = true;
     let audioCtx = null;
     let audioDest = null;
     let masterGain = null;
+    let noiseBuffer = null;
     let prevAudioT = -1;
+    let lastBeatStep = -1;
+
+    const BPM = 128;
+    const STEP_SEC = (60 / BPM) / 4; // 16th-note step (~0.1172s)
 
     function ensureAudio() {
       if (audioCtx) {
@@ -690,90 +695,208 @@
       const AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return;
       audioCtx = new AC();
+
+      // Gentle master compressor so kick, bass, chords, and SFX sit punchy & clean
+      const comp = audioCtx.createDynamicsCompressor();
+      comp.threshold.value = -14;
+      comp.knee.value = 12;
+      comp.ratio.value = 4;
+      comp.attack.value = 0.005;
+      comp.release.value = 0.12;
+
       masterGain = audioCtx.createGain();
-      masterGain.gain.value = 0.42;
-      masterGain.connect(audioCtx.destination);
+      masterGain.gain.value = 0.48;
+      masterGain.connect(comp);
+      comp.connect(audioCtx.destination);
+
       audioDest = audioCtx.createMediaStreamDestination();
-      masterGain.connect(audioDest);
+      comp.connect(audioDest);
+
+      // Shared white-noise buffer for hi-hats, claps & shimmers
+      const len = audioCtx.sampleRate;
+      noiseBuffer = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
+      const d = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
     }
 
-    function playTone(freq, dur = 0.16, type = "sine", vol = 0.35, delay = 0, slideTo = null) {
-      if (!soundEnabled) return;
-      ensureAudio();
+    function playKick(vol = 0.58) {
+      if (!audioCtx || !masterGain) return;
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(145, now);
+      osc.frequency.exponentialRampToValueAtTime(46, now + 0.085);
+      g.gain.setValueAtTime(vol, now);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
+      osc.connect(g); g.connect(masterGain);
+      osc.start(now); osc.stop(now + 0.17);
+    }
+
+    function playClap(vol = 0.24) {
+      if (!audioCtx || !masterGain || !noiseBuffer) return;
+      const now = audioCtx.currentTime;
+      const src = audioCtx.createBufferSource();
+      src.buffer = noiseBuffer;
+      const filt = audioCtx.createBiquadFilter();
+      filt.type = "bandpass"; filt.frequency.value = 1650; filt.Q.value = 1.4;
+      const g = audioCtx.createGain();
+      g.gain.setValueAtTime(0.0001, now);
+      g.gain.linearRampToValueAtTime(vol, now + 0.006);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + 0.11);
+      src.connect(filt); filt.connect(g); g.connect(masterGain);
+      src.start(now); src.stop(now + 0.12);
+    }
+
+    function playHat(open = false, vol = 0.11) {
+      if (!audioCtx || !masterGain || !noiseBuffer) return;
+      const now = audioCtx.currentTime;
+      const src = audioCtx.createBufferSource();
+      src.buffer = noiseBuffer;
+      const filt = audioCtx.createBiquadFilter();
+      filt.type = "highpass"; filt.frequency.value = 7200;
+      const g = audioCtx.createGain();
+      g.gain.setValueAtTime(vol, now);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + (open ? 0.11 : 0.038));
+      src.connect(filt); filt.connect(g); g.connect(masterGain);
+      src.start(now); src.stop(now + (open ? 0.12 : 0.045));
+    }
+
+    function playBass(freq, dur = 0.18, vol = 0.28) {
+      if (!audioCtx || !masterGain) return;
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const filt = audioCtx.createBiquadFilter();
+      const g = audioCtx.createGain();
+      osc.type = "sawtooth";
+      osc.frequency.setValueAtTime(freq, now);
+      filt.type = "lowpass";
+      filt.frequency.setValueAtTime(680, now);
+      filt.frequency.exponentialRampToValueAtTime(210, now + dur);
+      g.gain.setValueAtTime(0.0001, now);
+      g.gain.linearRampToValueAtTime(vol, now + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+      osc.connect(filt); filt.connect(g); g.connect(masterGain);
+      osc.start(now); osc.stop(now + dur + 0.02);
+    }
+
+    function playPluck(freq, dur = 0.18, vol = 0.16, delay = 0) {
       if (!audioCtx || !masterGain) return;
       const now = audioCtx.currentTime + delay;
       const osc = audioCtx.createOscillator();
       const g = audioCtx.createGain();
-      osc.type = type;
+      osc.type = "triangle";
       osc.frequency.setValueAtTime(freq, now);
-      if (slideTo) osc.frequency.exponentialRampToValueAtTime(slideTo, now + dur * 0.65);
       g.gain.setValueAtTime(0.0001, now);
-      g.gain.exponentialRampToValueAtTime(vol, now + 0.014);
+      g.gain.linearRampToValueAtTime(vol, now + 0.008);
       g.gain.exponentialRampToValueAtTime(0.0001, now + dur);
-      osc.connect(g);
-      g.connect(masterGain);
-      osc.start(now);
-      osc.stop(now + dur + 0.02);
-    }
-
-    function playPop(baseFreq = 320, vol = 0.38) {
-      playTone(baseFreq, 0.12, "triangle", vol, 0, baseFreq * 1.45);
-      playTone(baseFreq * 0.5, 0.09, "sine", vol * 0.6, 0, baseFreq * 0.28);
-    }
-
-    function playChord(freqs, dur = 0.32, vol = 0.18) {
-      freqs.forEach((f, i) => playTone(f, dur, "triangle", vol, i * 0.035));
+      osc.connect(g); g.connect(masterGain);
+      osc.start(now); osc.stop(now + dur + 0.02);
     }
 
     function playShimmer(chimeFreq = 1046.5) {
       if (!soundEnabled) return;
       ensureAudio();
-      if (!audioCtx || !masterGain) return;
+      if (!audioCtx || !masterGain || !noiseBuffer) return;
       const now = audioCtx.currentTime;
-      const len = Math.floor(audioCtx.sampleRate * 0.28);
-      const buf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
-      const data = buf.getChannelData(0);
-      for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / len);
       const src = audioCtx.createBufferSource();
-      src.buffer = buf;
+      src.buffer = noiseBuffer;
       const filt = audioCtx.createBiquadFilter();
       filt.type = "bandpass";
-      filt.frequency.setValueAtTime(900, now);
-      filt.frequency.exponentialRampToValueAtTime(3400, now + 0.26);
-      filt.Q.value = 1.8;
+      filt.frequency.setValueAtTime(950, now);
+      filt.frequency.exponentialRampToValueAtTime(3800, now + 0.24);
+      filt.Q.value = 1.6;
       const g = audioCtx.createGain();
       g.gain.setValueAtTime(0.0001, now);
-      g.gain.exponentialRampToValueAtTime(0.16, now + 0.05);
-      g.gain.exponentialRampToValueAtTime(0.0001, now + 0.28);
+      g.gain.exponentialRampToValueAtTime(0.15, now + 0.04);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + 0.25);
       src.connect(filt); filt.connect(g); g.connect(masterGain);
-      src.start(now);
-      playTone(chimeFreq, 0.26, "sine", 0.22, 0.06);
-      playTone(chimeFreq * 1.25, 0.24, "sine", 0.14, 0.11);
+      src.start(now); src.stop(now + 0.26);
+      playPluck(chimeFreq, 0.24, 0.18, 0.03);
+      playPluck(chimeFreq * 1.25, 0.22, 0.13, 0.08);
     }
 
+    // Bright 4-bar pop-house chord progression (Fmaj7 -> G6 -> Em7 -> Am9)
+    const PROG = [
+      { bass: 87.31,  notes: [349.23, 440.00, 523.25, 659.25] }, // Fmaj7
+      { bass: 98.00,  notes: [392.00, 493.88, 587.33, 659.25] }, // G6
+      { bass: 82.41,  notes: [329.63, 392.00, 493.88, 587.33] }, // Em7
+      { bass: 110.00, notes: [440.00, 523.25, 659.25, 783.99] }  // Am7
+    ];
+
+    function triggerGrooveStep(step, t) {
+      if (!soundEnabled || t > 20.6) return;
+      ensureAudio();
+      if (!audioCtx) return;
+
+      const s = step % 16;
+      const bar = Math.floor(step / 16) % 4;
+      const ch = PROG[bar];
+      const isIntro = t < 2.95;
+      const isFinale = t >= 19.9;
+
+      if (isFinale) {
+        if (s === 0) {
+          playKick(0.50);
+          ch.notes.forEach((f, idx) => playPluck(f * 1.5, 0.52, 0.14, idx * 0.04));
+        }
+        return;
+      }
+
+      // Kick: punchy 4-on-the-floor + syncopated pre-drop double kick
+      if (s === 0 || s === 4 || s === 8 || s === 12 || (!isIntro && s === 14 && bar === 3)) {
+        playKick(isIntro ? 0.42 : 0.56);
+      }
+
+      // Crisp clap/snap on 2 & 4
+      if (s === 4 || s === 12) {
+        playClap(isIntro ? 0.16 : 0.25);
+      }
+
+      // Bouncy offbeat hi-hats (adds speed & kinetic energy!)
+      if (s === 2 || s === 6 || s === 10 || s === 14) {
+        playHat(s === 10, isIntro ? 0.07 : 0.12);
+      } else if (!isIntro && (s === 3 || s === 7 || s === 11 || s === 15)) {
+        playHat(false, 0.055);
+      }
+
+      // Funky rubber bassline (syncopated M3E bounce)
+      if (!isIntro) {
+        if (s === 0 || s === 3 || s === 6 || s === 10 || s === 12) {
+          const oct = (s === 10) ? 2.0 : 1.0;
+          playBass(ch.bass * oct, (s === 6 || s === 12) ? 0.22 : 0.14, 0.26);
+        }
+      } else if (s === 0 || s === 8) {
+        playBass(ch.bass, 0.16, 0.18);
+      }
+
+      // Playful syncopated marimba/synth stabs & sparkly melody
+      if (s === 0 || s === 3 || s === 6 || s === 11 || s === 14) {
+        const noteIdx = (s + bar) % ch.notes.length;
+        playPluck(ch.notes[noteIdx] * (s === 14 ? 2 : 1), 0.17, isIntro ? 0.12 : 0.15);
+        if (s === 0 || s === 6) {
+          playPluck(ch.notes[(noteIdx + 2) % ch.notes.length], 0.20, 0.11, 0.015);
+        }
+      }
+    }
+
+    // Scene transition & Dark->Light flower-wipe accent cues
     const AUDIO_CUES = [
-      { t: 0.04, fn: () => { playPop(290); playChord([523.25, 659.25], 0.24, 0.20); } },
-      { t: 0.87, fn: () => { playPop(390, 0.42); playChord([587.33, 783.99, 987.77], 0.30, 0.18); } },
-      { t: 1.86, fn: () => playPop(440, 0.36) },
-      { t: 2.24, fn: () => playPop(554.37, 0.36) },
-      { t: 2.62, fn: () => playPop(659.25, 0.38) },
-      { t: 3.02, fn: () => { playPop(330); playChord([523.25, 659.25, 783.99], 0.34, 0.16); } },
-      { t: 4.38, fn: () => playShimmer(1046.5) },
-      { t: 6.32, fn: () => { playPop(370); playChord([587.33, 739.99, 880.0], 0.32, 0.16); } },
-      { t: 7.42, fn: () => playShimmer(1174.66) },
-      { t: 9.02, fn: () => { playPop(349); playChord([523.25, 659.25, 880.0], 0.34, 0.16); } },
+      { t: 4.38,  fn: () => playShimmer(1046.5) },
+      { t: 7.42,  fn: () => playShimmer(1174.66) },
       { t: 10.22, fn: () => playShimmer(1046.5) },
-      { t: 12.12, fn: () => { playPop(392); playChord([587.33, 783.99, 987.77], 0.32, 0.16); } },
       { t: 13.28, fn: () => playShimmer(1318.51) },
-      { t: 14.92, fn: () => { playPop(329); playChord([493.88, 659.25, 783.99], 0.32, 0.16); } },
       { t: 16.08, fn: () => playShimmer(1046.5) },
-      { t: 17.82, fn: () => { playPop(415); playChord([659.25, 830.61, 987.77], 0.32, 0.16); } },
-      { t: 18.78, fn: () => playShimmer(1318.51) },
-      { t: 19.95, fn: () => { playPop(350, 0.40); playChord([523.25, 659.25, 783.99, 987.77, 1174.66], 0.55, 0.16); } }
+      { t: 18.78, fn: () => playShimmer(1318.51) }
     ];
 
     function triggerAudioCues(prevT, currT) {
       if (!soundEnabled || !playing || currT < prevT) return;
+      const step = Math.floor(currT / STEP_SEC);
+      if (step !== lastBeatStep && step >= 0) {
+        lastBeatStep = step;
+        triggerGrooveStep(step, currT);
+      }
       for (const cue of AUDIO_CUES) {
         if (cue.t > prevT && cue.t <= currT) cue.fn();
       }
@@ -797,6 +920,7 @@
           }
           tSec = 0;
           prevAudioT = -1;
+          lastBeatStep = -1;
         }
       }
       renderFrame(tSec);
@@ -853,7 +977,7 @@
         const mb = (blob.size / (1024 * 1024)).toFixed(1);
         statusEl.textContent = `${COPY[lang].ui.doneStatus} (${fmt.ext.toUpperCase()} · ${mb} MB)`;
       };
-      exporting = true; tSec = 0; prevAudioT = -1; playing = true;
+      exporting = true; tSec = 0; prevAudioT = -1; lastBeatStep = -1; playing = true;
       btnPlay.textContent = u.pause;
       btnExport.classList.add("recording");
       btnExport.textContent = u.recordingBtn;
@@ -879,6 +1003,7 @@
         ensureAudio();
         tSec = 0;
         prevAudioT = -1;
+        lastBeatStep = -1;
         playing = true;
         btnPlay.textContent = COPY[lang].ui.pause;
       }
