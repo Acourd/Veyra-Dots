@@ -98,7 +98,7 @@ cd Veyra-Dots
 # O instala las 3 suites (100 widgets) de una vez:
 .\scripts\install-rainmeter.ps1 -Theme all
 
-# 3. (Opcional) Aplica los iconos personalizados en el dock Muelle (con respaldo automático)
+# 3. (Opcional) Aplica los iconos personalizados en el dock Muelle (con respaldo automático; -Scale 1.05 por defecto, ajustable 0.90–1.08)
 .\scripts\apply-muelle-icons.ps1 -Theme material-you
 .\scripts\apply-muelle-icons.ps1 -Theme one-ui -Variant vibrant
 .\scripts\apply-muelle-icons.ps1 -Theme one-ui -Variant dark

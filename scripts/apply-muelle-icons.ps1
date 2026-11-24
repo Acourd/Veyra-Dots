@@ -1,10 +1,10 @@
 param(
-    [ValidateSet("one-ui", "material-you", "macos")]
+    [ValidateSet("one-ui", "material-you")]
     [string]$Theme = "one-ui",
     [ValidateSet("vibrant", "dark")]
     [string]$Variant = "vibrant",
     [ValidateRange(0.90, 1.08)]
-    [double]$Scale = 1.04,
+    [double]$Scale = 1.05,
     [switch]$Restore
 )
 
@@ -59,7 +59,6 @@ if (-not (Test-Path $backupDir)) {
 $variantFolder = switch ($Theme) {
     "one-ui"       { if ($Variant -eq "dark") { "oneui-dark" } else { "oneui-vibrant" } }
     "material-you" { "m3-pastel" }
-    "macos"        { if ($Variant -eq "dark") { "macos-dark" } else { "macos-vibrant" } }
 }
 $pngDir = Join-Path $repoRoot "themes\$Theme\icons\$variantFolder\png"
 if (-not (Test-Path $pngDir)) {
@@ -97,7 +96,7 @@ $NameMap = @(
     @{ pattern = "Epic Games";                           slug = "epic-games" },
     @{ pattern = "Fortnite";                             slug = "fortnite" },
     @{ pattern = "KovaaK";                               slug = "kovaaks" },
-    @{ pattern = "R\.E\.P\.O|REPO";                      slug = "repo" },
+    @{ pattern = "\bR\.E\.P\.O\b|\bREPO\b";              slug = "repo" },
     @{ pattern = "Thunderstore";                         slug = "thunderstore" },
     @{ pattern = "ChatGPT";                              slug = "chatgpt" },
     @{ pattern = "Gemini";                               slug = "gemini" },
@@ -121,26 +120,35 @@ function Write-PngIntoWdi2([string]$binPath, [string]$pngPath) {
     $pxOff = 24 + $nLen
     if ($orig.Length -ne ($pxOff + $w * $h * 4)) { return $false }
 
-    $src = [System.Drawing.Bitmap]::FromFile($pngPath)
-    $resized = New-Object System.Drawing.Bitmap([int]$w, [int]$h, [System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
-    $g = [System.Drawing.Graphics]::FromImage($resized)
-    $g.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
-    $g.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
-    $g.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
-    $g.Clear([System.Drawing.Color]::Transparent)
-    $dw = [int][Math]::Round($w * $Scale)
-    $dh = [int][Math]::Round($h * $Scale)
-    $ox = [int][Math]::Round(($w - $dw) / 2.0)
-    $oy = [int][Math]::Round(($h - $dh) / 2.0)
-    $g.DrawImage($src, $ox, $oy, $dw, $dh)
-    $g.Dispose(); $src.Dispose()
+    $src = $null
+    $resized = $null
+    $g = $null
+    try {
+        $src = [System.Drawing.Bitmap]::FromFile($pngPath)
+        $resized = New-Object System.Drawing.Bitmap([int]$w, [int]$h, [System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
+        $g = [System.Drawing.Graphics]::FromImage($resized)
+        $g.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
+        $g.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
+        $g.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
+        $g.Clear([System.Drawing.Color]::Transparent)
+        $dw = [int][Math]::Round($w * $Scale)
+        $dh = [int][Math]::Round($h * $Scale)
+        $ox = [int][Math]::Round(($w - $dw) / 2.0)
+        $oy = [int][Math]::Round(($h - $dh) / 2.0)
+        $g.DrawImage($src, $ox, $oy, $dw, $dh)
+        $g.Dispose(); $g = $null
+        $src.Dispose(); $src = $null
 
-    $rect = New-Object System.Drawing.Rectangle(0, 0, [int]$w, [int]$h)
-    $bd = $resized.LockBits($rect, [System.Drawing.Imaging.ImageLockMode]::ReadOnly, [System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
-    $pxBytes = New-Object byte[] ($w * $h * 4)
-    [System.Runtime.InteropServices.Marshal]::Copy($bd.Scan0, $pxBytes, 0, $pxBytes.Length)
-    $resized.UnlockBits($bd)
-    $resized.Dispose()
+        $rect = New-Object System.Drawing.Rectangle(0, 0, [int]$w, [int]$h)
+        $bd = $resized.LockBits($rect, [System.Drawing.Imaging.ImageLockMode]::ReadOnly, [System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
+        $pxBytes = New-Object byte[] ($w * $h * 4)
+        [System.Runtime.InteropServices.Marshal]::Copy($bd.Scan0, $pxBytes, 0, $pxBytes.Length)
+        $resized.UnlockBits($bd)
+    } finally {
+        if ($g) { $g.Dispose() }
+        if ($src) { $src.Dispose() }
+        if ($resized) { $resized.Dispose() }
+    }
 
     $out = New-Object byte[] $orig.Length
     [Array]::Copy($orig, 0, $out, 0, $pxOff)
@@ -154,7 +162,10 @@ $bins = Get-ChildItem $muelleIcons -Filter "*-256.bin"
 foreach ($bin in $bins) {
     $bytes = [System.IO.File]::ReadAllBytes($bin.FullName)
     if ($bytes.Length -lt 28) { continue }
+    $magic = [System.Text.Encoding]::ASCII.GetString($bytes, 0, 4)
+    if ($magic -ne "WDI2") { continue }
     $nLen = [BitConverter]::ToUInt32($bytes, 20)
+    if ((24 + $nLen) -gt $bytes.Length) { continue }
     $name = [System.Text.Encoding]::UTF8.GetString($bytes, 24, $nLen)
 
     $slug = $null

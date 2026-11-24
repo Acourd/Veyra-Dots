@@ -139,7 +139,7 @@
         beat2Pill: "3 STYLES · 100 WIDGETS · 1 CLICK",
         stamps: [
           { bg: "#1D4ED8", shape: "#3B82F6", fg: "#FFFFFF", label: "ONE UI 7/8", pill: "28 WIDGETS + 80 ICONS", pbg: "#FBBF24", pfg: "#18181B", pet: 8 },
-          { bg: "#C4EED0", shape: "#86EFAC", fg: "#0F5223", label: "MATERIAL YOU", pill: "44 WIDGETS + STYLUS v4.2", pbg: "#0F5223", pfg: "#FFFFFF", pet: 6 },
+          { bg: "#C4EED0", shape: "#86EFAC", fg: "#0F5223", label: "MATERIAL YOU", pill: "44 WIDGETS + STYLUS v4.2.1", pbg: "#0F5223", pfg: "#FFFFFF", pet: 6 },
           { bg: "#FCE7F3", shape: "#F9A8D4", fg: "#831843", label: "macOS SEQUOIA", pill: "28 WIDGETS + PROHUB", pbg: "#EC4899", pfg: "#FFFFFF", pet: 4 }
         ],
         darkBadge: "DARK MODE",
@@ -158,7 +158,7 @@
           m3Amber: {
             tag: "MATERIAL YOU",
             headline: "Warm Tonal\nHarmony.",
-            subline: "44 widgets · 40 Pastel icons · Stylus v4.2"
+            subline: "44 widgets · 40 Pastel icons · Stylus v4.2.1"
           },
           m3Sage: {
             tag: "M3 EXPRESSIVE",
@@ -194,7 +194,7 @@
         beat2Pill: "3 ESTILOS · 100 WIDGETS · 1 CLIC",
         stamps: [
           { bg: "#1D4ED8", shape: "#3B82F6", fg: "#FFFFFF", label: "ONE UI 7/8", pill: "28 WIDGETS + 80 ICONOS", pbg: "#FBBF24", pfg: "#18181B", pet: 8 },
-          { bg: "#C4EED0", shape: "#86EFAC", fg: "#0F5223", label: "MATERIAL YOU", pill: "44 WIDGETS + STYLUS v4.2", pbg: "#0F5223", pfg: "#FFFFFF", pet: 6 },
+          { bg: "#C4EED0", shape: "#86EFAC", fg: "#0F5223", label: "MATERIAL YOU", pill: "44 WIDGETS + STYLUS v4.2.1", pbg: "#0F5223", pfg: "#FFFFFF", pet: 6 },
           { bg: "#FCE7F3", shape: "#F9A8D4", fg: "#831843", label: "macOS SEQUOIA", pill: "28 WIDGETS + PROHUB", pbg: "#EC4899", pfg: "#FFFFFF", pet: 4 }
         ],
         darkBadge: "MODO OSCURO",
@@ -213,7 +213,7 @@
           m3Amber: {
             tag: "MATERIAL YOU",
             headline: "Armonía Tonal\nCálida.",
-            subline: "44 widgets · 40 iconos Pastel · Stylus v4.2"
+            subline: "44 widgets · 40 iconos Pastel · Stylus v4.2.1"
           },
           m3Sage: {
             tag: "M3 EXPRESSIVE",
@@ -234,14 +234,21 @@
       }
     };
 
-    const urlLang = new URLSearchParams(window.location.search).get("lang");
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlLang = urlParams.get("lang");
     let lang = (urlLang === "es" || urlLang === "en")
       ? urlLang
       : ((navigator.language || "").toLowerCase().startsWith("es") ? "es" : "en");
 
-    let isVertical = false;
-    let playing = true;
-    let tSec = 0;
+    let isVertical = urlParams.get("aspect") === "9x16";
+    if (isVertical) {
+      canvas.width = 1080;
+      canvas.height = 1920;
+      btnAspect.textContent = "9:16";
+    }
+    const urlTime = parseFloat(urlParams.get("t"));
+    let playing = urlParams.get("paused") !== "1";
+    let tSec = Number.isFinite(urlTime) ? Math.max(0, Math.min(DURATION, urlTime)) : 0;
     let lastTs = 0;
     let exporting = false;
     let recorder = null;
@@ -308,23 +315,24 @@
       ctx.drawImage(img, x + (w - dw) / 2 + panX, y + (h - dh) / 2 + panY, dw, dh);
     }
 
-    function drawExpressivePill(x, y, text, bg, fg, scale = 1, rot = 0) {
+    function drawExpressivePill(x, y, text, bg, fg, scale = 1, rot = 0, align = "center") {
       if (scale <= 0.01) return;
       ctx.save();
       ctx.translate(x, y);
       ctx.rotate(rot);
       ctx.scale(scale, scale);
-      ctx.font = '800 28px "Segoe UI Variable Display", "Segoe UI", sans-serif';
+      ctx.font = '800 26px "Segoe UI Variable Display", "Segoe UI", sans-serif';
       const tw = ctx.measureText(text).width;
-      const pw = tw + 60;
-      const ph = 64;
-      rrPath(-pw / 2, -ph / 2, pw, ph, 32);
+      const pw = tw + 56;
+      const ph = 60;
+      const rx = align === "left" ? 0 : (align === "right" ? -pw : -pw / 2);
+      rrPath(rx, -ph / 2, pw, ph, 30);
       ctx.fillStyle = bg;
       ctx.fill();
       ctx.fillStyle = fg;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText(text, 0, 2);
+      ctx.fillText(text, rx + pw / 2, 2);
       ctx.restore();
     }
 
@@ -360,9 +368,9 @@
       ctx.fill();
       ctx.restore();
 
-      const frameW = isVertical ? W * 0.90 : W * 0.68;
+      const frameW = isVertical ? W * 0.90 : W * 0.615;
       const frameH = frameW * (9 / 16);
-      const cx = isVertical ? W * 0.50 : W * 0.61;
+      const cx = isVertical ? W * 0.50 : W * 0.655;
       const cy = isVertical ? H * 0.56 : H * 0.52;
 
       const slideX = (1 - sp) * (isVertical ? 0 : 220) - outE * (isVertical ? 0 : 280);
@@ -370,8 +378,9 @@
       const rot = (tiltDeg * Math.PI / 180) * lerp(2.2, 1.0, sp) + outE * 0.08;
       const cardScale = lerp(0.76, 1.0, sp) * lerp(1.0, 0.88, outE);
 
-      const txtX = isVertical ? W * 0.50 : W * 0.055;
+      const txtX = isVertical ? W * 0.50 : W * 0.045;
       const txtY = isVertical ? H * 0.13 : H * 0.36;
+      const maxTextW = isVertical ? W * 0.88 : (cx - frameW / 2 - txtX - 36);
       const spTxt = spring(norm(t, tStart + 0.08, tStart + 0.72), 6.0, 12.0);
 
       ctx.save();
@@ -380,19 +389,18 @@
       ctx.textAlign = isVertical ? "center" : "left";
       ctx.textBaseline = "middle";
 
-      const pillOffX = isVertical ? 0 : 120;
-      drawExpressivePill(pillOffX, -58, tag, accentHex, "#ffffff", clamp(spTxt), -0.03);
+      drawExpressivePill(0, -58, tag, accentHex, "#ffffff", clamp(spTxt), -0.025, isVertical ? "center" : "left");
 
       ctx.fillStyle = textHex;
-      ctx.font = `900 ${isVertical ? 68 : 66}px "Segoe UI Variable Display", "Segoe UI", sans-serif`;
+      ctx.font = `900 ${isVertical ? 68 : 62}px "Segoe UI Variable Display", "Segoe UI", sans-serif`;
       const lines = headline.split("\n");
       lines.forEach((ln, idx) => {
-        ctx.fillText(ln, 0, 22 + idx * (isVertical ? 74 : 72));
+        ctx.fillText(ln, 0, 22 + idx * (isVertical ? 74 : 70), maxTextW);
       });
 
       ctx.globalAlpha = clamp((1 - outE * 1.4) * 0.86);
-      ctx.font = `600 ${isVertical ? 26 : 23}px "Segoe UI Variable Text", "Segoe UI", sans-serif`;
-      ctx.fillText(subline, 0, 22 + lines.length * (isVertical ? 74 : 72) + 12);
+      ctx.font = `600 ${isVertical ? 26 : 21}px "Segoe UI Variable Text", "Segoe UI", sans-serif`;
+      ctx.fillText(subline, 0, 22 + lines.length * (isVertical ? 74 : 70) + 14, maxTextW);
       ctx.restore();
 
       ctx.save();
@@ -439,16 +447,18 @@
       ctx.stroke();
 
       const c = COPY[lang];
-      const isLightNow = imgLight && t > (wipeStart + wipeEnd) * 0.48;
-      const stPop = spring(norm(t, isLightNow ? (wipeStart + wipeEnd) * 0.48 : tStart + 0.25, (isLightNow ? (wipeStart + wipeEnd) * 0.48 : tStart + 0.25) + 0.55), 5.5, 13.0);
+      const wipeMid = wipeStart + (wipeEnd - wipeStart) * 0.48;
+      const isLightNow = imgLight && t > wipeMid;
+      const stPop = spring(norm(t, isLightNow ? wipeMid : tStart + 0.25, (isLightNow ? wipeMid : tStart + 0.25) + 0.55), 5.5, 13.0);
       drawExpressivePill(
-        x0 + frameW - 120,
+        x0 + frameW - 22,
         y0 + frameH - 12,
         isLightNow ? c.lightBadge : c.darkBadge,
         isLightNow ? "#ffffff" : "#111827",
         isLightNow ? "#111827" : "#ffffff",
         clamp(stPop, 0, 1.15),
-        0.04
+        0.03,
+        "right"
       );
 
       ctx.restore();
@@ -759,12 +769,21 @@
 
     const entries = Object.entries(window.VEYRA_ASSETS || {});
     let loaded = 0;
-    entries.forEach(([k, src]) => {
-      const im = new Image();
-      im.onload = () => { loaded++; if (loaded === entries.length) requestAnimationFrame(tick); };
-      im.src = src;
-      imgs[k] = im;
-    });
+    const onAssetDone = () => {
+      loaded++;
+      if (loaded === entries.length) requestAnimationFrame(tick);
+    };
+    if (entries.length === 0) {
+      requestAnimationFrame(tick);
+    } else {
+      entries.forEach(([k, src]) => {
+        const im = new Image();
+        im.onload = onAssetDone;
+        im.onerror = onAssetDone;
+        im.src = src;
+        imgs[k] = im;
+      });
+    }
   </script>
 </body>
 </html>

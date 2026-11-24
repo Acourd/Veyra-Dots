@@ -5,6 +5,8 @@
 
 # Instalador rápido de skins Rainmeter para cualquier tema en themes/<Theme>/rainmeter/Skins/ (o -Theme all)
 
+$ErrorActionPreference = "Stop"
+
 $repoRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 $dstSkins = Join-Path ([Environment]::GetFolderPath("MyDocuments")) "Rainmeter\Skins"
 
@@ -38,8 +40,11 @@ foreach ($t in $themesToInstall) {
   Write-Host "Tema '$t' instalado en $dstSkins" -ForegroundColor Green
 }
 
-$rm = "C:\Program Files\Rainmeter\Rainmeter.exe"
-if (Test-Path $rm) {
+$rm = @(
+  (Join-Path $env:ProgramFiles "Rainmeter\Rainmeter.exe"),
+  (Join-Path ${env:ProgramFiles(x86)} "Rainmeter\Rainmeter.exe")
+) | Where-Object { $_ -and (Test-Path $_) } | Select-Object -First 1
+if ($rm) {
   & $rm "[!RefreshApp]"
   Write-Host "Rainmeter refrescado correctamente." -ForegroundColor Cyan
 }
