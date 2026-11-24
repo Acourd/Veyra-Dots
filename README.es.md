@@ -111,9 +111,10 @@ Para instalar **Stylus v4.2.1**, la extensión **Mynt** y consultar el catálogo
 
 ---
 
-## Créditos y Licencia
+## Créditos, Aviso Legal y Licencia
 
 - Base de iconos de código libre: **[Graphite-Elegance](https://github.com/Acourd/Graphite-Elegance)** de Acourd — los 120 iconos de Material You y One UI incluidos en Veyra-Dots fueron desarrollados gracias a este proyecto.
 - Dock utilizado en todas las capturas: **[Muelle](https://github.com/crafter-station/Muelle)** de Crafter Station.
 - Extensión de Nueva Pestaña: **[Mynt — Material You New Tab](https://chromewebstore.google.com/detail/mynt-material-you-new-tab/jjpokbgpiljgndebfoljdeihhkpcpfgl)**.
+- **Aviso de Marcas Registradas:** Veyra-Dots es un proyecto independiente, gratuito y de código abierto sin fines de lucro. **No** está afiliado, patrocinado ni respaldado por Google LLC, Samsung Electronics, Apple Inc. ni por los creadores de las aplicaciones o videojuegos representados en los packs de iconos opcionales. Todos los nombres de productos, marcas comerciales y logotipos pertenecen a sus respectivos propietarios y se utilizan únicamente con fines identificativos en el escritorio del usuario.
 - Distribuido bajo licencia **MIT**.

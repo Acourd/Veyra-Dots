@@ -111,9 +111,10 @@ To install **Stylus v4.2.1**, **Mynt New Tab**, or browse the full widget catalo
 
 ---
 
-## Credits & License
+## Credits, Disclaimer & License
 
 - Open-source icon foundation: **[Graphite-Elegance](https://github.com/Acourd/Graphite-Elegance)** by Acourd — all 120 Material You & One UI icons in Veyra-Dots were built on top of its clean silhouette library.
 - Dock featured in all screenshots: **[Muelle](https://github.com/crafter-station/Muelle)** by Crafter Station.
 - New Tab extension: **[Mynt — Material You New Tab](https://chromewebstore.google.com/detail/mynt-material-you-new-tab/jjpokbgpiljgndebfoljdeihhkpcpfgl)**.
+- **Trademark Disclaimer:** Veyra-Dots is an independent, non-commercial, open-source customization project. It is **not** affiliated with, endorsed by, or sponsored by Google LLC, Samsung Electronics, Apple Inc., or any of the app/game publishers represented in the optional icon packs. All product names, trademarks, and brand logos remain the property of their respective owners and are used solely for nominative identification on the user's own desktop.
 - Distributed under the **MIT** License.
