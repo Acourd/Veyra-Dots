@@ -695,25 +695,43 @@
       requestAnimationFrame(tick);
     }
 
+    function pickExportFormat() {
+      const candidates = [
+        { mime: "video/mp4;codecs=avc1.42E01E", ext: "mp4" },
+        { mime: "video/mp4;codecs=avc1", ext: "mp4" },
+        { mime: "video/mp4", ext: "mp4" },
+        { mime: "video/webm;codecs=vp9", ext: "webm" },
+        { mime: "video/webm", ext: "webm" }
+      ];
+      for (const c of candidates) {
+        if (typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported(c.mime)) {
+          return c;
+        }
+      }
+      return { mime: "video/webm", ext: "webm" };
+    }
+
     function startExport() {
       if (exporting) return;
       const u = COPY[lang].ui;
-      const mime = MediaRecorder.isTypeSupported("video/webm;codecs=vp9") ? "video/webm;codecs=vp9" : "video/webm";
+      const fmt = pickExportFormat();
       const stream = canvas.captureStream(60);
       recChunks = [];
-      recorder = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 14_000_000 });
+      // 3.2 Mbps keeps a 22s 1080p60 video under GitHub's 10 MB free attachment limit (~8.5 MB)
+      recorder = new MediaRecorder(stream, { mimeType: fmt.mime, videoBitsPerSecond: 3_200_000 });
       recorder.ondataavailable = (e) => { if (e.data && e.data.size > 0) recChunks.push(e.data); };
       recorder.onstop = () => {
-        const blob = new Blob(recChunks, { type: mime });
+        const blob = new Blob(recChunks, { type: fmt.mime });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
         a.download = isVertical
-          ? `veyra-dots-m3e-${lang}-9x16-60fps.webm`
-          : `veyra-dots-m3e-${lang}-16x9-60fps.webm`;
+          ? `veyra-dots-m3e-${lang}-9x16-60fps.${fmt.ext}`
+          : `veyra-dots-m3e-${lang}-16x9-60fps.${fmt.ext}`;
         a.click();
         setTimeout(() => URL.revokeObjectURL(url), 5000);
-        statusEl.textContent = COPY[lang].ui.doneStatus;
+        const mb = (blob.size / (1024 * 1024)).toFixed(1);
+        statusEl.textContent = `${COPY[lang].ui.doneStatus} (${fmt.ext.toUpperCase()} · ${mb} MB)`;
       };
       exporting = true; tSec = 0; playing = true;
       btnPlay.textContent = u.pause;

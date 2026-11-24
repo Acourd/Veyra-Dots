@@ -49,7 +49,7 @@ A minimalist, modular collection of **Windows 11 dotfiles**, designed to transfo
 
 1. **Desktop Widgets (Rainmeter):** 100 modular vector widgets across `themes/<style>/rainmeter/`, installed in 1 click with **zero third-party `.dll` plugins**.
 2. **Dock ([Muelle](https://github.com/crafter-station/Muelle)):** All setups use **[Muelle](https://github.com/crafter-station/Muelle)** as the lightweight macOS-style dock for Windows 11. Veyra-Dots includes a safe, reversible 1-click icon injector (`scripts/apply-muelle-icons.ps1`) with automatic backup and restore.
-3. **Custom Icon Packs (120 icons — PNG 256×256 & multi-res ICO):**
+3. **Open-Source Icon Packs (120 icons — PNG 256×256 & multi-res ICO):** Built using the silhouette foundation from **[Graphite-Elegance](https://github.com/Acourd/Graphite-Elegance)**, customized per theme:
    - **Material You Pastel Tonal (`40 icons`):** `themes/material-you/icons/m3-pastel/`
    - **One UI Vibrant (`40 icons`):** `themes/one-ui/icons/oneui-vibrant/`
    - **One UI OLED Dark (`40 icons`):** `themes/one-ui/icons/oneui-dark/`
@@ -113,6 +113,7 @@ To install **Stylus v4.2.1**, **Mynt New Tab**, or browse the full widget catalo
 
 ## Credits & License
 
+- Open-source icon foundation: **[Graphite-Elegance](https://github.com/Acourd/Graphite-Elegance)** by Acourd — all 120 Material You & One UI icons in Veyra-Dots were built on top of its clean silhouette library.
 - Dock featured in all screenshots: **[Muelle](https://github.com/crafter-station/Muelle)** by Crafter Station.
 - New Tab extension: **[Mynt — Material You New Tab](https://chromewebstore.google.com/detail/mynt-material-you-new-tab/jjpokbgpiljgndebfoljdeihhkpcpfgl)**.
 - Distributed under the **MIT** License.

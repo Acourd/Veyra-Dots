@@ -49,7 +49,7 @@ Colección minimalista y modular de **dotfiles para Windows 11**, diseñada para
 
 1. **Escritorio (Rainmeter):** 100 widgets vectoriales y modulares en `themes/<estilo>/rainmeter/`, instalados en un clic **sin `.dll` de terceros**.
 2. **Dock ([Muelle](https://github.com/crafter-station/Muelle)):** Todas las configuraciones emplean **[Muelle](https://github.com/crafter-station/Muelle)** como dock ligero estilo macOS para Windows 11. Veyra-Dots incluye un aplicador seguro y reversible en 1 clic (`scripts/apply-muelle-icons.ps1`) con copia de seguridad y restauración automática.
-3. **Packs de iconos personalizados (120 iconos — PNG 256×256 e ICO multirresolución):**
+3. **Packs de iconos de código libre (120 iconos — PNG 256×256 e ICO multirresolución):** Desarrollados a partir de la base de siluetas de **[Graphite-Elegance](https://github.com/Acourd/Graphite-Elegance)** y adaptados a cada estilo:
    - **Material You Pastel Tonal (`40 iconos`):** `themes/material-you/icons/m3-pastel/`
    - **One UI Vibrant (`40 iconos`):** `themes/one-ui/icons/oneui-vibrant/`
    - **One UI OLED Dark (`40 iconos`):** `themes/one-ui/icons/oneui-dark/`
@@ -113,6 +113,7 @@ Para instalar **Stylus v4.2.1**, la extensión **Mynt** y consultar el catálogo
 
 ## Créditos y Licencia
 
+- Base de iconos de código libre: **[Graphite-Elegance](https://github.com/Acourd/Graphite-Elegance)** de Acourd — los 120 iconos de Material You y One UI incluidos en Veyra-Dots fueron desarrollados gracias a este proyecto.
 - Dock utilizado en todas las capturas: **[Muelle](https://github.com/crafter-station/Muelle)** de Crafter Station.
 - Extensión de Nueva Pestaña: **[Mynt — Material You New Tab](https://chromewebstore.google.com/detail/mynt-material-you-new-tab/jjpokbgpiljgndebfoljdeihhkpcpfgl)**.
 - Distribuido bajo licencia **MIT**.
