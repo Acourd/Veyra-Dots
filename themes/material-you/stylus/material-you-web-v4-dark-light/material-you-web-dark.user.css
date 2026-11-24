@@ -1,9 +1,11 @@
 /* ==UserStyle==
 @name           Material You Web — Modo Dark
 @namespace      github.com/custom-material-you-windows/dark
-@version        4.2.0
-@description    Suite Material You (Modo Dark) con 7 paletas sincronizadas con MaterialYZen (incluye Amarillo). Estabiliza GitHub, YouTube pantalla completa, Google Search, ChatGPT, WhatsApp Web, Claude, Linear, Perplexity y añade Grok. Corrige Google Search, Launcher 9 puntos (ogs), Drive (+ Nuevo), Traductor, Maps, Play Store, WhatsApp Web, Calendar y GitHub; suma Linear y toda la suite de IA (Gemini, Claude, ChatGPT, Perplexity, DeepSeek, AI Studio y NotebookLM).
-@author         Material You Windows 11 Dotfiles
+@version        4.2.1
+@description    Suite Material You (Modo Dark) con 7 paletas sincronizadas con Veyra-Dots / MaterialYZen (incluye Amarillo). Estabiliza GitHub, YouTube pantalla completa, Google Search, ChatGPT, WhatsApp Web, Claude, Linear, Perplexity y Grok; incluye Gmail, Launcher 9 puntos (ogs), Drive (+ Nuevo), Traductor, Maps, Play Store, Calendar y toda la suite de IA (Gemini, Claude, ChatGPT, Perplexity, DeepSeek, AI Studio y NotebookLM).
+@author         Veyra-Dots (Acourd)
+@homepageURL    https://github.com/Acourd/Veyra-Dots
+@supportURL     https://github.com/Acourd/Veyra-Dots/issues
 @license        MIT
 @preprocessor   uso
 
@@ -615,7 +617,7 @@
     border-color: var(--m3-outline-soft) !important;
     border-radius: 16px !important;
   }
-  .btn, .Button--primary, .Button--secondary { border-radius: 9999px !important; }
+  .btn:not(.BtnGroup-item), .Button--primary, .Button--secondary { border-radius: 9999px !important; }
 }
 
 @-moz-document domain("linear.app") {
@@ -700,6 +702,7 @@
     --bg-200: var(--m3-header) !important;
     --bg-300: var(--m3-surface-alt) !important;
     --bg-400: var(--m3-surface-selected) !important;
+    --bg-500: var(--m3-surface-selected) !important;
     --text-000: var(--m3-text-strong) !important;
     --text-100: var(--m3-text) !important;
     --text-200: var(--m3-text-muted) !important;

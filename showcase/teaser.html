@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Veyra-Dots — Expressive Motion Teaser (60fps · EN / ES)</title>
+  <style>
+    :root {
+      --bg: #11131a;
+      --panel: rgba(24, 27, 38, 0.92);
+      --border: rgba(255, 255, 255, 0.14);
+      --text: #f8fafc;
+      --muted: #a1a8bc;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      gap: 14px;
+    }
+    .stage-wrap {
+      position: relative;
+      max-width: min(94vw, 1280px);
+      max-height: 76vh;
+      border-radius: 26px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.65);
+      background: #0d1017;
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 76vh;
+      object-fit: contain;
+    }
+    .controls {
+      width: min(94vw, 1040px);
+      background: var(--panel);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 10px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+    button {
+      appearance: none;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      font: 700 13px/1 "Segoe UI Variable Text", "Segoe UI", sans-serif;
+      padding: 10px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform 0.14s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.15s ease;
+    }
+    button:hover { background: rgba(255, 255, 255, 0.16); transform: translateY(-1px); }
+    button:active { transform: scale(0.95); }
+    button.lang-btn {
+      background: rgba(59, 130, 246, 0.22);
+      border-color: rgba(147, 197, 253, 0.45);
+    }
+    button.lang-btn:hover { background: rgba(59, 130, 246, 0.36); }
+    button.primary {
+      background: #ff5470;
+      border-color: transparent;
+      color: #fff;
+    }
+    button.primary:hover { background: #ff6b84; }
+    button.recording {
+      background: #ef4444;
+      animation: recPulse 0.9s infinite ease-in-out;
+    }
+    @keyframes recPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(0.97); opacity: 0.8; } }
+    .scrubber-wrap { flex: 1 1 200px; display: flex; align-items: center; gap: 10px; }
+    input[type="range"] { flex: 1; accent-color: #ff5470; cursor: pointer; }
+    .time-lbl { font-variant-numeric: tabular-nums; font-size: 12px; color: var(--muted); min-width: 78px; text-align: right; }
+    .status { font-size: 12px; color: #cbd5e1; min-height: 16px; }
+  </style>
+</head>
+<body>
+  <div class="stage-wrap">
+    <canvas id="stage" width="1920" height="1080"></canvas>
+  </div>
+
+  <div class="controls">
+    <button id="btnPlay">Pause</button>
+    <button id="btnRestart">Restart</button>
+    <button id="btnAspect">16:9</button>
+    <button id="btnLang" class="lang-btn">EN / ES</button>
+    <div class="scrubber-wrap">
+      <input id="scrubber" type="range" min="0" max="22000" value="0" step="16" />
+      <span id="timeLbl" class="time-lbl">00.0 / 22.0s</span>
+    </div>
+    <button id="btnExport" class="primary">Export 60fps (.webm)</button>
+  </div>
+  <div id="status" class="status">Material 3 Expressive Motion Engine · 60fps · 12 real screenshots.</div>
+
+  <script src="teaser-assets.js"></script>
+  <script>
+    const DURATION = 22.0;
+    const canvas = document.getElementById("stage");
+    const ctx = canvas.getContext("2d");
+    const btnPlay = document.getElementById("btnPlay");
+    const btnRestart = document.getElementById("btnRestart");
+    const btnAspect = document.getElementById("btnAspect");
+    const btnLang = document.getElementById("btnLang");
+    const btnExport = document.getElementById("btnExport");
+    const scrubber = document.getElementById("scrubber");
+    const timeLbl = document.getElementById("timeLbl");
+    const statusEl = document.getElementById("status");
+
+    const COPY = {
+      en: {
+        ui: {
+          pause: "Pause",
+          play: "Play",
+          restart: "Restart",
+          langBtn: "Lang: EN",
+          exportBtn: "Export 60fps (.webm)",
+          recordingBtn: "Recording 22s (60fps)...",
+          readyStatus: "Material 3 Expressive Motion Engine · 60fps · 12 real screenshots.",
+          recordingStatus: "Recording Expressive teaser at 60fps — keep this tab visible...",
+          doneStatus: "Expressive 60fps video (EN) exported and downloaded."
+        },
+        beat1Top: "WINDOWS 11.",
+        beat1Bot: "REIMAGINED.",
+        beat2Pill: "3 STYLES · 100 WIDGETS · 1 CLICK",
+        stamps: [
+          { bg: "#1D4ED8", shape: "#3B82F6", fg: "#FFFFFF", label: "ONE UI 7/8", pill: "28 WIDGETS + 80 ICONS", pbg: "#FBBF24", pfg: "#18181B", pet: 8 },
+          { bg: "#C4EED0", shape: "#86EFAC", fg: "#0F5223", label: "MATERIAL YOU", pill: "44 WIDGETS + STYLUS v4.2", pbg: "#0F5223", pfg: "#FFFFFF", pet: 6 },
+          { bg: "#FCE7F3", shape: "#F9A8D4", fg: "#831843", label: "macOS SEQUOIA", pill: "28 WIDGETS + PROHUB", pbg: "#EC4899", pfg: "#FFFFFF", pet: 4 }
+        ],
+        darkBadge: "DARK MODE",
+        lightBadge: "LIGHT MODE",
+        scenes: {
+          oneuiBlue: {
+            tag: "SAMSUNG ONE UI",
+            headline: "OLED Dark\nto Pure Snow.",
+            subline: "28 widgets · 80 icons · Muelle Dock"
+          },
+          oneuiCoral: {
+            tag: "PROHUB + GOOD LOCK",
+            headline: "Retro Cassette\n& AI Quota.",
+            subline: "Device Care · Bluetooth · Storage Vault"
+          },
+          m3Amber: {
+            tag: "MATERIAL YOU",
+            headline: "Warm Tonal\nHarmony.",
+            subline: "44 widgets · 40 Pastel icons · Stylus v4.2"
+          },
+          m3Sage: {
+            tag: "M3 EXPRESSIVE",
+            headline: "Solar Arc &\nBento Widgets.",
+            subline: "Auto-synced to any wallpaper color"
+          },
+          macGraphite: {
+            tag: "macOS SEQUOIA",
+            headline: "StandBy Clock\n& Notch Hub.",
+            subline: "Control Center · Activity Rings · Menu Bar"
+          },
+          macMagenta: {
+            tag: "AUTO WALL SYNC",
+            headline: "Every Widget.\nOne Color.",
+            subline: "iStat Hub · Lock Screen Hero · AI Usage"
+          }
+        }
+      },
+      es: {
+        ui: {
+          pause: "Pausar",
+          play: "Reproducir",
+          restart: "Reiniciar",
+          langBtn: "Idioma: ES",
+          exportBtn: "Exportar 60fps (.webm)",
+          recordingBtn: "Grabando 22s (60fps)...",
+          readyStatus: "Motor Material 3 Expressive · 60fps · 12 capturas reales.",
+          recordingStatus: "Grabando teaser Expressive a 60fps — mantén la pestaña visible...",
+          doneStatus: "Video Expressive (60fps · ES) exportado y descargado."
+        },
+        beat1Top: "WINDOWS 11.",
+        beat1Bot: "REIMAGINADO.",
+        beat2Pill: "3 ESTILOS · 100 WIDGETS · 1 CLIC",
+        stamps: [
+          { bg: "#1D4ED8", shape: "#3B82F6", fg: "#FFFFFF", label: "ONE UI 7/8", pill: "28 WIDGETS + 80 ICONOS", pbg: "#FBBF24", pfg: "#18181B", pet: 8 },
+          { bg: "#C4EED0", shape: "#86EFAC", fg: "#0F5223", label: "MATERIAL YOU", pill: "44 WIDGETS + STYLUS v4.2", pbg: "#0F5223", pfg: "#FFFFFF", pet: 6 },
+          { bg: "#FCE7F3", shape: "#F9A8D4", fg: "#831843", label: "macOS SEQUOIA", pill: "28 WIDGETS + PROHUB", pbg: "#EC4899", pfg: "#FFFFFF", pet: 4 }
+        ],
+        darkBadge: "MODO OSCURO",
+        lightBadge: "MODO CLARO",
+        scenes: {
+          oneuiBlue: {
+            tag: "SAMSUNG ONE UI",
+            headline: "Negro OLED\na Blanco Puro.",
+            subline: "28 widgets · 80 iconos · Dock Muelle"
+          },
+          oneuiCoral: {
+            tag: "PROHUB + GOOD LOCK",
+            headline: "Cassette Retro\ny Cuota IA.",
+            subline: "Device Care · Bluetooth · Almacenamiento"
+          },
+          m3Amber: {
+            tag: "MATERIAL YOU",
+            headline: "Armonía Tonal\nCálida.",
+            subline: "44 widgets · 40 iconos Pastel · Stylus v4.2"
+          },
+          m3Sage: {
+            tag: "M3 EXPRESSIVE",
+            headline: "Arco Solar y\nWidgets Bento.",
+            subline: "Sincronizado con cualquier wallpaper"
+          },
+          macGraphite: {
+            tag: "macOS SEQUOIA",
+            headline: "Reloj StandBy\ny Notch Hub.",
+            subline: "Centro de Control · Anillos · Barra Superior"
+          },
+          macMagenta: {
+            tag: "AUTO WALL SYNC",
+            headline: "Cada Widget.\nUn Solo Color.",
+            subline: "iStat Hub · Pantalla de Bloqueo · Consumo IA"
+          }
+        }
+      }
+    };
+
+    const urlLang = new URLSearchParams(window.location.search).get("lang");
+    let lang = (urlLang === "es" || urlLang === "en")
+      ? urlLang
+      : ((navigator.language || "").toLowerCase().startsWith("es") ? "es" : "en");
+
+    let isVertical = false;
+    let playing = true;
+    let tSec = 0;
+    let lastTs = 0;
+    let exporting = false;
+    let recorder = null;
+    let recChunks = [];
+    const imgs = {};
+
+    function applyUiLang() {
+      const u = COPY[lang].ui;
+      document.documentElement.lang = lang;
+      btnPlay.textContent = playing ? u.pause : u.play;
+      btnRestart.textContent = u.restart;
+      btnLang.textContent = u.langBtn;
+      if (!exporting) {
+        btnExport.textContent = u.exportBtn;
+        statusEl.textContent = u.readyStatus;
+      }
+    }
+
+    // --- SPRING PHYSICS & EXPRESSIVE EASING (M3E signature bounce) ---
+    const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+    const norm = (t, a, b) => clamp((t - a) / (b - a));
+    const lerp = (a, b, t) => a + (b - a) * t;
+    const easeInOutExpo = (x) =>
+      x <= 0 ? 0 : x >= 1 ? 1 : x < 0.5 ? Math.pow(2, 20 * x - 10) / 2 : (2 - Math.pow(2, -20 * x + 10)) / 2;
+    const spring = (x, damping = 6.2, freq = 13.5) => {
+      if (x <= 0) return 0;
+      if (x >= 1) return 1;
+      return 1 - Math.exp(-damping * x) * Math.cos(freq * x);
+    };
+
+    // --- M3 EXPRESSIVE SHAPE PRIMITIVES ---
+    function rrPath(x, y, w, h, r) {
+      const rr = Math.min(r, w / 2, h / 2);
+      ctx.beginPath();
+      ctx.moveTo(x + rr, y);
+      ctx.arcTo(x + w, y, x + w, y + h, rr);
+      ctx.arcTo(x + w, y + h, x, y + h, rr);
+      ctx.arcTo(x, y + h, x, y, rr);
+      ctx.arcTo(x, y, x + w, y, rr);
+      ctx.closePath();
+    }
+
+    function scallopedPath(cx, cy, r, petals = 8, amp = 0.14, rot = 0) {
+      const steps = 180;
+      ctx.beginPath();
+      for (let i = 0; i <= steps; i++) {
+        const a = (i / steps) * Math.PI * 2;
+        const rad = r * (1 + amp * Math.cos(petals * a));
+        const px = cx + Math.cos(a + rot) * rad;
+        const py = cy + Math.sin(a + rot) * rad;
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+    }
+
+    function drawCover(img, x, y, w, h, zoom = 1, panX = 0, panY = 0) {
+      if (!img || !img.complete) return;
+      const ir = img.width / img.height;
+      const br = w / h;
+      let dw, dh;
+      if (ir > br) { dh = h * zoom; dw = dh * ir; }
+      else { dw = w * zoom; dh = dw / ir; }
+      ctx.drawImage(img, x + (w - dw) / 2 + panX, y + (h - dh) / 2 + panY, dw, dh);
+    }
+
+    function drawExpressivePill(x, y, text, bg, fg, scale = 1, rot = 0) {
+      if (scale <= 0.01) return;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(rot);
+      ctx.scale(scale, scale);
+      ctx.font = '800 28px "Segoe UI Variable Display", "Segoe UI", sans-serif';
+      const tw = ctx.measureText(text).width;
+      const pw = tw + 60;
+      const ph = 64;
+      rrPath(-pw / 2, -ph / 2, pw, ph, 32);
+      ctx.fillStyle = bg;
+      ctx.fill();
+      ctx.fillStyle = fg;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(text, 0, 2);
+      ctx.restore();
+    }
+
+    function drawExpressiveScene(W, H, t, cfg) {
+      const {
+        tStart, tEnd, bgHex, shapeHex, accentHex, textHex,
+        tag, headline, subline, imgDark, imgLight,
+        wipeStart, wipeEnd, tiltDeg = -1.6, petals = 8,
+        cropZoom = 1.03, panStartX = 0, panEndX = 0
+      } = cfg;
+
+      const local = t - tStart;
+      const dur = tEnd - tStart;
+      if (local < -0.05 || local > dur + 0.05) return;
+
+      const pIn = norm(t, tStart, tStart + 0.65);
+      const pOut = norm(t, tEnd - 0.42, tEnd);
+      const sp = spring(pIn, 5.8, 12.5);
+      const outE = easeInOutExpo(pOut);
+
+      ctx.save();
+      ctx.fillStyle = bgHex;
+      ctx.fillRect(0, 0, W, H);
+
+      ctx.save();
+      const sRad = Math.max(W, H) * 0.46 * lerp(0.5, 1.0, sp) * lerp(1.0, 1.35, outE);
+      scallopedPath(W * 0.84, H * 0.22, sRad, petals, 0.14, local * 0.35);
+      ctx.fillStyle = shapeHex;
+      ctx.fill();
+
+      scallopedPath(W * 0.12, H * 0.84, sRad * 0.62, petals === 8 ? 4 : 6, 0.16, -local * 0.45);
+      ctx.fillStyle = shapeHex;
+      ctx.fill();
+      ctx.restore();
+
+      const frameW = isVertical ? W * 0.90 : W * 0.68;
+      const frameH = frameW * (9 / 16);
+      const cx = isVertical ? W * 0.50 : W * 0.61;
+      const cy = isVertical ? H * 0.56 : H * 0.52;
+
+      const slideX = (1 - sp) * (isVertical ? 0 : 220) - outE * (isVertical ? 0 : 280);
+      const slideY = (1 - sp) * (isVertical ? 180 : 40) - outE * (isVertical ? 220 : 0);
+      const rot = (tiltDeg * Math.PI / 180) * lerp(2.2, 1.0, sp) + outE * 0.08;
+      const cardScale = lerp(0.76, 1.0, sp) * lerp(1.0, 0.88, outE);
+
+      const txtX = isVertical ? W * 0.50 : W * 0.055;
+      const txtY = isVertical ? H * 0.13 : H * 0.36;
+      const spTxt = spring(norm(t, tStart + 0.08, tStart + 0.72), 6.0, 12.0);
+
+      ctx.save();
+      ctx.globalAlpha = clamp(1 - outE * 1.4);
+      ctx.translate(txtX + (1 - spTxt) * -90, txtY);
+      ctx.textAlign = isVertical ? "center" : "left";
+      ctx.textBaseline = "middle";
+
+      const pillOffX = isVertical ? 0 : 120;
+      drawExpressivePill(pillOffX, -58, tag, accentHex, "#ffffff", clamp(spTxt), -0.03);
+
+      ctx.fillStyle = textHex;
+      ctx.font = `900 ${isVertical ? 68 : 66}px "Segoe UI Variable Display", "Segoe UI", sans-serif`;
+      const lines = headline.split("\n");
+      lines.forEach((ln, idx) => {
+        ctx.fillText(ln, 0, 22 + idx * (isVertical ? 74 : 72));
+      });
+
+      ctx.globalAlpha = clamp((1 - outE * 1.4) * 0.86);
+      ctx.font = `600 ${isVertical ? 26 : 23}px "Segoe UI Variable Text", "Segoe UI", sans-serif`;
+      ctx.fillText(subline, 0, 22 + lines.length * (isVertical ? 74 : 72) + 12);
+      ctx.restore();
+
+      ctx.save();
+      ctx.globalAlpha = clamp(1 - outE * 1.2);
+      ctx.translate(cx + slideX, cy + slideY);
+      ctx.rotate(rot);
+      ctx.scale(cardScale, cardScale);
+
+      const x0 = -frameW / 2;
+      const y0 = -frameH / 2;
+      const rad = 36;
+
+      ctx.shadowColor = "rgba(0, 0, 0, 0.34)";
+      ctx.shadowBlur = 46;
+      ctx.shadowOffsetY = 22;
+      rrPath(x0, y0, frameW, frameH, rad);
+      ctx.fillStyle = "#11131a";
+      ctx.fill();
+      ctx.shadowColor = "transparent";
+
+      ctx.save();
+      rrPath(x0, y0, frameW, frameH, rad);
+      ctx.clip();
+
+      const panX = lerp(panStartX, panEndX, norm(t, tStart, tEnd));
+      drawCover(imgDark, x0, y0, frameW, frameH, cropZoom, panX, 0);
+
+      if (imgLight && t >= wipeStart) {
+        const wp = easeInOutExpo(norm(t, wipeStart, wipeEnd));
+        if (wp > 0.002) {
+          const maxR = Math.hypot(frameW, frameH) * 1.08;
+          ctx.save();
+          scallopedPath(x0 + frameW * 0.85, y0 + frameH * 0.82, maxR * wp, 10, 0.06 * (1 - wp), wp * 1.4);
+          ctx.clip();
+          drawCover(imgLight, x0, y0, frameW, frameH, cropZoom, panX, 0);
+          ctx.restore();
+        }
+      }
+      ctx.restore();
+
+      rrPath(x0, y0, frameW, frameH, rad);
+      ctx.lineWidth = 6;
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.72)";
+      ctx.stroke();
+
+      const c = COPY[lang];
+      const isLightNow = imgLight && t > (wipeStart + wipeEnd) * 0.48;
+      const stPop = spring(norm(t, isLightNow ? (wipeStart + wipeEnd) * 0.48 : tStart + 0.25, (isLightNow ? (wipeStart + wipeEnd) * 0.48 : tStart + 0.25) + 0.55), 5.5, 13.0);
+      drawExpressivePill(
+        x0 + frameW - 120,
+        y0 + frameH - 12,
+        isLightNow ? c.lightBadge : c.darkBadge,
+        isLightNow ? "#ffffff" : "#111827",
+        isLightNow ? "#111827" : "#ffffff",
+        clamp(stPop, 0, 1.15),
+        0.04
+      );
+
+      ctx.restore();
+      ctx.restore();
+    }
+
+    function renderFrame(t) {
+      const W = canvas.width;
+      const H = canvas.height;
+      const c = COPY[lang];
+
+      // === BEAT 1 (0.0 - 0.85s) ===
+      if (t < 0.85) {
+        const sp = spring(norm(t, 0.0, 0.55), 5.5, 14.0);
+        ctx.fillStyle = "#FAF6EE";
+        ctx.fillRect(0, 0, W, H);
+        scallopedPath(W / 2, H / 2, Math.min(W, H) * 0.44 * sp, 8, 0.14, t * 1.2);
+        ctx.fillStyle = "#FFE0B2";
+        ctx.fill();
+
+        ctx.save();
+        ctx.translate(W / 2, H / 2);
+        ctx.scale(sp, sp);
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = "#18181B";
+        ctx.font = `900 ${isVertical ? 84 : 112}px "Segoe UI Variable Display", "Segoe UI", sans-serif`;
+        ctx.fillText(c.beat1Top, 0, -48);
+        ctx.fillStyle = "#FF5470";
+        ctx.fillText(c.beat1Bot, 0, 68);
+        ctx.restore();
+        return;
+      }
+
+      // === BEAT 2 (0.85 - 1.85s) ===
+      if (t >= 0.85 && t < 1.85) {
+        const sp = spring(norm(t, 0.85, 1.45), 5.2, 13.5);
+        ctx.fillStyle = "#2563EB";
+        ctx.fillRect(0, 0, W, H);
+        scallopedPath(W * 0.2, H * 0.25, 380 * sp, 4, 0.18, t * 1.1);
+        ctx.fillStyle = "rgba(255,255,255,0.12)";
+        ctx.fill();
+        scallopedPath(W * 0.82, H * 0.78, 440 * sp, 6, 0.15, -t * 0.9);
+        ctx.fillStyle = "rgba(163,230,53,0.22)";
+        ctx.fill();
+
+        ctx.save();
+        ctx.translate(W / 2, H / 2);
+        ctx.scale(sp, sp);
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = "#FFFFFF";
+        ctx.font = `900 ${isVertical ? 102 : 146}px "Segoe UI Variable Display", "Segoe UI", sans-serif`;
+        ctx.fillText("VEYRA-DOTS", 0, -24);
+        ctx.restore();
+
+        drawExpressivePill(W / 2, H / 2 + 104, c.beat2Pill, "#A3E635", "#0F172A", spring(norm(t, 1.05, 1.65)), -0.02);
+        return;
+      }
+
+      // === BEAT 3 (1.85 - 3.0s) ===
+      if (t >= 1.85 && t < 3.0) {
+        const local = t - 1.85;
+        const step = Math.min(2, Math.floor(local / 0.38));
+        const stLocal = (local - step * 0.38) / 0.38;
+        const sp = spring(stLocal, 5.5, 14.0);
+        const palette = c.stamps[step];
+
+        ctx.fillStyle = palette.bg;
+        ctx.fillRect(0, 0, W, H);
+        scallopedPath(W / 2, H / 2, Math.min(W, H) * 0.45 * sp, palette.pet, 0.14, local * 1.5);
+        ctx.fillStyle = palette.shape;
+        ctx.fill();
+
+        ctx.save();
+        ctx.translate(W / 2, H / 2);
+        ctx.scale(sp, sp);
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = palette.fg;
+        ctx.font = `900 ${isVertical ? 88 : 132}px "Segoe UI Variable Display", "Segoe UI", sans-serif`;
+        ctx.fillText(palette.label, 0, -18);
+        ctx.restore();
+
+        drawExpressivePill(W / 2, H / 2 + 96, palette.pill, palette.pbg, palette.pfg, sp, 0.02);
+        return;
+      }
+
+      // === SCENE 1 (3.0 - 6.3s): ONE UI BLUE ===
+      if (t >= 3.0 && t < 6.3) {
+        drawExpressiveScene(W, H, t, {
+          tStart: 3.0, tEnd: 6.3,
+          bgHex: "#DBEAFE", shapeHex: "#BFDBFE", accentHex: "#2563EB", textHex: "#0F172A",
+          ...c.scenes.oneuiBlue,
+          imgDark: imgs.oneuiBlueDark, imgLight: imgs.oneuiBlueLight,
+          wipeStart: 4.35, wipeEnd: 5.55, tiltDeg: -1.8, petals: 8
+        });
+        return;
+      }
+
+      // === SCENE 2 (6.3 - 9.0s): ONE UI CORAL ===
+      if (t >= 6.3 && t < 9.0) {
+        drawExpressiveScene(W, H, t, {
+          tStart: 6.3, tEnd: 9.0,
+          bgHex: "#FFE4E6", shapeHex: "#FECDD3", accentHex: "#E11D48", textHex: "#4C0519",
+          ...c.scenes.oneuiCoral,
+          imgDark: imgs.oneuiCoralDark, imgLight: imgs.oneuiCoralLight,
+          wipeStart: 7.4, wipeEnd: 8.45, tiltDeg: 1.6, petals: 6
+        });
+        return;
+      }
+
+      // === SCENE 3 (9.0 - 12.1s): MATERIAL YOU AMBER ===
+      if (t >= 9.0 && t < 12.1) {
+        drawExpressiveScene(W, H, t, {
+          tStart: 9.0, tEnd: 12.1,
+          bgHex: "#FEF3C7", shapeHex: "#FDE68A", accentHex: "#B45309", textHex: "#451A03",
+          ...c.scenes.m3Amber,
+          imgDark: imgs.m3AmberDark, imgLight: imgs.m3AmberLight,
+          wipeStart: 10.2, wipeEnd: 11.4, tiltDeg: -1.5, petals: 8
+        });
+        return;
+      }
+
+      // === SCENE 4 (12.1 - 14.9s): MATERIAL YOU SAGE ===
+      if (t >= 12.1 && t < 14.9) {
+        drawExpressiveScene(W, H, t, {
+          tStart: 12.1, tEnd: 14.9,
+          bgHex: "#DCFCE7", shapeHex: "#BBF7D0", accentHex: "#15803D", textHex: "#052E16",
+          ...c.scenes.m3Sage,
+          imgDark: imgs.m3SageDark, imgLight: imgs.m3SageLight,
+          wipeStart: 13.25, wipeEnd: 14.3, tiltDeg: 1.7, petals: 4
+        });
+        return;
+      }
+
+      // === SCENE 5 (14.9 - 17.8s): macOS GRAPHITE ===
+      if (t >= 14.9 && t < 17.8) {
+        drawExpressiveScene(W, H, t, {
+          tStart: 14.9, tEnd: 17.8,
+          bgHex: "#E2E8F0", shapeHex: "#CBD5E1", accentHex: "#0F172A", textHex: "#0F172A",
+          ...c.scenes.macGraphite,
+          imgDark: imgs.macGraphiteDark, imgLight: imgs.macGraphiteLight,
+          wipeStart: 16.05, wipeEnd: 17.15, tiltDeg: -1.6, petals: 6
+        });
+        return;
+      }
+
+      // === SCENE 6 (17.8 - 19.9s): macOS MAGENTA ===
+      if (t >= 17.8 && t < 19.9) {
+        drawExpressiveScene(W, H, t, {
+          tStart: 17.8, tEnd: 19.9,
+          bgHex: "#FCE7F3", shapeHex: "#FBCFE8", accentHex: "#DB2777", textHex: "#500724",
+          ...c.scenes.macMagenta,
+          imgDark: imgs.macMagentaDark, imgLight: imgs.macMagentaLight,
+          wipeStart: 18.75, wipeEnd: 19.55, tiltDeg: 1.4, petals: 8
+        });
+        return;
+      }
+
+      // === FINALE (19.9 - 22.0s) ===
+      const pFin = norm(t, 19.9, 20.65);
+      const spFin = spring(pFin, 5.5, 12.5);
+      ctx.fillStyle = "#FAF6EE";
+      ctx.fillRect(0, 0, W, H);
+
+      scallopedPath(W * 0.14, H * 0.22, 260 * spFin, 8, 0.14, t * 0.8);
+      ctx.fillStyle = "#BFDBFE"; ctx.fill();
+      scallopedPath(W * 0.86, H * 0.78, 300 * spFin, 6, 0.15, -t * 0.7);
+      ctx.fillStyle = "#FBCFE8"; ctx.fill();
+      scallopedPath(W * 0.84, H * 0.18, 210 * spFin, 4, 0.16, t * 0.9);
+      ctx.fillStyle = "#BBF7D0"; ctx.fill();
+
+      const stickers = [
+        { im: imgs.oneuiBlueDark,  x: 0.18, y: 0.26, rot: -0.09 },
+        { im: imgs.m3AmberLight,   x: 0.82, y: 0.26, rot: 0.08 },
+        { im: imgs.macMagentaDark, x: 0.18, y: 0.76, rot: 0.07 },
+        { im: imgs.oneuiCoralDark, x: 0.82, y: 0.76, rot: -0.08 }
+      ];
+      const sw = isVertical ? W * 0.40 : W * 0.24;
+      const sh = sw * (9 / 16);
+      stickers.forEach((st, idx) => {
+        const sPop = spring(norm(t, 19.95 + idx * 0.06, 20.65 + idx * 0.06), 5.6, 13.0);
+        ctx.save();
+        ctx.translate(W * st.x, H * st.y);
+        ctx.rotate(st.rot);
+        ctx.scale(sPop, sPop);
+        ctx.shadowColor = "rgba(0,0,0,0.22)";
+        ctx.shadowBlur = 28;
+        ctx.shadowOffsetY = 14;
+        rrPath(-sw / 2, -sh / 2, sw, sh, 22);
+        ctx.fillStyle = "#111"; ctx.fill();
+        ctx.shadowColor = "transparent";
+        ctx.save(); rrPath(-sw / 2, -sh / 2, sw, sh, 22); ctx.clip();
+        drawCover(st.im, -sw / 2, -sh / 2, sw, sh, 1.04);
+        ctx.restore();
+        rrPath(-sw / 2, -sh / 2, sw, sh, 22);
+        ctx.lineWidth = 5; ctx.strokeStyle = "#FFFFFF"; ctx.stroke();
+        ctx.restore();
+      });
+
+      ctx.save();
+      ctx.translate(W / 2, H / 2);
+      ctx.scale(spFin, spFin);
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillStyle = "#0F172A";
+      ctx.font = `900 ${isVertical ? 88 : 118}px "Segoe UI Variable Display", "Segoe UI", sans-serif`;
+      ctx.fillText("VEYRA-DOTS", 0, -24);
+      ctx.restore();
+
+      drawExpressivePill(W / 2, H / 2 + 74, "github.com/Acourd/Veyra-Dots", "#FF5470", "#FFFFFF", spring(norm(t, 20.15, 20.85)), -0.015);
+    }
+
+    function tick(ts) {
+      if (!lastTs) lastTs = ts;
+      const dt = Math.min(0.05, (ts - lastTs) / 1000);
+      lastTs = ts;
+      if (playing) {
+        tSec += dt;
+        if (tSec >= DURATION) {
+          if (exporting) {
+            tSec = DURATION;
+            renderFrame(tSec);
+            stopExport();
+            return requestAnimationFrame(tick);
+          }
+          tSec = 0;
+        }
+      }
+      renderFrame(tSec);
+      scrubber.value = Math.round(tSec * 1000);
+      timeLbl.textContent = `${tSec.toFixed(1).padStart(4, "0")} / ${DURATION.toFixed(1)}s`;
+      requestAnimationFrame(tick);
+    }
+
+    function startExport() {
+      if (exporting) return;
+      const u = COPY[lang].ui;
+      const mime = MediaRecorder.isTypeSupported("video/webm;codecs=vp9") ? "video/webm;codecs=vp9" : "video/webm";
+      const stream = canvas.captureStream(60);
+      recChunks = [];
+      recorder = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 14_000_000 });
+      recorder.ondataavailable = (e) => { if (e.data && e.data.size > 0) recChunks.push(e.data); };
+      recorder.onstop = () => {
+        const blob = new Blob(recChunks, { type: mime });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = isVertical
+          ? `veyra-dots-m3e-${lang}-9x16-60fps.webm`
+          : `veyra-dots-m3e-${lang}-16x9-60fps.webm`;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+        statusEl.textContent = COPY[lang].ui.doneStatus;
+      };
+      exporting = true; tSec = 0; playing = true;
+      btnPlay.textContent = u.pause;
+      btnExport.classList.add("recording");
+      btnExport.textContent = u.recordingBtn;
+      statusEl.textContent = u.recordingStatus;
+      recorder.start();
+    }
+
+    function stopExport() {
+      exporting = false; playing = false;
+      btnExport.classList.remove("recording");
+      applyUiLang();
+      if (recorder && recorder.state !== "inactive") recorder.stop();
+    }
+
+    btnPlay.addEventListener("click", () => {
+      if (!exporting) {
+        playing = !playing;
+        btnPlay.textContent = playing ? COPY[lang].ui.pause : COPY[lang].ui.play;
+      }
+    });
+    btnRestart.addEventListener("click", () => {
+      if (!exporting) {
+        tSec = 0;
+        playing = true;
+        btnPlay.textContent = COPY[lang].ui.pause;
+      }
+    });
+    btnAspect.addEventListener("click", () => {
+      if (exporting) return;
+      isVertical = !isVertical;
+      canvas.width = isVertical ? 1080 : 1920;
+      canvas.height = isVertical ? 1920 : 1080;
+      btnAspect.textContent = isVertical ? "9:16" : "16:9";
+      renderFrame(tSec);
+    });
+    btnLang.addEventListener("click", () => {
+      if (exporting) return;
+      lang = lang === "en" ? "es" : "en";
+      applyUiLang();
+      renderFrame(tSec);
+    });
+    scrubber.addEventListener("input", () => {
+      if (!exporting) {
+        tSec = Number(scrubber.value) / 1000;
+        renderFrame(tSec);
+      }
+    });
+    btnExport.addEventListener("click", startExport);
+
+    applyUiLang();
+
+    const entries = Object.entries(window.VEYRA_ASSETS || {});
+    let loaded = 0;
+    entries.forEach(([k, src]) => {
+      const im = new Image();
+      im.onload = () => { loaded++; if (loaded === entries.length) requestAnimationFrame(tick); };
+      im.src = src;
+      imgs[k] = im;
+    });
+  </script>
+</body>
+</html>

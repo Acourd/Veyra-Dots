@@ -4,13 +4,13 @@ Personalización minimalista para Windows 11 y navegador basada en **Material De
 
 ## Contenido
 
-- `rainmeter/Skins/MaterialYZen/` — **38 widgets** con selector rápido en pantalla (`ThemeSwitcher.ini`):
+- `rainmeter/Skins/MaterialYZen/` — **44 widgets** con selector rápido en pantalla (`ThemeSwitcher.ini`):
   - **Modo Oscuro / Claro** y **ES / EN** en un clic.
   - **6 paletas manuales** (Gris, Azul, Rojo, Rosa, Amarillo, Verde) + **modo Auto** que extrae el color real de tu wallpaper (con detección monocromática para fondos grises/negros/blancos).
-  - **Categorías:** `ThemeSwitcher`, `Clock` (12), `Calendar` (3), `Battery` (3), `Audio` (3), `System` (1), `Search` (3 con iconos oficiales HD), `Music` (4), `Notes` (1), `Productivity` (4), `QuickSettings` (1) y `MeterialYouLab` (2).
-- `stylus/material-you-web-v4-dark-light/` — Suites **Modo Dark** y **Modo Claro** (**v4.2**) con 7 paletas sincronizadas para Google, YouTube, Reddit, GitHub, WhatsApp Web, Linear, Wikipedia, X, Twitch y toda la suite de IA (ChatGPT, Gemini, Claude, Grok, Perplexity, DeepSeek, AI Studio y NotebookLM).
+  - **Categorías:** `ThemeSwitcher`, `Clock` (14, incluye `ClockSunArc` y `ExpressiveBento`), `Calendar` (3), `Battery` (3), `Audio` (3), `System` (2, incluye `NetworkPulse`), `Search` (3 con iconos oficiales HD), `Music` (4), `Notes` (1), `Productivity` (4), `QuickSettings` (1), `MeterialYouLab` (2) y la nueva subsección **`ProHub` (3)** (`BluetoothHub`, `AIUsageHub`, `StorageVault`).
+- `stylus/material-you-web-v4-dark-light/` — Suites **Modo Dark** y **Modo Claro** (**v4.2.1**) con 7 paletas sincronizadas para Google, YouTube, Reddit, GitHub, WhatsApp Web, Linear, Wikipedia, X, Twitch y toda la suite de IA (ChatGPT, Gemini, Claude, Grok, Perplexity, DeepSeek, AI Studio y NotebookLM).
 - `wallpapers/` — **23 fondos de pantalla** Material You.
-- `icons/` — Espacio preparado para iconos minimalistas de barra de tareas.
+- `icons/m3-pastel/` — **40 iconos Pastel Tonal** (PNG 256×256 + ICO multirresolución) listos para escritorio y el dock **[Muelle](https://github.com/crafter-station/Muelle)** (`.\scripts\apply-muelle-icons.ps1 -Theme material-you`).
 
 ## Extensión recomendada para el navegador
 

@@ -1,8 +1,13 @@
-# Material You Web v4.2 — Modo Dark & Modo Claro (Stylus)
+# Material You Web v4.2.1 — Modo Dark & Modo Claro (Stylus)
 
 Dos suites unificadas listas para arrastrar al Gestor de Stylus con **7 paletas** sincronizadas con Veyra-Dots (Azul, Gris, Rojo, Verde, **Amarillo**, Morado y Rosado):
 - `material-you-web-dark.user.css` (**Modo Dark**)
 - `material-you-web-light.user.css` (**Modo Claro**)
+
+## Correcciones en v4.2.1
+- **GitHub:** Excluido `.BtnGroup-item` del redondeo completo para preservar botones divididos (Star / Watch / Fork).
+- **Claude:** Añadido token `--bg-500` para superficies elevadas recientes.
+- **Metadatos UserStyle:** Añadidos `@homepageURL`, `@supportURL` y autor oficial de **Veyra-Dots**.
 
 ## Correcciones en v4.2
 - **Gmail:** Corregido el icono oscuro del lápiz dentro del botón *Redactar* en Modo Dark para que mantenga contraste nítido.
