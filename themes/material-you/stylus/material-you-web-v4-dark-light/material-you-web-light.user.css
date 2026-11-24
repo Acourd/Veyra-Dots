@@ -1,0 +1,856 @@
+/* ==UserStyle==
+@name           Material You Web — Modo Claro
+@namespace      github.com/custom-material-you-windows/light
+@version        4.2.0
+@description    Suite Material You (Modo Claro) con 7 paletas sincronizadas con MaterialYZen (incluye Amarillo). Estabiliza GitHub, YouTube pantalla completa, Google Search, ChatGPT, WhatsApp Web, Claude, Linear, Perplexity y añade Grok. Corrige Google Search, Launcher 9 puntos (ogs), Drive (+ Nuevo), Traductor, Maps, Play Store, WhatsApp Web, Calendar y GitHub; suma Linear y toda la suite de IA (Gemini, Claude, ChatGPT, Perplexity, DeepSeek, AI Studio y NotebookLM).
+@author         Material You Windows 11 Dotfiles
+@license        MIT
+@preprocessor   uso
+
+@var select palette "Paleta Material You (Modo Claro)" {"azul:Azul — Modo Claro*": "--m3-canvas:#EDF2FA;--m3-surface:#FFFFFF;--m3-surface-hover:#F3F7FD;--m3-surface-alt:#E1EBF9;--m3-surface-selected:#D3E3FD;--m3-header:#E6EEF9;--m3-primary:#1A56C4;--m3-primary-hover:#134299;--m3-on-primary:#FFFFFF;--m3-primary-container:#D3E3FD;--m3-on-primary-container:#041E49;--m3-text:#171C26;--m3-text-strong:#0B0F17;--m3-text-muted:#4B5568;--m3-text-disabled:#848FA3;--m3-link:#1650BA;--m3-link-hover:#0E398A;--m3-outline:#B8C6DD;--m3-outline-soft:rgba(26, 86, 196, 0.16);--m3-outline-hover:rgba(26, 86, 196, 0.40);--m3-scroll-thumb:#A3B8DB;", "gris:Gris — Modo Claro": "--m3-canvas:#EFF1F3;--m3-surface:#FFFFFF;--m3-surface-hover:#F7F8F9;--m3-surface-alt:#E3E6EA;--m3-surface-selected:#D5DAE0;--m3-header:#E7EAEE;--m3-primary:#262A30;--m3-primary-hover:#111317;--m3-on-primary:#FFFFFF;--m3-primary-container:#DDE1E6;--m3-on-primary-container:#141619;--m3-text:#191B1F;--m3-text-strong:#090A0C;--m3-text-muted:#525864;--m3-text-disabled:#8A909C;--m3-link:#242930;--m3-link-hover:#000000;--m3-outline:#C4C9D1;--m3-outline-soft:rgba(38, 42, 48, 0.14);--m3-outline-hover:rgba(38, 42, 48, 0.36);--m3-scroll-thumb:#B4BBC5;", "rojo:Rojo — Modo Claro": "--m3-canvas:#FCEFED;--m3-surface:#FFFFFF;--m3-surface-hover:#FDF6F5;--m3-surface-alt:#F7E2DF;--m3-surface-selected:#FFDAD6;--m3-header:#F8E7E5;--m3-primary:#B3261E;--m3-primary-hover:#8C1D18;--m3-on-primary:#FFFFFF;--m3-primary-container:#FFDAD6;--m3-on-primary-container:#410E0B;--m3-text:#231918;--m3-text-strong:#120B0A;--m3-text-muted:#614A48;--m3-text-disabled:#9A8280;--m3-link:#A8241C;--m3-link-hover:#7A1611;--m3-outline:#DFC0BC;--m3-outline-soft:rgba(179, 38, 30, 0.16);--m3-outline-hover:rgba(179, 38, 30, 0.40);--m3-scroll-thumb:#D6A8A3;", "verde:Verde — Modo Claro": "--m3-canvas:#EEF4EB;--m3-surface:#FFFFFF;--m3-surface-hover:#F5FAF2;--m3-surface-alt:#E1ECE0;--m3-surface-selected:#CEE4C7;--m3-header:#E6EFE2;--m3-primary:#2D6A2E;--m3-primary-hover:#205021;--m3-on-primary:#FFFFFF;--m3-primary-container:#C8EBC0;--m3-on-primary-container:#082908;--m3-text:#181E17;--m3-text-strong:#0B100A;--m3-text-muted:#4B5949;--m3-text-disabled:#839280;--m3-link:#276128;--m3-link-hover:#19431A;--m3-outline:#BCCBB8;--m3-outline-soft:rgba(45, 106, 46, 0.16);--m3-outline-hover:rgba(45, 106, 46, 0.40);--m3-scroll-thumb:#A3BD9D;", "amarillo:Amarillo — Modo Claro": "--m3-canvas:#FBF6E8;--m3-surface:#FFFFFF;--m3-surface-hover:#FDFBF3;--m3-surface-alt:#F4EBD1;--m3-surface-selected:#FFE4A3;--m3-header:#F6EFDA;--m3-primary:#886000;--m3-primary-hover:#694A00;--m3-on-primary:#FFFFFF;--m3-primary-container:#FFE4A3;--m3-on-primary-container:#362600;--m3-text:#221E14;--m3-text-strong:#120F08;--m3-text-muted:#60563E;--m3-text-disabled:#968B70;--m3-link:#7D5800;--m3-link-hover:#593E00;--m3-outline:#D8C89E;--m3-outline-soft:rgba(136, 96, 0, 0.16);--m3-outline-hover:rgba(136, 96, 0, 0.40);--m3-scroll-thumb:#CBB782;", "morado:Morado — Modo Claro": "--m3-canvas:#F4EFFA;--m3-surface:#FFFFFF;--m3-surface-hover:#F9F6FD;--m3-surface-alt:#EAE1F6;--m3-surface-selected:#EADDFF;--m3-header:#EDE6F6;--m3-primary:#6750A4;--m3-primary-hover:#4F378B;--m3-on-primary:#FFFFFF;--m3-primary-container:#EADDFF;--m3-on-primary-container:#21005D;--m3-text:#1D1B20;--m3-text-strong:#0E0C12;--m3-text-muted:#564F61;--m3-text-disabled:#8E869A;--m3-link:#5E469C;--m3-link-hover:#432D7A;--m3-outline:#CEC4DC;--m3-outline-soft:rgba(103, 80, 164, 0.16);--m3-outline-hover:rgba(103, 80, 164, 0.40);--m3-scroll-thumb:#B7A6D4;", "rosado:Rosado — Modo Claro": "--m3-canvas:#FBF0F4;--m3-surface:#FFFFFF;--m3-surface-hover:#FDF6F9;--m3-surface-alt:#F5E1E9;--m3-surface-selected:#FFD9E3;--m3-header:#F7E7EE;--m3-primary:#A63260;--m3-primary-hover:#822248;--m3-on-primary:#FFFFFF;--m3-primary-container:#FFD9E3;--m3-on-primary-container:#3E001D;--m3-text:#23191D;--m3-text-strong:#120B0E;--m3-text-muted:#614A53;--m3-text-disabled:#99828B;--m3-link:#9C2C58;--m3-link-hover:#731C3E;--m3-outline:#DFC0CD;--m3-outline-soft:rgba(166, 50, 96, 0.16);--m3-outline-hover:rgba(166, 50, 96, 0.40);--m3-scroll-thumb:#D4A3B7;"}
+@var select contrast "Nivel de contraste" {"normal:Normal (Estándar)*": "--m3-border-w:1px;", "alto:Alto (Bordes reforzados)": "--m3-border-w:1.5px;--m3-outline-soft:var(--m3-outline);"}
+@var range cardRadius "Radio de tarjetas (px)" [24, 12, 32, 2, "px"]
+==/UserStyle== */
+
+/* ============================================================================
+   1. REDDIT (SHREDDIT)
+   ============================================================================ */
+@-moz-document domain("reddit.com") {
+  :root, html, html.theme-dark, html.theme-light, html.theme-rpl, .theme-dark, .theme-light, shreddit-app {
+    /*[[palette]]*/
+    /*[[contrast]]*/
+    --m3-radius: /*[[cardRadius]]*/;
+    color-scheme: light !important;
+    --color-ui-canvas: var(--m3-canvas) !important;
+    --color-neutral-background: var(--m3-canvas) !important;
+    --color-neutral-background-weak: var(--m3-surface) !important;
+    --color-neutral-background-medium: var(--m3-surface-alt) !important;
+    --color-neutral-background-strong: var(--m3-surface) !important;
+    --color-neutral-background-container: var(--m3-surface) !important;
+    --color-neutral-background-container-strong: var(--m3-surface-alt) !important;
+    --color-neutral-background-hover: var(--m3-surface-alt) !important;
+    --color-neutral-background-selected: var(--m3-surface-selected) !important;
+    --shreddit-content-background: var(--m3-canvas) !important;
+    --color-secondary-background: var(--m3-surface-alt) !important;
+    --color-secondary-background-hover: var(--m3-surface-selected) !important;
+    --color-primary-background: var(--m3-primary) !important;
+    --color-primary-background-hover: var(--m3-primary-hover) !important;
+    --color-primary-onBackground: var(--m3-on-primary) !important;
+    --color-brand-background: var(--m3-primary) !important;
+    --color-brand-onBackground: var(--m3-on-primary) !important;
+    --color-a-default: var(--m3-link) !important;
+    --color-a-hover: var(--m3-link-hover) !important;
+    --color-upvote-content: var(--m3-primary) !important;
+    --color-neutral-content: var(--m3-text) !important;
+    --color-neutral-content-strong: var(--m3-text-strong) !important;
+    --color-neutral-content-weak: var(--m3-text-muted) !important;
+    --color-neutral-border: var(--m3-outline) !important;
+    --color-neutral-border-weak: var(--m3-outline-soft) !important;
+  }
+  html, body, shreddit-app, .subgrid-container { background-color: var(--m3-canvas) !important; color: var(--m3-text) !important; }
+  reddit-header-large, header.v2 { background-color: var(--m3-header) !important; border-bottom: var(--m3-border-w) solid var(--m3-outline-soft) !important; }
+  shreddit-feed shreddit-post, article > shreddit-post {
+    background-color: var(--m3-surface) !important;
+    border: var(--m3-border-w) solid var(--m3-outline-soft) !important;
+    border-radius: var(--m3-radius) !important;
+    padding: 16px 20px !important;
+    margin: 12px 0 !important;
+  }
+  shreddit-feed shreddit-post:hover, article > shreddit-post:hover { background-color: var(--m3-surface-hover) !important; border-color: var(--m3-outline-hover) !important; }
+  shreddit-feed hr, faceplate-batch hr, shreddit-ad-post, shreddit-comments-page-ad { display: none !important; }
+  main#main-content > shreddit-post, shreddit-comment-tree, #right-sidebar-container aside, #right-sidebar-container > div > div, recent-posts {
+    background-color: var(--m3-surface) !important;
+    border: var(--m3-border-w) solid var(--m3-outline-soft) !important;
+    border-radius: var(--m3-radius) !important;
+  }
+  #left-sidebar-container, reddit-sidebar-nav { background-color: var(--m3-header) !important; border-right: var(--m3-border-w) solid var(--m3-outline-soft) !important; }
+}
+
+/* ============================================================================
+   2. YOUTUBE & YOUTUBE MUSIC
+   ============================================================================ */
+@-moz-document domain("www.youtube.com"), domain("m.youtube.com") {
+  :root, html, html[dark], ytd-app {
+    /*[[palette]]*/
+    /*[[contrast]]*/
+    --m3-radius: /*[[cardRadius]]*/;
+    color-scheme: light !important;
+    --yt-spec-base-background: var(--m3-canvas) !important;
+    --yt-spec-raised-background: var(--m3-surface) !important;
+    --yt-spec-menu-background: var(--m3-surface-alt) !important;
+    --yt-spec-general-background-a: var(--m3-canvas) !important;
+    --yt-spec-general-background-b: var(--m3-surface) !important;
+    --yt-spec-general-background-c: var(--m3-header) !important;
+    --yt-spec-badge-chip-background: var(--m3-surface-alt) !important;
+    --yt-spec-additive-background: var(--m3-surface-alt) !important;
+    --yt-spec-text-primary: var(--m3-text) !important;
+    --yt-spec-text-secondary: var(--m3-text-muted) !important;
+    --yt-spec-call-to-action: var(--m3-primary) !important;
+    --yt-spec-themed-blue: var(--m3-primary) !important;
+  }
+  body, ytd-app, #page-manager, ytd-browse, ytd-watch-flexy { background-color: var(--m3-canvas) !important; color: var(--m3-text) !important; }
+  #masthead-container, ytd-masthead, #background.ytd-masthead, #guide-content, tp-yt-app-drawer, ytd-mini-guide-renderer, ytd-mini-guide-entry-renderer { background-color: var(--m3-header) !important; }
+  ytd-guide-entry-renderer[active] { background-color: var(--m3-primary-container) !important; border-radius: 9999px !important; }
+  ytd-guide-entry-renderer[active] .title, ytd-guide-entry-renderer[active] yt-icon { color: var(--m3-on-primary-container) !important; }
+  yt-chip-cloud-chip-renderer[selected] #chip-container { background-color: var(--m3-primary) !important; color: var(--m3-on-primary) !important; border-radius: 9999px !important; }
+  yt-chip-cloud-chip-renderer #chip-container { background-color: var(--m3-surface) !important; border: var(--m3-border-w) solid var(--m3-outline-soft) !important; border-radius: 9999px !important; }
+  ytd-rich-item-renderer:not([is-slim-media]) #content { background-color: var(--m3-surface) !important; border: var(--m3-border-w) solid var(--m3-outline-soft) !important; border-radius: var(--m3-radius) !important; padding: 10px !important; box-sizing: border-box !important; }
+  ytd-rich-item-renderer #content:hover { background-color: var(--m3-surface-hover) !important; border-color: var(--m3-outline-hover) !important; }
+  ytd-thumbnail a.ytd-thumbnail { border-radius: 14px !important; overflow: hidden !important; }
+  #ytd-player:not(:fullscreen), .html5-video-player:not(.ytp-fullscreen) { border-radius: 16px !important; }
+  #description.ytd-watch-metadata, ytd-watch-metadata #above-the-fold { background-color: var(--m3-surface) !important; border-radius: var(--m3-radius) !important; padding: 14px 18px !important; }
+  .ytp-play-progress, .ytp-scrubber-button { background-color: var(--m3-primary) !important; }
+}
+
+@-moz-document domain("music.youtube.com") {
+  :root, html, ytmusic-app {
+    /*[[palette]]*/
+    /*[[contrast]]*/
+    --m3-radius: /*[[cardRadius]]*/;
+    color-scheme: light !important;
+    --ytmusic-color-black1: var(--m3-surface) !important;
+    --ytmusic-color-black2: var(--m3-surface-alt) !important;
+    --ytmusic-color-black4: var(--m3-canvas) !important;
+    --ytmusic-text-primary: var(--m3-text) !important;
+    --ytmusic-text-secondary: var(--m3-text-muted) !important;
+    --ytmusic-brand-background-solid: var(--m3-canvas) !important;
+    --ytmusic-player-bar-background: var(--m3-surface) !important;
+    --paper-slider-active-color: var(--m3-primary) !important;
+    --paper-slider-knob-color: var(--m3-primary) !important;
+  }
+  body, ytmusic-app, ytmusic-browse-response, #browse-page { background-color: var(--m3-canvas) !important; color: var(--m3-text) !important; }
+  ytmusic-nav-bar, #nav-bar-background, ytmusic-guide-renderer, #guide-wrapper { background-color: var(--m3-header) !important; }
+  ytmusic-player-bar { background-color: var(--m3-surface) !important; border-top: var(--m3-border-w) solid var(--m3-outline-soft) !important; }
+  ytmusic-chip-cloud-chip-renderer[is-selected] a { background-color: var(--m3-primary) !important; color: var(--m3-on-primary) !important; border-radius: 9999px !important; }
+}
+
+/* ============================================================================
+   3. GOOGLE SEARCH & IMÁGENES (CORREGIDO: SIN DOBLE BORDE + BOTONES PÍLDORA)
+   ============================================================================ */
+@-moz-document domain("images.google.com"), regexp("https?://(www\\.)?google\\.[a-z.]+/(search|webhp|imghp)?(\\?.*)?$") {
+  :root, html, body {
+    /*[[palette]]*/
+    /*[[contrast]]*/
+    --m3-radius: /*[[cardRadius]]*/;
+    color-scheme: light !important;
+    --xhUGwc: var(--m3-canvas) !important;
+    --COEmY: var(--m3-text) !important;
+    --YLNNHc: var(--m3-text-strong) !important;
+    --IXoxUe: var(--m3-text-muted) !important;
+    --JKqx2: var(--m3-link) !important;
+    --EpFNW: var(--m3-surface) !important;
+  }
+  body, #main, #cnt, #rcnt, #center_col, #search, .sfbg, #appbar, #hdtb, .minidiv .sfbg, .o3j99 {
+    background-color: var(--m3-canvas) !important;
+    color: var(--m3-text) !important;
+  }
+  /* Solo el contenedor externo lleva fondo y borde: elimina el doble óvalo */
+  .RNNXgb, form[role="search"] .RNNXgb {
+    background-color: var(--m3-surface) !important;
+    border: var(--m3-border-w) solid var(--m3-outline-soft) !important;
+    border-radius: 9999px !important;
+    box-shadow: none !important;
+  }
+  .RNNXgb:hover, .RNNXgb:focus-within {
+    background-color: var(--m3-surface-hover) !important;
+    border-color: var(--m3-outline-hover) !important;
+  }
+  .a4bIc, .SDkEP, .gLFyf, textarea.gLFyf {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: var(--m3-text) !important;
+  }
+  /* Botones "Buscar con Google", "Voy a tener suerte" y "Modo IA" con alto contraste */
+  .FPdoLc input[type="submit"], .lJ9FBc input[type="submit"], input.gNO89b, input.RNmpXc {
+    background-color: var(--m3-surface-alt) !important;
+    color: var(--m3-text-strong) !important;
+    border: var(--m3-border-w) solid var(--m3-outline-soft) !important;
+    border-radius: 9999px !important;
+    padding: 0 20px !important;
+  }
+  .FPdoLc input[type="submit"]:hover, .lJ9FBc input[type="submit"]:hover, input.gNO89b:hover, input.RNmpXc:hover {
+    background-color: var(--m3-primary-container) !important;
+    color: var(--m3-on-primary-container) !important;
+    border-color: var(--m3-primary) !important;
+  }
+  #rso > div.MjjYud, #rhs .kp-wholepage, #rhs .osrp-blk {
+    background-color: var(--m3-surface) !important;
+    border: var(--m3-border-w) solid var(--m3-outline-soft) !important;
+    border-radius: var(--m3-radius) !important;
+    padding: 16px 20px !important;
+    margin-bottom: 14px !important;
+  }
+  div[data-ri] img, .isv-r img, .H8Rx8c img { border-radius: 14px !important; }
+  #search a:not([role="button"]), #search a h3, #rso a h3 { color: var(--m3-link) !important; }
+  #search a:not([role="button"]):hover, #search a:hover h3, #rso a:hover h3 { color: var(--m3-link-hover) !important; }
+  .VwiC3b, cite, .qLRx3b { color: var(--m3-text-muted) !important; }
+}
+
+/* Menú emergente de 9 puntos de Google Apps (iframe en ogs.google.com) */
+@-moz-document domain("ogs.google.com") {
+  :root, html, body {
+    /*[[palette]]*/
+    /*[[contrast]]*/
+    --m3-radius: /*[[cardRadius]]*/;
+    color-scheme: light !important;
+    --gm3-sys-color-surface: var(--m3-surface) !important;
+    --gm3-sys-color-surface-container: var(--m3-surface) !important;
+    --gm3-sys-color-surface-container-low: var(--m3-surface) !important;
+    --gm3-sys-color-surface-container-high: var(--m3-surface-alt) !important;
+    --gm3-sys-color-surface-container-highest: var(--m3-surface-selected) !important;
+    --gm3-sys-color-on-surface: var(--m3-text) !important;
+    --gm3-sys-color-on-surface-variant: var(--m3-text-muted) !important;
+    --gm3-sys-color-primary: var(--m3-primary) !important;
+  }
+  html, body, c-wiz, .EHzcec, .LVal7b, .u4RcUd {
+    background-color: var(--m3-surface) !important;
+    color: var(--m3-text) !important;
+  }
+  .j1ei8c:hover, a.tX9u1b:hover {
+    background-color: var(--m3-surface-alt) !important;
+    border-radius: 16px !important;
+  }
+  .Rq5Gcb, span, div { color: var(--m3-text) !important; }
+}
+
+/* ============================================================================
+   4. DUCKDUCKGO, BING Y BRAVE SEARCH
+   ============================================================================ */
+@-moz-document domain("duckduckgo.com") {
+  :root, html, body {
+    /*[[palette]]*/
+    /*[[contrast]]*/
+    --m3-radius: /*[[cardRadius]]*/;
+    color-scheme: light !important;
+    --theme-bg-home: var(--m3-canvas) !important;
+    --theme-col-bg-page: var(--m3-canvas) !important;
+    --theme-col-bg-header: var(--m3-header) !important;
+    --theme-col-bg-card: var(--m3-surface) !important;
+    --theme-col-txt-title: var(--m3-link) !important;
+    --theme-col-txt-snippet: var(--m3-text) !important;
+    --theme-col-txt-url: var(--m3-text-muted) !important;
+  }
+  body, .body--home, .site-wrapper { background-color: var(--m3-canvas) !important; color: var(--m3-text) !important; }
+  .header-wrap { background-color: var(--m3-header) !important; border-bottom: var(--m3-border-w) solid var(--m3-outline-soft) !important; }
+  form[role="search"], .search--header, .search--home { background-color: var(--m3-surface) !important; border: var(--m3-border-w) solid var(--m3-outline-soft) !important; border-radius: 9999px !important; }
+  article[data-testid="result"], .module--about, .module {
+    background-color: var(--m3-surface) !important;
+    border: var(--m3-border-w) solid var(--m3-outline-soft) !important;
+    border-radius: var(--m3-radius) !important;
+    padding: 16px 20px !important;
+    margin-bottom: 12px !important;
+  }
+}
+
+@-moz-document domain("bing.com") {
+  :root, html, body {
+    /*[[palette]]*/
+    /*[[contrast]]*/
+    --m3-radius: /*[[cardRadius]]*/;
+    color-scheme: light !important;
+  }
+  body, #b_content, #b_results, .b_dark { background-color: var(--m3-canvas) !important; color: var(--m3-text) !important; }
+  #b_header { background-color: var(--m3-header) !important; border-bottom: var(--m3-border-w) solid var(--m3-outline-soft) !important; }
+  .b_searchboxForm { background-color: var(--m3-surface) !important; border: var(--m3-border-w) solid var(--m3-outline-soft) !important; border-radius: 9999px !important; box-shadow: none !important; }
+  #b_results > li.b_algo, #b_results > li.b_ans, #b_context .b_entityTP {
+    background-color: var(--m3-surface) !important;
+    border: var(--m3-border-w) solid var(--m3-outline-soft) !important;
+    border-radius: var(--m3-radius) !important;
+    padding: 16px 20px !important;
+    margin-bottom: 14px !important;
+  }
+  #b_results h2 a { color: var(--m3-link) !important; }
+  #b_results p, .b_caption p { color: var(--m3-text-muted) !important; }
+}
+
+@-moz-document domain("search.brave.com") {
+  :root, html, body {
+    /*[[palette]]*/
+    /*[[contrast]]*/
+    --m3-radius: /*[[cardRadius]]*/;
+    color-scheme: light !important;
+    --color-container-background: var(--m3-surface) !important;
+    --color-page-background: var(--m3-canvas) !important;
+    --color-searchbar-background: var(--m3-surface) !important;
+    --color-text-primary: var(--m3-text) !important;
+    --color-text-secondary: var(--m3-text-muted) !important;
+    --color-text-interactive: var(--m3-link) !important;
+  }
+  html, body, main, #main-wrapper { background-color: var(--m3-canvas) !important; color: var(--m3-text) !important; }
+  header, #header { background-color: var(--m3-header) !important; border-bottom: var(--m3-border-w) solid var(--m3-outline-soft) !important; }
+  #searchform, .searchbox, .input-wrapper { background-color: var(--m3-surface) !important; border: var(--m3-border-w) solid var(--m3-outline-soft) !important; border-radius: 9999px !important; }
+  .snippet, .card, #results > div[data-type="web"] {
+    background-color: var(--m3-surface) !important;
+    border: var(--m3-border-w) solid var(--m3-outline-soft) !important;
+    border-radius: var(--m3-radius) !important;
+    padding: 16px 20px !important;
+    margin-bottom: 14px !important;
+  }
+}
+
+/* ============================================================================
+   5. SUITE GOOGLE (GMAIL, DRIVE CORREGIDO, TRADUCTOR CORREGIDO, PLAY, MAPS, CALENDAR)
+   ============================================================================ */
+@-moz-document domain("mail.google.com") {
+  :root, body {
+    /*[[palette]]*/
+    /*[[contrast]]*/
+    --m3-radius: /*[[cardRadius]]*/;
+    color-scheme: light !important;
+  }
+  body, .wl, .nH, .aeN, .bkK > .nH { background-color: var(--m3-canvas) !important; color: var(--m3-text) !important; }
+  header[role="banner"], .gb_Ia, .gb_za { background-color: var(--m3-header) !important; }
+  form[role="search"] { background-color: var(--m3-surface) !important; border: var(--m3-border-w) solid var(--m3-outline-soft) !important; border-radius: 9999px !important; }
+  .T-I.T-I-KE.L3 { background-color: var(--m3-primary-container) !important; color: var(--m3-on-primary-container) !important; border-radius: 18px !important; box-shadow: none !important; }
+  .aeF, .AO, .Bk { background-color: var(--m3-surface) !important; border-radius: var(--m3-radius) !important; border: var(--m3-border-w) solid var(--m3-outline-soft) !important; }
+  tr.zA { background-color: var(--m3-surface) !important; color: var(--m3-text) !important; border-bottom: 1px solid var(--m3-outline-soft) !important; }
+  tr.zA.zE { background-color: var(--m3-surface-alt) !important; color: var(--m3-text-strong) !important; }
+  tr.zA:hover { background-color: var(--m3-surface-hover) !important; }
+  .TO.nZ, .TO.ol { background-color: var(--m3-primary-container) !important; border-radius: 9999px !important; }
+  .TO.nZ a, .TO.nZ .nU { color: var(--m3-on-primary-container) !important; }
+}
+
+/* Google Drive — Corrige el botón "+ Nuevo" blanco/ilegible y el contraste de filas */
+@-moz-document domain("drive.google.com") {
+  :root, html, body {
+    /*[[palette]]*/
+    /*[[contrast]]*/
+    --m3-radius: /*[[cardRadius]]*/;
+    color-scheme: light !important;
+    --gm3-sys-color-background: var(--m3-canvas) !important;
+    --gm3-sys-color-surface: var(--m3-canvas) !important;
+    --gm3-sys-color-surface-container-lowest: var(--m3-header) !important;
+    --gm3-sys-color-surface-container-low: var(--m3-surface) !important;
+    --gm3-sys-color-surface-container: var(--m3-surface) !important;
+    --gm3-sys-color-surface-container-high: var(--m3-surface-alt) !important;
+    --gm3-sys-color-surface-container-highest: var(--m3-surface-selected) !important;
+    --gm3-sys-color-primary: var(--m3-primary) !important;
+    --gm3-sys-color-on-primary: var(--m3-on-primary) !important;
+    --gm3-sys-color-primary-container: var(--m3-primary-container) !important;
+    --gm3-sys-color-on-primary-container: var(--m3-on-primary-container) !important;
+    --gm3-sys-color-secondary-container: var(--m3-primary-container) !important;
+    --gm3-sys-color-on-secondary-container: var(--m3-on-primary-container) !important;
+    --gm3-sys-color-on-surface: var(--m3-text) !important;
+    --gm3-sys-color-on-surface-variant: var(--m3-text-muted) !important;
+    --gm3-sys-color-outline: var(--m3-outline) !important;
+    --gm3-sys-color-outline-variant: var(--m3-outline-soft) !important;
+    --dt-background: var(--m3-canvas) !important;
+    --dt-surface: var(--m3-surface) !important;
+    --dt-surface-variant: var(--m3-surface-alt) !important;
+    --dt-on-surface: var(--m3-text) !important;
+    --dt-on-surface-secondary: var(--m3-text-muted) !important;
+    --dt-primary: var(--m3-primary) !important;
+    --dt-primary-container: var(--m3-primary-container) !important;
+    --dt-on-primary-container: var(--m3-on-primary-container) !important;
+  }
+  html, body, .a-qc-La, .a-D-B-x, .a-da-ji, header[role="banner"], [role="navigation"] {
+    background-color: var(--m3-canvas) !important;
+    color: var(--m3-text) !important;
+  }
+  /* Botón "+ Nuevo" corregido en todos los modos */
+  button[guidedhelpid="new_menu_button"], button[aria-label="Nuevo"], button[aria-label="New"], .a-ec-Gd button {
+    background-color: var(--m3-primary-container) !important;
+    color: var(--m3-on-primary-container) !important;
+    border: var(--m3-border-w) solid var(--m3-outline-soft) !important;
+    border-radius: 18px !important;
+    box-shadow: none !important;
+  }
+  button[guidedhelpid="new_menu_button"] *, button[aria-label="Nuevo"] *, button[aria-label="New"] * {
+    color: var(--m3-on-primary-container) !important;
+    fill: var(--m3-on-primary-container) !important;
+  }
+  button[guidedhelpid="new_menu_button"]:hover, button[aria-label="Nuevo"]:hover, button[aria-label="New"]:hover {
+    background-color: var(--m3-primary) !important;
+    color: var(--m3-on-primary) !important;
+  }
+  button[guidedhelpid="new_menu_button"]:hover *, button[aria-label="Nuevo"]:hover *, button[aria-label="New"]:hover * {
+    color: var(--m3-on-primary) !important;
+    fill: var(--m3-on-primary) !important;
+  }
+  form[role="search"] {
+    background-color: var(--m3-surface-alt) !important;
+    border: var(--m3-border-w) solid var(--m3-outline-soft) !important;
+    border-radius: 9999px !important;
+  }
+  [role="main"], [role="main"] > div {
+    background-color: var(--m3-surface) !important;
+    color: var(--m3-text) !important;
+  }
+  [role="main"] {
+    border-radius: var(--m3-radius) !important;
+    border: var(--m3-border-w) solid var(--m3-outline-soft) !important;
+  }
+  [role="row"]:hover, [role="gridcell"]:hover { background-color: var(--m3-surface-hover) !important; }
+  [role="row"][aria-selected="true"] { background-color: var(--m3-surface-selected) !important; }
+}
+
+/* Google Traductor — Unifica caja izquierda/derecha y suaviza bordes */
+@-moz-document domain("translate.google.com") {
+  :root, html, body {
+    /*[[palette]]*/
+    /*[[contrast]]*/
+    --m3-radius: /*[[cardRadius]]*/;
+    color-scheme: light !important;
+    --gm3-sys-color-background: var(--m3-canvas) !important;
+    --gm3-sys-color-surface: var(--m3-canvas) !important;
+    --gm3-sys-color-surface-container: var(--m3-surface) !important;
+    --gm3-sys-color-primary: var(--m3-primary) !important;
+    --gm3-sys-color-on-primary: var(--m3-on-primary) !important;
+    --gm3-sys-color-primary-container: var(--m3-primary-container) !important;
+    --gm3-sys-color-on-primary-container: var(--m3-on-primary-container) !important;
+    --gm3-sys-color-on-surface: var(--m3-text) !important;
+    --gm3-sys-color-on-surface-variant: var(--m3-text-muted) !important;
+    --gm3-sys-color-outline: var(--m3-outline-soft) !important;
+  }
+  html, body, c-wiz, .T4LgNb, .pGxpHc { background-color: var(--m3-canvas) !important; color: var(--m3-text) !important; }
+  header[role="banner"] { background-color: var(--m3-header) !important; border-bottom: var(--m3-border-w) solid var(--m3-outline-soft) !important; }
+  /* Cajas de origen y destino unificadas */
+  .QFw9Te, .lRu31, .dePhmb, .J0lOec, .KkbLmb {
+    background-color: var(--m3-surface) !important;
+    border: var(--m3-border-w) solid var(--m3-outline-soft) !important;
+    border-radius: var(--m3-radius) !important;
+    color: var(--m3-text) !important;
+  }
+  textarea, .er8xn { background-color: transparent !important; color: var(--m3-text) !important; }
+  /* Botones superiores (Texto, Imágenes, Documentos, Sitios web) */
+  button.VfPpkd-LgbsSe, .r7a40d button {
+    border-color: var(--m3-outline-soft) !important;
+    border-radius: 9999px !important;
+  }
+}
+
+/* Google Play Store — Limpieza total de fondos claros y tarjetas */
+@-moz-document domain("play.google.com") {
+  :root, html, body {
+    /*[[palette]]*/
+    /*[[contrast]]*/
+    --m3-radius: /*[[cardRadius]]*/;
+    color-scheme: light !important;
+    --gm3-sys-color-surface: var(--m3-canvas) !important;
+    --gm3-sys-color-surface-container: var(--m3-surface) !important;
+    --gm3-sys-color-primary: var(--m3-primary) !important;
+    --gm3-sys-color-on-primary: var(--m3-on-primary) !important;
+    --gm3-sys-color-on-surface: var(--m3-text) !important;
+    --gm3-sys-color-on-surface-variant: var(--m3-text-muted) !important;
+  }
+  html, body, c-wiz, main, footer, .tU8Y5c, .Z3lOXb {
+    background-color: var(--m3-canvas) !important;
+    color: var(--m3-text) !important;
+  }
+  header, nav, .S3WLMd {
+    background-color: var(--m3-header) !important;
+    border-bottom: var(--m3-border-w) solid var(--m3-outline-soft) !important;
+  }
+  .ULeU3b, .VfPpkd-EScbFb-JIbuQc, .fUEl2e {
+    background-color: var(--m3-surface) !important;
+    border-radius: 18px !important;
+  }
+  .ULeU3b:hover { background-color: var(--m3-surface-hover) !important; }
+  h1, h2, h3, .DdYX5, .ubGTjb, .wMUdtb, .g1rdde { color: var(--m3-text) !important; }
+  .w2kbF, .l4V7wb, .bARER { color: var(--m3-text-muted) !important; }
+  button[aria-label*="Instalar"], button[aria-label*="Install"], .VfPpkd-LgbsSe-OWXEXe-k8QpJ {
+    background-color: var(--m3-primary) !important;
+    color: var(--m3-on-primary) !important;
+    border-radius: 9999px !important;
+  }
+}
+
+/* Google Maps — Limpio: sin rectángulos negros sobre paneles blancos ni barra negra tras chips */
+@-moz-document domain("maps.google.com"), regexp("https?://(www\\.)?google\\.[a-z.]+/maps.*") {
+  :root {
+    /*[[palette]]*/
+    /*[[contrast]]*/
+    --m3-radius: /*[[cardRadius]]*/;
+  }
+  /* Solo redondear y suavizar la barra de chips sin pintar un fondo negro detrás */
+  .RWPxGd, .fp2VUc, .ecceSd { background: transparent !important; box-shadow: none !important; }
+  button.e2moi {
+    background-color: var(--m3-surface) !important;
+    color: var(--m3-text) !important;
+    border: var(--m3-border-w) solid var(--m3-outline-soft) !important;
+    border-radius: 9999px !important;
+  }
+  button.e2moi:hover {
+    background-color: var(--m3-surface-hover) !important;
+    border-color: var(--m3-primary) !important;
+  }
+  button.e2moi span, button.e2moi div { color: var(--m3-text) !important; }
+}
+
+/* Google Calendar (afinado), Keep, Photos, Meet, Contacts, Tasks y Docs */
+@-moz-document domain("calendar.google.com"), domain("keep.google.com"), domain("photos.google.com"), domain("meet.google.com"), domain("contacts.google.com"), domain("tasks.google.com"), domain("docs.google.com") {
+  :root, body {
+    /*[[palette]]*/
+    /*[[contrast]]*/
+    --m3-radius: /*[[cardRadius]]*/;
+    color-scheme: light !important;
+    --gm3-sys-color-background: var(--m3-canvas) !important;
+    --gm3-sys-color-surface: var(--m3-canvas) !important;
+    --gm3-sys-color-surface-dim: var(--m3-header) !important;
+    --gm3-sys-color-surface-bright: var(--m3-surface-alt) !important;
+    --gm3-sys-color-surface-container-lowest: var(--m3-header) !important;
+    --gm3-sys-color-surface-container-low: var(--m3-surface) !important;
+    --gm3-sys-color-surface-container: var(--m3-surface) !important;
+    --gm3-sys-color-surface-container-high: var(--m3-surface-alt) !important;
+    --gm3-sys-color-surface-container-highest: var(--m3-surface-selected) !important;
+    --gm3-sys-color-primary: var(--m3-primary) !important;
+    --gm3-sys-color-on-primary: var(--m3-on-primary) !important;
+    --gm3-sys-color-primary-container: var(--m3-primary-container) !important;
+    --gm3-sys-color-on-primary-container: var(--m3-on-primary-container) !important;
+    --gm3-sys-color-secondary-container: var(--m3-primary-container) !important;
+    --gm3-sys-color-on-secondary-container: var(--m3-on-primary-container) !important;
+    --gm3-sys-color-on-surface: var(--m3-text) !important;
+    --gm3-sys-color-on-surface-variant: var(--m3-text-muted) !important;
+    --gm3-sys-color-outline: var(--m3-outline) !important;
+    --gm3-sys-color-outline-variant: var(--m3-outline-soft) !important;
+  }
+  body { background-color: var(--m3-canvas) !important; color: var(--m3-text) !important; }
+  header[role="banner"] { background-color: var(--m3-header) !important; border-bottom: var(--m3-border-w) solid var(--m3-outline-soft) !important; }
+  /* Botón Crear en Calendar */
+  button[aria-label="Crear"], button[aria-label="Create"], .mr0WL {
+    background-color: var(--m3-primary-container) !important;
+    color: var(--m3-on-primary-container) !important;
+    border-radius: 18px !important;
+  }
+  /* Barras de Docs/Sheets/Slides */
+  #docs-chrome, #docs-header, .docs-titlebar-container, #docs-editor-container { background-color: var(--m3-canvas) !important; color: var(--m3-text) !important; }
+  #docs-toolbar-wrapper, .docs-main-toolbars { background-color: var(--m3-surface) !important; border: var(--m3-border-w) solid var(--m3-outline-soft) !important; border-radius: 9999px !important; }
+}
+
+/* ============================================================================
+   6. WHATSAPP WEB (CORREGIDO: SOPORTE WDS 2025/2026 + PANEL DERECHO Y CHIPS)
+   ============================================================================ */
+@-moz-document domain("web.whatsapp.com") {
+  :root, html, body, .dark, .web, [data-theme="dark"], [data-theme="light"] {
+    /*[[palette]]*/
+    /*[[contrast]]*/
+    --m3-radius: /*[[cardRadius]]*/;
+    color-scheme: light !important;
+
+    /* Tokens modernos WDS de WhatsApp Web */
+    --WDS-surface-default: var(--m3-canvas) !important;
+    --WDS-surface-elevated-default: var(--m3-surface) !important;
+    --WDS-surface-elevated-emphasized: var(--m3-surface-alt) !important;
+    --WDS-surface-wash: var(--m3-header) !important;
+    --WDS-surface-pressed: var(--m3-surface-selected) !important;
+    --WDS-background-default: var(--m3-canvas) !important;
+    --WDS-background-deeper: var(--m3-header) !important;
+    --WDS-accent: var(--m3-primary) !important;
+    --WDS-accent-emphasized: var(--m3-primary-hover) !important;
+    --WDS-content-default: var(--m3-text) !important;
+    --WDS-content-deemphasized: var(--m3-text-muted) !important;
+    --WDS-persistent-always-white: #FFFFFF !important;
+
+    /* Tokens clásicos de WhatsApp Web */
+    --app-background: var(--m3-canvas) !important;
+    --app-background-deeper: var(--m3-header) !important;
+    --intro-background: var(--m3-canvas) !important;
+    --background-default: var(--m3-canvas) !important;
+    --background-default-hover: var(--m3-surface-hover) !important;
+    --background-default-active: var(--m3-surface-selected) !important;
+    --navbar-background: var(--m3-header) !important;
+    --panel-header-background: var(--m3-header) !important;
+    --conversation-panel-background: var(--m3-canvas) !important;
+    --compose-panel-background: var(--m3-header) !important;
+    --compose-input-background: var(--m3-surface) !important;
+    --search-container-background: var(--m3-canvas) !important;
+    --search-input-background: var(--m3-surface) !important;
+    --incoming-background: var(--m3-surface) !important;
+    --incoming-background-deeper: var(--m3-surface-alt) !important;
+    --outgoing-background: var(--m3-primary-container) !important;
+    --outgoing-background-deeper: var(--m3-surface-selected) !important;
+    --primary: var(--m3-text) !important;
+    --primary-strong: var(--m3-text-strong) !important;
+    --secondary: var(--m3-text-muted) !important;
+    --teal: var(--m3-primary) !important;
+    --unread-marker-background: var(--m3-primary) !important;
+    --unread-marker-text: var(--m3-on-primary) !important;
+    --unread-timestamp: var(--m3-primary) !important;
+    --border-list: var(--m3-outline-soft) !important;
+    --border-stronger: var(--m3-outline-soft) !important;
+    --filters-item-active-background: var(--m3-primary-container) !important;
+    --filters-item-active-color: var(--m3-on-primary-container) !important;
+    --filters-item-background: var(--m3-surface) !important;
+  }
+  #app, .app-wrapper-web, .two, .three, #main { background-color: var(--m3-canvas) !important; }
+  #side, #pane-side, header { background-color: var(--m3-header) !important; }
+  #pane-side [role="listitem"] > div { border-radius: 16px !important; }
+}
+
+/* ============================================================================
+   7. GITHUB (AFINADO) Y LINEAR APP
+   ============================================================================ */
+@-moz-document domain("github.com") {
+  :root, html, [data-color-mode] {
+    /*[[palette]]*/
+    /*[[contrast]]*/
+    --m3-radius: /*[[cardRadius]]*/;
+    color-scheme: light !important;
+    --bgColor-default: var(--m3-canvas) !important;
+    --bgColor-muted: var(--m3-surface) !important;
+    --bgColor-inset: var(--m3-header) !important;
+    --bgColor-neutral-muted: var(--m3-surface-alt) !important;
+    --bgColor-accent-muted: var(--m3-primary-container) !important;
+    --bgColor-accent-emphasis: var(--m3-primary) !important;
+    --fgColor-default: var(--m3-text) !important;
+    --fgColor-muted: var(--m3-text-muted) !important;
+    --fgColor-accent: var(--m3-link) !important;
+    --fgColor-onEmphasis: var(--m3-on-primary) !important;
+    --borderColor-default: var(--m3-outline-soft) !important;
+    --borderColor-muted: var(--m3-outline-soft) !important;
+    --button-primary-bgColor-rest: var(--m3-primary) !important;
+    --button-primary-bgColor-hover: var(--m3-primary-hover) !important;
+    --button-primary-fgColor-rest: var(--m3-on-primary) !important;
+    --button-default-bgColor-rest: var(--m3-surface-alt) !important;
+    --button-default-bgColor-hover: var(--m3-surface-selected) !important;
+    --control-bgColor-rest: var(--m3-surface) !important;
+    --overlay-bgColor: var(--m3-surface) !important;
+  }
+  body, .application-main { background-color: var(--m3-canvas) !important; color: var(--m3-text) !important; }
+  header.AppHeader { background-color: var(--m3-header) !important; border-bottom: var(--m3-border-w) solid var(--m3-outline-soft) !important; }
+  .Box, .feed-item-content, .markdown-body pre {
+    background-color: var(--m3-surface) !important;
+    border-color: var(--m3-outline-soft) !important;
+    border-radius: 16px !important;
+  }
+  .btn, .Button--primary, .Button--secondary { border-radius: 9999px !important; }
+}
+
+@-moz-document domain("linear.app") {
+  :root, html, body {
+    /*[[palette]]*/
+    /*[[contrast]]*/
+    --m3-radius: /*[[cardRadius]]*/;
+    color-scheme: light !important;
+    --color-bg-base: var(--m3-canvas) !important;
+    --color-bg-primary: var(--m3-canvas) !important;
+    --color-bg-secondary: var(--m3-header) !important;
+    --color-bg-tertiary: var(--m3-surface) !important;
+    --color-bg-quaternary: var(--m3-surface-alt) !important;
+    --color-bg-translucent: var(--m3-surface) !important;
+    --color-border-primary: var(--m3-outline-soft) !important;
+    --color-border-secondary: var(--m3-outline-soft) !important;
+    --color-text-primary: var(--m3-text) !important;
+    --color-text-secondary: var(--m3-text-muted) !important;
+    --color-text-tertiary: var(--m3-text-disabled) !important;
+    --color-accent: var(--m3-primary) !important;
+    --color-accent-hover: var(--m3-primary-hover) !important;
+    --color-indigo: var(--m3-primary) !important;
+  }
+  html, body, #root { background-color: var(--m3-canvas) !important; color: var(--m3-text) !important; }
+  nav[aria-label], aside { background-color: var(--m3-header) !important; border-color: var(--m3-outline-soft) !important; }
+}
+
+/* ============================================================================
+   8. SUITE DE INTELIGENCIA ARTIFICIAL (GEMINI, CLAUDE, CHATGPT, PERPLEXITY, DEEPSEEK, AI STUDIO, NOTEBOOKLM)
+   ============================================================================ */
+@-moz-document domain("gemini.google.com"), domain("aistudio.google.com"), domain("notebooklm.google.com") {
+  :root, html, body {
+    /*[[palette]]*/
+    /*[[contrast]]*/
+    --m3-radius: /*[[cardRadius]]*/;
+    color-scheme: light !important;
+    --gm3-sys-color-background: var(--m3-canvas) !important;
+    --gm3-sys-color-surface: var(--m3-canvas) !important;
+    --gm3-sys-color-surface-container-lowest: var(--m3-header) !important;
+    --gm3-sys-color-surface-container-low: var(--m3-surface) !important;
+    --gm3-sys-color-surface-container: var(--m3-surface) !important;
+    --gm3-sys-color-surface-container-high: var(--m3-surface-alt) !important;
+    --gm3-sys-color-surface-container-highest: var(--m3-surface-selected) !important;
+    --gm3-sys-color-primary: var(--m3-primary) !important;
+    --gm3-sys-color-on-primary: var(--m3-on-primary) !important;
+    --gm3-sys-color-primary-container: var(--m3-primary-container) !important;
+    --gm3-sys-color-on-primary-container: var(--m3-on-primary-container) !important;
+    --gm3-sys-color-on-surface: var(--m3-text) !important;
+    --gm3-sys-color-on-surface-variant: var(--m3-text-muted) !important;
+    --gm3-sys-color-outline-variant: var(--m3-outline-soft) !important;
+    --bard-color-surface: var(--m3-canvas) !important;
+    --bard-color-surface-container: var(--m3-surface) !important;
+    --bard-color-on-surface: var(--m3-text) !important;
+    --bard-color-sidenav-background: var(--m3-header) !important;
+    --gem-sys-color--surface: var(--m3-canvas) !important;
+    --gem-sys-color--surface-container-lowest: var(--m3-header) !important;
+    --gem-sys-color--surface-container-low: var(--m3-header) !important;
+    --gem-sys-color--surface-container: var(--m3-surface) !important;
+    --gem-sys-color--surface-container-high: var(--m3-surface-alt) !important;
+    --gem-sys-color--surface-container-highest: var(--m3-surface-selected) !important;
+    --gem-sys-color--on-surface: var(--m3-text) !important;
+    --gem-sys-color--on-surface-variant: var(--m3-text-muted) !important;
+    --gem-sys-color--primary: var(--m3-primary) !important;
+  }
+  body, chat-app, main { background-color: var(--m3-canvas) !important; color: var(--m3-text) !important; }
+  bard-sidenav, mat-sidenav, nav { background-color: var(--m3-header) !important; }
+  .input-area-container, .text-input-field {
+    background-color: var(--m3-surface) !important;
+    border: var(--m3-border-w) solid var(--m3-outline-soft) !important;
+    border-radius: var(--m3-radius) !important;
+  }
+}
+
+@-moz-document domain("claude.ai") {
+  :root, html, body, [data-theme="dark"], [data-theme="light"] {
+    /*[[palette]]*/
+    /*[[contrast]]*/
+    --m3-radius: /*[[cardRadius]]*/;
+    color-scheme: light !important;
+    --bg-000: var(--m3-surface) !important;
+    --bg-100: var(--m3-canvas) !important;
+    --bg-200: var(--m3-header) !important;
+    --bg-300: var(--m3-surface-alt) !important;
+    --bg-400: var(--m3-surface-selected) !important;
+    --text-000: var(--m3-text-strong) !important;
+    --text-100: var(--m3-text) !important;
+    --text-200: var(--m3-text-muted) !important;
+    --text-300: var(--m3-text-muted) !important;
+    --text-400: var(--m3-text-disabled) !important;
+    --accent-main-100: var(--m3-primary) !important;
+    --accent-main-200: var(--m3-primary-hover) !important;
+    --border-100: var(--m3-outline-soft) !important;
+    --border-200: var(--m3-outline-soft) !important;
+    --border-300: var(--m3-outline) !important;
+  }
+  html, body { background-color: var(--m3-canvas) !important; color: var(--m3-text) !important; }
+  nav { background-color: var(--m3-header) !important; border-color: var(--m3-outline-soft) !important; }
+  fieldset { border-radius: var(--m3-radius) !important; border-color: var(--m3-outline-soft) !important; }
+}
+
+@-moz-document domain("chatgpt.com"), domain("chat.openai.com") {
+  :root, html, html.dark, html.light {
+    /*[[palette]]*/
+    /*[[contrast]]*/
+    --m3-radius: /*[[cardRadius]]*/;
+    color-scheme: light !important;
+    --main-surface-primary: var(--m3-canvas) !important;
+    --main-surface-secondary: var(--m3-surface) !important;
+    --main-surface-tertiary: var(--m3-surface-alt) !important;
+    --sidebar-surface-primary: var(--m3-header) !important;
+    --sidebar-surface-secondary: var(--m3-surface) !important;
+    --sidebar-surface-tertiary: var(--m3-surface-alt) !important;
+    --composer-surface: var(--m3-surface) !important;
+    --bg-primary: var(--m3-canvas) !important;
+    --bg-secondary: var(--m3-surface) !important;
+    --bg-tertiary: var(--m3-surface-alt) !important;
+    --message-surface: var(--m3-primary-container) !important;
+    --text-primary: var(--m3-text) !important;
+    --text-secondary: var(--m3-text-muted) !important;
+    --text-tertiary: var(--m3-text-disabled) !important;
+    --border-light: var(--m3-outline-soft) !important;
+    --border-medium: var(--m3-outline) !important;
+    --link: var(--m3-link) !important;
+  }
+  body, main { background-color: var(--m3-canvas) !important; color: var(--m3-text) !important; }
+  #prompt-textarea, form [class*="rounded"] { border-color: var(--m3-outline-soft) !important; }
+  .user-message-bubble-color {
+    background-color: var(--m3-primary-container) !important;
+    color: var(--m3-on-primary-container) !important;
+    border-radius: 22px !important;
+  }
+}
+
+@-moz-document domain("perplexity.ai"), domain("chat.deepseek.com") {
+  :root, html, body {
+    /*[[palette]]*/
+    /*[[contrast]]*/
+    --m3-radius: /*[[cardRadius]]*/;
+    color-scheme: light !important;
+    --dsr-bg: var(--m3-canvas) !important;
+    --dsr-side-bg: var(--m3-header) !important;
+    --dsr-input-bg: var(--m3-surface) !important;
+    --dsr-text-1: var(--m3-text) !important;
+    --dsr-text-2: var(--m3-text-muted) !important;
+  }
+  html, body, main { background-color: var(--m3-canvas) !important; color: var(--m3-text) !important; }
+  aside, nav { background-color: var(--m3-header) !important; border-color: var(--m3-outline-soft) !important; }
+  textarea, form { border-color: var(--m3-outline-soft) !important; }
+}
+
+
+@-moz-document domain("grok.com") {
+  :root, html, body {
+    /*[[palette]]*/
+    /*[[contrast]]*/
+    --m3-radius: /*[[cardRadius]]*/;
+    color-scheme: light !important;
+    --background: var(--m3-canvas) !important;
+    --surface-base: var(--m3-surface) !important;
+    --surface-l1: var(--m3-surface) !important;
+    --surface-l2: var(--m3-surface-alt) !important;
+    --fg-primary: var(--m3-text) !important;
+    --fg-secondary: var(--m3-text-muted) !important;
+    --border-l1: var(--m3-outline-soft) !important;
+  }
+  html, body { background-color: var(--m3-canvas) !important; color: var(--m3-text) !important; }
+  form textarea { color: var(--m3-text) !important; }
+}
+
+/* ============================================================================
+   9. WIKIPEDIA, QUORA, X (TWITTER) Y TWITCH
+   ============================================================================ */
+@-moz-document domain("wikipedia.org") {
+  :root, html, body {
+    /*[[palette]]*/
+    /*[[contrast]]*/
+    --m3-radius: /*[[cardRadius]]*/;
+    color-scheme: light !important;
+    --background-color-base: var(--m3-surface) !important;
+    --background-color-neutral: var(--m3-surface-alt) !important;
+    --background-color-neutral-subtle: var(--m3-canvas) !important;
+    --color-base: var(--m3-text) !important;
+    --color-emphasized: var(--m3-text-strong) !important;
+    --color-subtle: var(--m3-text-muted) !important;
+    --color-progressive: var(--m3-link) !important;
+    --border-color-base: var(--m3-outline-soft) !important;
+  }
+  html, body, .mw-page-container, .vector-header-container { background-color: var(--m3-canvas) !important; color: var(--m3-text) !important; }
+  .mw-body, main#content { background-color: var(--m3-surface) !important; border: var(--m3-border-w) solid var(--m3-outline-soft) !important; border-radius: var(--m3-radius) !important; padding: 24px 32px !important; }
+  .infobox, .toc, .vector-toc, .navbox, table.wikitable { background-color: var(--m3-surface-alt) !important; color: var(--m3-text) !important; border: var(--m3-border-w) solid var(--m3-outline-soft) !important; border-radius: 16px !important; }
+  a:not(.cdx-button):not(.mw-ui-button):not([role="button"]) { color: var(--m3-link) !important; }
+}
+
+@-moz-document domain("quora.com") {
+  :root, html, body {
+    /*[[palette]]*/
+    /*[[contrast]]*/
+    --m3-radius: /*[[cardRadius]]*/;
+    color-scheme: light !important;
+  }
+  html, body { background-color: var(--m3-canvas) !important; color: var(--m3-text) !important; }
+  .q-sticky, header { background-color: var(--m3-header) !important; border-bottom: var(--m3-border-w) solid var(--m3-outline-soft) !important; }
+  .dom_annotate_multifeed_bundle, .q-box.qu-bg--raised { background-color: var(--m3-surface) !important; border: var(--m3-border-w) solid var(--m3-outline-soft) !important; border-radius: var(--m3-radius) !important; margin-bottom: 12px !important; }
+  a:not([role="button"]):not(.q-click-wrapper) { color: var(--m3-link) !important; }
+}
+
+@-moz-document domain("x.com"), domain("twitter.com") {
+  :root, html, body {
+    /*[[palette]]*/
+    /*[[contrast]]*/
+    --m3-radius: /*[[cardRadius]]*/;
+    color-scheme: light !important;
+  }
+  html, body, #react-root, main { background-color: var(--m3-canvas) !important; color: var(--m3-text) !important; }
+  article[data-testid="tweet"] { background-color: var(--m3-surface) !important; border: var(--m3-border-w) solid var(--m3-outline-soft) !important; border-radius: var(--m3-radius) !important; margin: 8px 10px !important; padding: 12px 16px !important; }
+  [data-testid="sidebarColumn"] section, [data-testid="sidebarColumn"] aside { background-color: var(--m3-surface) !important; border: var(--m3-border-w) solid var(--m3-outline-soft) !important; border-radius: var(--m3-radius) !important; }
+  [data-testid="SideNav_NewTweet_Button"], [data-testid="tweetButtonInline"], [data-testid="tweetButton"] { background-color: var(--m3-primary) !important; color: var(--m3-on-primary) !important; border-radius: 9999px !important; }
+}
+
+@-moz-document domain("twitch.tv") {
+  :root, html, body, .tw-root--theme-dark, .tw-root--theme-light {
+    /*[[palette]]*/
+    /*[[contrast]]*/
+    --m3-radius: /*[[cardRadius]]*/;
+    color-scheme: light !important;
+    --color-background-body: var(--m3-canvas) !important;
+    --color-background-base: var(--m3-surface) !important;
+    --color-background-alt: var(--m3-header) !important;
+    --color-background-alt-2: var(--m3-surface-alt) !important;
+    --color-text-base: var(--m3-text) !important;
+    --color-text-alt-2: var(--m3-text-muted) !important;
+    --color-text-link: var(--m3-link) !important;
+    --color-border-base: var(--m3-outline-soft) !important;
+    --color-background-button-primary-default: var(--m3-primary) !important;
+    --color-text-button-primary: var(--m3-on-primary) !important;
+  }
+  body { background-color: var(--m3-canvas) !important; color: var(--m3-text) !important; }
+  nav.top-nav, .side-nav, .chat-room { background-color: var(--m3-header) !important; border-color: var(--m3-outline-soft) !important; }
+}
