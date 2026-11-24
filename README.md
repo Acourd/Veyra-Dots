@@ -40,7 +40,7 @@ https://github.com/user-attachments/assets/689d621e-6450-416e-b4cd-c3631081fab4
 | Style | Folder | Status | Included Components |
 | :--- | :--- | :--- | :--- |
 | **Material You** | [`themes/material-you/`](themes/material-you/README.md) | **Available (v2)** | **44 Rainmeter widgets** (Dark/Light, EN/ES, 6 palettes + Auto Wallpaper, **`ProHub`**), **Stylus v4.2.1** (Dark & Light, 7 palettes), **23 wallpapers**, **40 Pastel Tonal icons** (PNG + ICO), and recommended **Mynt New Tab** |
-| **One UI** | [`themes/one-ui/`](themes/one-ui/README.md) | **Available (v2)** | **28 Rainmeter widgets (`OneUIZen`)** in OLED Dark / Pure Snow Light + 5 Samsung accents + Auto Wallpaper + Good Lock Retro Cassette, Smart Stack, **`ProHub`**, and **80 One UI icons** (`oneui-vibrant` + `oneui-dark`) |
+| **One UI** | [`themes/one-ui/`](themes/one-ui/README.md) | **Available (v2)** | **28 Rainmeter widgets (`OneUIZen`)** in OLED Dark / Pure Snow Light + 5 Samsung accents + Auto Wallpaper + Good Lock Retro Cassette, Smart Stack, **`ProHub`**, **36 4K wallpapers** (`18 Dark + 18 Light`), and **80 One UI icons** (`oneui-vibrant` + `oneui-dark`) |
 | **macOS** | [`themes/macos/`](themes/macos/README.md) | **Available (v2)** | **28 Rainmeter widgets (`MacOSZen`)** Sonoma/Sequoia style: Menu Bar, Control Center, StandBy Clock, Dynamic Notch Hub, iStat Hub, About Storage, Power Menu, Activity Rings, 6 Apple HIG accents + **`ProHub`** |
 | **Glass / Mica** | `themes/glass/` | Planned | Native Windows 11 frosted translucency |
 | **Nothing OS** | `themes/nothing/` | Planned | High-contrast dot-matrix aesthetic |
@@ -89,6 +89,15 @@ Veyra-Dots/
 ---
 
 ## Quick Start
+
+### Option 1 — Easiest (Double-Click `.rmskin` Packages, No Terminal Required)
+
+Just download and double-click any Rainmeter package inside [`releases/`](releases/):
+- [`MaterialYZen-v2.rmskin`](releases/MaterialYZen-v2.rmskin) (44 widgets)
+- [`OneUIZen-v2.rmskin`](releases/OneUIZen-v2.rmskin) (28 widgets)
+- [`MacOSZen-v2.rmskin`](releases/MacOSZen-v2.rmskin) (28 widgets)
+
+### Option 2 — Full Setup via PowerShell (Widgets + Muelle Icons)
 
 ```powershell
 # 1. Clone the repository

@@ -99,6 +99,7 @@
     <button id="btnRestart">Restart</button>
     <button id="btnAspect">16:9</button>
     <button id="btnLang" class="lang-btn">EN / ES</button>
+    <button id="btnSound">Sound: ON</button>
     <div class="scrubber-wrap">
       <input id="scrubber" type="range" min="0" max="22000" value="0" step="16" />
       <span id="timeLbl" class="time-lbl">00.0 / 22.0s</span>
@@ -116,6 +117,7 @@
     const btnRestart = document.getElementById("btnRestart");
     const btnAspect = document.getElementById("btnAspect");
     const btnLang = document.getElementById("btnLang");
+    const btnSound = document.getElementById("btnSound");
     const btnExport = document.getElementById("btnExport");
     const scrubber = document.getElementById("scrubber");
     const timeLbl = document.getElementById("timeLbl");
@@ -673,12 +675,119 @@
       drawExpressivePill(W / 2, H / 2 + 74, "github.com/Acourd/Veyra-Dots", "#FF5470", "#FFFFFF", spring(norm(t, 20.15, 20.85)), -0.015);
     }
 
+    // --- PROCEDURAL WEB AUDIO ENGINE (M3E pops, chimes & flower-wipe shimmers; 100% copyright-free) ---
+    let soundEnabled = true;
+    let audioCtx = null;
+    let audioDest = null;
+    let masterGain = null;
+    let prevAudioT = -1;
+
+    function ensureAudio() {
+      if (audioCtx) {
+        if (audioCtx.state === "suspended") audioCtx.resume().catch(() => {});
+        return;
+      }
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      audioCtx = new AC();
+      masterGain = audioCtx.createGain();
+      masterGain.gain.value = 0.42;
+      masterGain.connect(audioCtx.destination);
+      audioDest = audioCtx.createMediaStreamDestination();
+      masterGain.connect(audioDest);
+    }
+
+    function playTone(freq, dur = 0.16, type = "sine", vol = 0.35, delay = 0, slideTo = null) {
+      if (!soundEnabled) return;
+      ensureAudio();
+      if (!audioCtx || !masterGain) return;
+      const now = audioCtx.currentTime + delay;
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, now);
+      if (slideTo) osc.frequency.exponentialRampToValueAtTime(slideTo, now + dur * 0.65);
+      g.gain.setValueAtTime(0.0001, now);
+      g.gain.exponentialRampToValueAtTime(vol, now + 0.014);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+      osc.connect(g);
+      g.connect(masterGain);
+      osc.start(now);
+      osc.stop(now + dur + 0.02);
+    }
+
+    function playPop(baseFreq = 320, vol = 0.38) {
+      playTone(baseFreq, 0.12, "triangle", vol, 0, baseFreq * 1.45);
+      playTone(baseFreq * 0.5, 0.09, "sine", vol * 0.6, 0, baseFreq * 0.28);
+    }
+
+    function playChord(freqs, dur = 0.32, vol = 0.18) {
+      freqs.forEach((f, i) => playTone(f, dur, "triangle", vol, i * 0.035));
+    }
+
+    function playShimmer(chimeFreq = 1046.5) {
+      if (!soundEnabled) return;
+      ensureAudio();
+      if (!audioCtx || !masterGain) return;
+      const now = audioCtx.currentTime;
+      const len = Math.floor(audioCtx.sampleRate * 0.28);
+      const buf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / len);
+      const src = audioCtx.createBufferSource();
+      src.buffer = buf;
+      const filt = audioCtx.createBiquadFilter();
+      filt.type = "bandpass";
+      filt.frequency.setValueAtTime(900, now);
+      filt.frequency.exponentialRampToValueAtTime(3400, now + 0.26);
+      filt.Q.value = 1.8;
+      const g = audioCtx.createGain();
+      g.gain.setValueAtTime(0.0001, now);
+      g.gain.exponentialRampToValueAtTime(0.16, now + 0.05);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + 0.28);
+      src.connect(filt); filt.connect(g); g.connect(masterGain);
+      src.start(now);
+      playTone(chimeFreq, 0.26, "sine", 0.22, 0.06);
+      playTone(chimeFreq * 1.25, 0.24, "sine", 0.14, 0.11);
+    }
+
+    const AUDIO_CUES = [
+      { t: 0.04, fn: () => { playPop(290); playChord([523.25, 659.25], 0.24, 0.20); } },
+      { t: 0.87, fn: () => { playPop(390, 0.42); playChord([587.33, 783.99, 987.77], 0.30, 0.18); } },
+      { t: 1.86, fn: () => playPop(440, 0.36) },
+      { t: 2.24, fn: () => playPop(554.37, 0.36) },
+      { t: 2.62, fn: () => playPop(659.25, 0.38) },
+      { t: 3.02, fn: () => { playPop(330); playChord([523.25, 659.25, 783.99], 0.34, 0.16); } },
+      { t: 4.38, fn: () => playShimmer(1046.5) },
+      { t: 6.32, fn: () => { playPop(370); playChord([587.33, 739.99, 880.0], 0.32, 0.16); } },
+      { t: 7.42, fn: () => playShimmer(1174.66) },
+      { t: 9.02, fn: () => { playPop(349); playChord([523.25, 659.25, 880.0], 0.34, 0.16); } },
+      { t: 10.22, fn: () => playShimmer(1046.5) },
+      { t: 12.12, fn: () => { playPop(392); playChord([587.33, 783.99, 987.77], 0.32, 0.16); } },
+      { t: 13.28, fn: () => playShimmer(1318.51) },
+      { t: 14.92, fn: () => { playPop(329); playChord([493.88, 659.25, 783.99], 0.32, 0.16); } },
+      { t: 16.08, fn: () => playShimmer(1046.5) },
+      { t: 17.82, fn: () => { playPop(415); playChord([659.25, 830.61, 987.77], 0.32, 0.16); } },
+      { t: 18.78, fn: () => playShimmer(1318.51) },
+      { t: 19.95, fn: () => { playPop(350, 0.40); playChord([523.25, 659.25, 783.99, 987.77, 1174.66], 0.55, 0.16); } }
+    ];
+
+    function triggerAudioCues(prevT, currT) {
+      if (!soundEnabled || !playing || currT < prevT) return;
+      for (const cue of AUDIO_CUES) {
+        if (cue.t > prevT && cue.t <= currT) cue.fn();
+      }
+    }
+
     function tick(ts) {
       if (!lastTs) lastTs = ts;
       const dt = Math.min(0.05, (ts - lastTs) / 1000);
       lastTs = ts;
       if (playing) {
+        const oldT = tSec;
         tSec += dt;
+        triggerAudioCues(prevAudioT < 0 ? oldT - 0.001 : oldT, tSec);
+        prevAudioT = tSec;
         if (tSec >= DURATION) {
           if (exporting) {
             tSec = DURATION;
@@ -687,6 +796,7 @@
             return requestAnimationFrame(tick);
           }
           tSec = 0;
+          prevAudioT = -1;
         }
       }
       renderFrame(tSec);
@@ -715,10 +825,20 @@
       if (exporting) return;
       const u = COPY[lang].ui;
       const fmt = pickExportFormat();
-      const stream = canvas.captureStream(60);
+      const vStream = canvas.captureStream(60);
+      let combined = vStream;
+      if (soundEnabled) {
+        ensureAudio();
+        if (audioDest && audioDest.stream) {
+          combined = new MediaStream([
+            ...vStream.getVideoTracks(),
+            ...audioDest.stream.getAudioTracks()
+          ]);
+        }
+      }
       recChunks = [];
       // 3.2 Mbps keeps a 22s 1080p60 video under GitHub's 10 MB free attachment limit (~8.5 MB)
-      recorder = new MediaRecorder(stream, { mimeType: fmt.mime, videoBitsPerSecond: 3_200_000 });
+      recorder = new MediaRecorder(combined, { mimeType: fmt.mime, videoBitsPerSecond: 3_200_000 });
       recorder.ondataavailable = (e) => { if (e.data && e.data.size > 0) recChunks.push(e.data); };
       recorder.onstop = () => {
         const blob = new Blob(recChunks, { type: fmt.mime });
@@ -733,7 +853,7 @@
         const mb = (blob.size / (1024 * 1024)).toFixed(1);
         statusEl.textContent = `${COPY[lang].ui.doneStatus} (${fmt.ext.toUpperCase()} · ${mb} MB)`;
       };
-      exporting = true; tSec = 0; playing = true;
+      exporting = true; tSec = 0; prevAudioT = -1; playing = true;
       btnPlay.textContent = u.pause;
       btnExport.classList.add("recording");
       btnExport.textContent = u.recordingBtn;
@@ -756,10 +876,20 @@
     });
     btnRestart.addEventListener("click", () => {
       if (!exporting) {
+        ensureAudio();
         tSec = 0;
+        prevAudioT = -1;
         playing = true;
         btnPlay.textContent = COPY[lang].ui.pause;
       }
+    });
+    btnSound.addEventListener("click", () => {
+      if (exporting) return;
+      soundEnabled = !soundEnabled;
+      if (soundEnabled) ensureAudio();
+      btnSound.textContent = lang === "es"
+        ? (soundEnabled ? "Sonido: ON" : "Sonido: OFF")
+        : (soundEnabled ? "Sound: ON" : "Sound: OFF");
     });
     btnAspect.addEventListener("click", () => {
       if (exporting) return;

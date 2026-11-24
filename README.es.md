@@ -40,7 +40,7 @@ https://github.com/user-attachments/assets/16a8c861-c458-4227-ac5a-5ca4d9b1222f
 | Estilo | Carpeta | Estado | Componentes incluidos |
 | :--- | :--- | :--- | :--- |
 | **Material You** | [`themes/material-you/`](themes/material-you/README.md) | **Disponible (v2)** | **44 widgets Rainmeter** (Oscuro/Claro, ES/EN, 6 paletas + Auto Wallpaper, subsección **`ProHub`**), **Stylus v4.2.1** (Dark & Light, 7 paletas), **23 wallpapers**, **40 iconos Pastel Tonal** (PNG + ICO) y extensión recomendada **Mynt New Tab** |
-| **One UI** | [`themes/one-ui/`](themes/one-ui/README.md) | **Disponible (v2)** | **28 widgets Rainmeter (`OneUIZen`)** en OLED Dark / Pure Snow Light + 5 acentos Samsung + Auto Wallpaper + Good Lock Retro Cassette, Smart Stack, **`ProHub`** y **80 iconos One UI** (`oneui-vibrant` + `oneui-dark`) |
+| **One UI** | [`themes/one-ui/`](themes/one-ui/README.md) | **Disponible (v2)** | **28 widgets Rainmeter (`OneUIZen`)** en OLED Dark / Pure Snow Light + 5 acentos Samsung + Auto Wallpaper + Good Lock Retro Cassette, Smart Stack, **`ProHub`**, **36 wallpapers 4K** (`18 Oscuros + 18 Claros`) y **80 iconos One UI** (`oneui-vibrant` + `oneui-dark`) |
 | **macOS** | [`themes/macos/`](themes/macos/README.md) | **Disponible (v2)** | **28 widgets Rainmeter (`MacOSZen`)** estilo Sonoma/Sequoia: Menu Bar, Control Center, StandBy Clock, Dynamic Notch Hub, iStat Hub, About Storage, Power Menu, Activity Rings, 6 acentos Apple HIG + **`ProHub`** |
 | **Glass / Mica** | `themes/glass/` | Planeado | Transparencias esmeriladas nativas de Windows 11 |
 | **Nothing OS** | `themes/nothing/` | Planeado | Estética matricial de alto contraste |
@@ -89,6 +89,15 @@ Veyra-Dots/
 ---
 
 ## Instalación rápida
+
+### Opción 1 — La más fácil (Paquetes `.rmskin` en doble clic, sin terminal)
+
+Descarga y haz doble clic sobre el paquete que quieras en [`releases/`](releases/):
+- [`MaterialYZen-v2.rmskin`](releases/MaterialYZen-v2.rmskin) (44 widgets)
+- [`OneUIZen-v2.rmskin`](releases/OneUIZen-v2.rmskin) (28 widgets)
+- [`MacOSZen-v2.rmskin`](releases/MacOSZen-v2.rmskin) (28 widgets)
+
+### Opción 2 — Instalación completa por PowerShell (Widgets + Iconos en Muelle)
 
 ```powershell
 # 1. Clona el repositorio

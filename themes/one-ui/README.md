@@ -39,6 +39,10 @@ Incluye **40 iconos** con la superelipse (*squircle*) oficial de Samsung One UI 
 .\scripts\apply-muelle-icons.ps1 -Restore
 ```
 
+## Wallpapers 4K (`wallpapers/veyra-oneui-wallpapers-4k/`, 36 fondos)
+
+Incluye **36 wallpapers 4K** organizados en `modo-claro/` (18) y `modo-oscuro/` (18) en 6 paletas (Amarillo, Azul, Gris, Rojo, Rosado y Verde) y 3 estilos geométricos (`prisma`, `scurva` y `squircle`), listos para sincronizar con el modo **Auto Wallpaper**.
+
 ## Instalación rápida
 
 ```powershell
