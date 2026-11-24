@@ -8,7 +8,9 @@ Colección minimalista y modular de **dotfiles para Windows 11**, diseñada para
 
 ## Showcase
 
-> Teaser animado interactivo a 60fps estilo Material 3 Expressive (ES / EN, exportable en 16:9 y 9:16): abre [`showcase/teaser.html`](showcase/teaser.html) en cualquier navegador Chromium.
+https://github.com/user-attachments/assets/16a8c861-c458-4227-ac5a-5ca4d9b1222f
+
+> Fuente del teaser animado interactivo a 60fps estilo Material 3 Expressive (ES / EN, exportable en 16:9 y 9:16): abre [`showcase/teaser.html`](showcase/teaser.html) en cualquier navegador Chromium.
 
 ### Material You (Oscuro y Claro)
 | Ámbar — Oscuro | Ámbar — Claro |

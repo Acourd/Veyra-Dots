@@ -8,7 +8,9 @@ A minimalist, modular collection of **Windows 11 dotfiles**, designed to transfo
 
 ## Showcase
 
-> Interactive 60fps Material 3 Expressive motion teaser (EN / ES, 16:9 & 9:16 exportable): open [`showcase/teaser.html`](showcase/teaser.html) locally in any Chromium browser.
+https://github.com/user-attachments/assets/689d621e-6450-416e-b4cd-c3631081fab4
+
+> Interactive 60fps Material 3 Expressive motion teaser source (EN / ES, 16:9 & 9:16 exportable): open [`showcase/teaser.html`](showcase/teaser.html) locally in any Chromium browser.
 
 ### Material You (Dark & Light)
 | Amber — Dark | Amber — Light |
