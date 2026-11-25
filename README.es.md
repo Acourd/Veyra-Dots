@@ -77,7 +77,8 @@ Veyra-Dots/
 ├── showcase/                    # 12 capturas reales + teaser animado 60fps (ES/EN)
 ├── scripts/
 │   ├── install-rainmeter.ps1    # Instalador 1-clic de cualquier estilo (o -Theme all)
-│   └── apply-muelle-icons.ps1   # Aplicador 1-clic reversible de iconos para Muelle
+│   ├── apply-muelle-icons.ps1   # Aplicador 1-clic reversible de iconos para Muelle
+│   └── apply-windows-icons.ps1  # Aplicador 1-clic reversible para Escritorio y Barra de Tareas de Windows
 └── themes/
     ├── material-you/            # 44 widgets, Stylus v4.2.1, 23 wallpapers, 40 iconos Pastel
     ├── one-ui/                  # 28 widgets, 80 iconos One UI (Vibrant + OLED Dark)
@@ -116,6 +117,20 @@ cd Veyra-Dots
 
 # Restaura los iconos originales de Muelle cuando quieras:
 .\scripts\apply-muelle-icons.ps1 -Restore
+```
+
+### Opción 3 — Iconos para el Escritorio y la Barra de Tareas nativa de Windows 11 (sin Muelle)
+
+Aplica los packs `.ico` multirresolución directamente sobre tus accesos directos del Escritorio y las apps fijadas en la barra de tareas por defecto de Windows (con copia de seguridad automática en `%LOCALAPPDATA%\VeyraDots\` para revertir cuando quieras):
+
+```powershell
+# Aplicar en Escritorio y Barra de Tareas (-Scope All | Desktop | Taskbar)
+.\scripts\apply-windows-icons.ps1 -Theme material-you -RestartExplorer
+.\scripts\apply-windows-icons.ps1 -Theme one-ui -Variant dark -RestartExplorer
+.\scripts\apply-windows-icons.ps1 -Theme one-ui -Variant vibrant -Scope Taskbar -RestartExplorer
+
+# Restaurar los iconos originales de Windows cuando quieras:
+.\scripts\apply-windows-icons.ps1 -Restore -RestartExplorer
 ```
 
 Para instalar **Stylus v4.2.1**, la extensión **Mynt** y consultar el catálogo completo de widgets de cada estilo, abre el README correspondiente dentro de `themes/`.

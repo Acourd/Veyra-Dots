@@ -77,7 +77,8 @@ Veyra-Dots/
 ├── showcase/                    # 12 real screenshots + 60fps EN/ES motion teaser
 ├── scripts/
 │   ├── install-rainmeter.ps1    # 1-click Rainmeter suite installer (-Theme all supported)
-│   └── apply-muelle-icons.ps1   # 1-click reversible icon pack injector for Muelle dock
+│   ├── apply-muelle-icons.ps1   # 1-click reversible icon pack injector for Muelle dock
+│   └── apply-windows-icons.ps1  # 1-click reversible icon pack applicator for Desktop & Windows Taskbar
 └── themes/
     ├── material-you/            # 44 widgets, Stylus v4.2.1, 23 wallpapers, 40 Pastel icons
     ├── one-ui/                  # 28 widgets, 80 One UI icons (Vibrant + OLED Dark)
@@ -116,6 +117,20 @@ cd Veyra-Dots
 
 # Restore original Muelle icons anytime:
 .\scripts\apply-muelle-icons.ps1 -Restore
+```
+
+### Option 3 — Default Windows 11 Desktop & Taskbar Icons (No Muelle Required)
+
+Applies the multi-resolution `.ico` packs directly to your Desktop shortcuts and pinned Windows 11 Taskbar apps (automatically backs up originals to `%LOCALAPPDATA%\VeyraDots\` so you can restore anytime):
+
+```powershell
+# Apply to both Desktop & pinned Taskbar (-Scope All | Desktop | Taskbar)
+.\scripts\apply-windows-icons.ps1 -Theme material-you -RestartExplorer
+.\scripts\apply-windows-icons.ps1 -Theme one-ui -Variant dark -RestartExplorer
+.\scripts\apply-windows-icons.ps1 -Theme one-ui -Variant vibrant -Scope Taskbar -RestartExplorer
+
+# Restore original Windows shortcut icons anytime:
+.\scripts\apply-windows-icons.ps1 -Restore -RestartExplorer
 ```
 
 To install **Stylus v4.2.1**, **Mynt New Tab**, or browse the full widget catalog for each suite, open the corresponding README inside `themes/`.
