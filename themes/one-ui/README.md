@@ -39,12 +39,14 @@ Incluye **40 iconos** con la superelipse (*squircle*) oficial de Samsung One UI 
 .\scripts\apply-muelle-icons.ps1 -Restore
 ```
 
-## Wallpapers 4K (`wallpapers/veyra-oneui-wallpapers-4k/`, 36 fondos)
+## Wallpapers 4K ([`wallpapers/veyra-oneui-wallpapers-4k/`](wallpapers/veyra-oneui-wallpapers-4k/), 36 fondos)
 
-Incluye **36 wallpapers 4K** organizados en `modo-claro/` (18) y `modo-oscuro/` (18) en 6 paletas (Amarillo, Azul, Gris, Rojo, Rosado y Verde) y 3 estilos geométricos (`prisma`, `scurva` y `squircle`), listos para sincronizar con el modo **Auto Wallpaper**.
+Incluye **36 wallpapers 4K** organizados en [`modo-claro/`](wallpapers/veyra-oneui-wallpapers-4k/modo-claro/) (18) y [`modo-oscuro/`](wallpapers/veyra-oneui-wallpapers-4k/modo-oscuro/) (18) en 6 paletas (Amarillo, Azul, Gris, Rojo, Rosado y Verde) y 3 estilos geométricos (`prisma`, `scurva` y `squircle`), listos para sincronizar con el modo **Auto Wallpaper**.
 
 ## Instalación rápida
 
+- **Opción más fácil (1 clic, sin terminal):** descarga y haz doble clic en **[`OneUIZen-v2.rmskin`](../../releases/OneUIZen-v2.rmskin)**.
+- **Por PowerShell (desde la raíz de `Veyra-Dots`):**
 ```powershell
 .\scripts\install-rainmeter.ps1 -Theme one-ui
 ```

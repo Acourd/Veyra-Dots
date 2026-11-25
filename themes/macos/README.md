@@ -19,8 +19,16 @@ Suite nativa de Rainmeter sin plugins externos inspirada en **macOS Sonoma / Seq
 | **Search & Dock (3)** | `MacOSSpotlight.ini` (búsqueda flotante `⌘ K`), `MacOSDock.ini` (dock esmerilado con 6 apps HD) y `MacOSAIBar.ini` (5 asistentes de IA HD). |
 | **Productivity (2)** | `MacOSFocus.ini` (Pomodoro circular de 25 min) y `MacOSNotchHub.ini` (cápsula flotante estilo Dynamic Island / NotchNook con música, CPU y batería). |
 
+## Wallpapers compatibles (4K)
+
+Por el momento, los fondos recomendados se comparten desde las colecciones 4K del repositorio (todos se sincronizan en 1 clic con el botón **Auto Wall** de `MacOSSwitcher`):
+- **[Wallpapers One UI 4K (`36 fondos` — Claro y Oscuro)](../one-ui/wallpapers/veyra-oneui-wallpapers-4k/)**
+- **[Wallpapers Material You 4K (`23 fondos`)](../material-you/wallpapers/)**
+
 ## Instalación rápida
 
+- **Opción más fácil (1 clic, sin terminal):** descarga y haz doble clic en **[`MacOSZen-v2.rmskin`](../../releases/MacOSZen-v2.rmskin)**.
+- **Por PowerShell (desde la raíz de `Veyra-Dots`):**
 ```powershell
 .\scripts\install-rainmeter.ps1 -Theme macos
 ```
