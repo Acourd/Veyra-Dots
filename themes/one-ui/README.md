@@ -19,12 +19,15 @@ Suite nativa de Rainmeter sin plugins externos inspirada en **Samsung One UI 7 /
 | **Notes (2)** | `OneUIReminders.ini` (lista de recordatorios con casillas circulares y botón `+`) y `OneUIQuote.ini` (tarjeta de frase diaria de alto contraste editable al hacer clic). |
 | **QuickSettings (1)** | `OneUIQuickPanel.ini` — Panel 2×2 (Wi-Fi, Bluetooth, Audio reactivo y Modo Oscuro/Claro). |
 
-## Pack de iconos (`icons/`, 80 iconos)
+## Pack de iconos (`icons/`, 168 iconos)
 
-Incluye **40 iconos** con la superelipse (*squircle*) oficial de Samsung One UI 7 / 8 en dos variantes (**`oneui-vibrant/`** con degradados de color y **`oneui-dark/`** en OLED Obsidian), cada uno exportado en **PNG (256×256)** e **ICO multirresolución (16–256px)**, listos para el escritorio y **Muelle**:
-- Sistema y dock: `explorer`, `downloads`, `trash-empty`, `trash-full`, `rainmeter`, `settings`, `terminal`, `notepad`, `7-zip`
-- Apps, productividad e IA: `antigravity`, `helium`, `claude`, `chatgpt`, `gemini`, `perplexity`, `chrome`, `edge`, `gmail`, `github`, `git`, `vscode`, `linear`, `docker`, `discord`, `spotify`, `obsidian`, `obs-studio`, `fxsound`, `mem-reduct`, `malwarebytes`
-- Gaming y utilidades: `steam`, `epic-games`, `riot-client`, `valorant`, `fortnite`, `exitlag`, `hone`, `kovaaks`, `repo`, `thunderstore`
+Incluye **84 iconos diarios** con la superelipse (*squircle*) oficial de Samsung One UI 7 / 8 en dos variantes (**`oneui-vibrant/`** con degradados de color y **`oneui-dark/`** en OLED Obsidian), cada uno exportado en **PNG (256×256)** e **ICO multirresolución (16–256px)**, listos para el escritorio y **Muelle**:
+- **Sistema:** `explorer`, `downloads`, `trash-empty`, `trash-full`, `rainmeter`, `settings`, `notepad`, `7-zip`, `mem-reduct`, `malwarebytes`
+- **Navegadores:** `chrome`, `edge`, `firefox`, `brave`, `opera-gx`, `vivaldi`, `zen-browser`, `helium`
+- **IA:** `chatgpt`, `claude`, `gemini`, `perplexity`, `notebooklm`, `ai-studio`
+- **Dev & Productividad:** `vscode`, `antigravity`, `github`, `git`, `terminal`, `docker`, `python`, `notion`, `obsidian`, `linear`, `figma`, `blender`, `gimp`, `canva`, `word`, `excel`, `powerpoint`, `acrobat`, `dropbox`, `google-drive`, `gmail`, `slack`, `teams`, `zoom`
+- **Música, Media & Social:** `spotify`, `youtube-music`, `youtube`, `vlc`, `audacity`, `obs-studio`, `fxsound`, `nvidia`, `netflix`, `twitch`, `discord`, `whatsapp`, `telegram`, `instagram`, `tiktok`, `reddit`
+- **Gaming & Optimización:** `steam`, `epic-games`, `riot-client`, `valorant`, `gta-v`, `minecraft`, `roblox`, `cs2`, `league-of-legends`, `fortnite`, `genshin`, `xbox`, `terraria`, `kovaaks`, `repo`, `thunderstore`, `exitlag`, `hone`, `lossless-scaling`, `wallpaper-engine`
 
 ### Aplicar los iconos en Muelle (1 clic y reversible)
 

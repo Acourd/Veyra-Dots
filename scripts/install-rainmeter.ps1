@@ -1,5 +1,5 @@
 ﻿param(
-  [ValidateSet("material-you", "one-ui", "macos", "all")]
+  [ValidateSet("material-you", "one-ui", "macos", "glass", "nothing", "all")]
   [string]$Theme = "material-you"
 )
 
@@ -33,7 +33,7 @@ if (-not (Test-Path -LiteralPath $dstSkins)) {
   New-Item -ItemType Directory -Path $dstSkins -Force | Out-Null
 }
 
-$themesToInstall = if ($Theme -eq "all") { @("material-you", "one-ui", "macos") } else { @($Theme) }
+$themesToInstall = if ($Theme -eq "all") { @("material-you", "one-ui", "macos", "glass", "nothing") } else { @($Theme) }
 
 foreach ($t in $themesToInstall) {
   $srcSkins = Join-Path $repoRoot "themes\$t\rainmeter\Skins"

@@ -1,0 +1,3 @@
+Probar modo OLED + Rojo Nothing
+Revisar widgets y telemetría
+Subir cambios solo cuando toque

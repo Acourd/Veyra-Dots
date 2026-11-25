@@ -10,7 +10,7 @@ Personalización minimalista para Windows 11 y navegador basada en **Material De
   - **Categorías:** `ThemeSwitcher`, `Clock` (14, incluye `ClockSunArc` y `ExpressiveBento`), `Calendar` (3), `Battery` (3), `Audio` (3), `System` (2, incluye `NetworkPulse`), `Search` (3 con iconos oficiales HD), `Music` (4), `Notes` (1), `Productivity` (4), `QuickSettings` (1), `MeterialYouLab` (2) y la nueva subsección **`ProHub` (3)** (`BluetoothHub`, `AIUsageHub`, `StorageVault`).
 - `stylus/material-you-web-v4-dark-light/` — Suites **Modo Dark** y **Modo Claro** (**v4.2.1**) con 7 paletas sincronizadas para Google, YouTube, Reddit, GitHub, WhatsApp Web, Linear, Wikipedia, X, Twitch y toda la suite de IA (ChatGPT, Gemini, Claude, Grok, Perplexity, DeepSeek, AI Studio y NotebookLM).
 - [`wallpapers/`](wallpapers/) — **23 fondos de pantalla 4K** Material You.
-- [`icons/m3-pastel/`](icons/m3-pastel/) — **40 iconos Pastel Tonal** (PNG 256×256 + ICO multirresolución) listos para escritorio, barra de tareas y el dock **[Muelle](https://github.com/crafter-station/Muelle)**.
+- [`icons/m3-pastel/`](icons/m3-pastel/) — **84 iconos Pastel Tonal** (PNG 256×256 + ICO multirresolución) para navegadores, juegos, productividad, música, IA y utilidades del día a día, listos para escritorio, barra de tareas y el dock **[Muelle](https://github.com/crafter-station/Muelle)**.
 
 ## Extensión recomendada para el navegador
 

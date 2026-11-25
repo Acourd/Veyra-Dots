@@ -1,5 +1,5 @@
 # Generador oficial de paquetes .rmskin (1-clic) para Veyra-Dots
-# Construye MaterialYZen-v2.rmskin, OneUIZen-v2.rmskin y MacOSZen-v2.rmskin en releases/
+# Construye MaterialYZen-v2.rmskin, OneUIZen-v2.rmskin, MacOSZen-v2.rmskin, GlassZen-v2.rmskin y NothingZen-v2.rmskin en releases/
 # Formato oficial Rainmeter SkinInstaller: ZIP estandar (RMSKIN.ini + Skins/<Suite>/...) + footer binario de 16 bytes.
 
 $ErrorActionPreference = "Stop"
@@ -28,6 +28,18 @@ $suites = @(
         suite = "MacOSZen"
         file  = "MacOSZen-v2.rmskin"
         load  = "MacOSZen\ThemeSwitcher\MacOSSwitcher.ini"
+    },
+    @{
+        theme = "glass"
+        suite = "GlassZen"
+        file  = "GlassZen-v2.rmskin"
+        load  = "GlassZen\ThemeSwitcher\GlassSwitcher.ini"
+    },
+    @{
+        theme = "nothing"
+        suite = "NothingZen"
+        file  = "NothingZen-v2.rmskin"
+        load  = "NothingZen\ThemeSwitcher\NothingSwitcher.ini"
     }
 )
 
@@ -119,4 +131,4 @@ MinimumWindows=10.0
     }
 }
 
-Write-Host "PASS: 3 paquetes .rmskin generados en $outDir" -ForegroundColor Cyan
+Write-Host "PASS: $($suites.Count) paquetes .rmskin generados en $outDir" -ForegroundColor Cyan

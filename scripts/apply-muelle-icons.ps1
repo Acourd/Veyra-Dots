@@ -1,5 +1,5 @@
 param(
-    [ValidateSet("one-ui", "material-you")]
+    [ValidateSet("one-ui", "material-you", "macos", "glass", "nothing")]
     [string]$Theme = "one-ui",
     [ValidateSet("vibrant", "dark")]
     [string]$Variant = "vibrant",
@@ -90,6 +90,9 @@ if ($Restore) {
 $variantFolder = switch ($Theme) {
     "one-ui"       { if ($Variant -eq "dark") { "oneui-dark" } else { "oneui-vibrant" } }
     "material-you" { "m3-pastel" }
+    "macos"        { "macos-sequoia" }
+    "glass"        { "glass-frosted" }
+    "nothing"      { "nothing-mono" }
 }
 $pngDir = Join-Path $repoRoot "themes\$Theme\icons\$variantFolder\png"
 if (-not (Test-Path -LiteralPath $pngDir)) {
@@ -97,46 +100,90 @@ if (-not (Test-Path -LiteralPath $pngDir)) {
     exit 1
 }
 
-# Reglas de mapeo: patron sobre el nombre WDI2 -> slug PNG
+# Reglas de mapeo: patron sobre el nombre WDI2 -> slug PNG (84 apps)
 $NameMap = @(
     @{ pattern = "Explorador|File Explorer|File Picker"; slug = "explorer" },
     @{ pattern = "Descargas|Downloads";                  slug = "downloads" },
-    @{ pattern = "Helium";                               slug = "helium" },
-    @{ pattern = "Claude";                               slug = "claude" },
-    @{ pattern = "Antigravity";                          slug = "antigravity" },
     @{ pattern = "Rainmeter";                            slug = "rainmeter" },
     @{ pattern = "Configuraci|Settings";                 slug = "settings" },
     @{ pattern = "Bloc de notas|Notepad";                slug = "notepad" },
     @{ pattern = "7-Zip";                                slug = "7-zip" },
-    @{ pattern = "\bHone\b";                             slug = "hone" },
-    @{ pattern = "Discord";                              slug = "discord" },
-    @{ pattern = "\bEdge\b";                             slug = "edge" },
-    @{ pattern = "Chrome";                               slug = "chrome" },
-    @{ pattern = "Linear";                               slug = "linear" },
-    @{ pattern = "Steam";                                slug = "steam" },
-    @{ pattern = "\bOBS\b";                              slug = "obs-studio" },
-    @{ pattern = "Visual Studio Code|VS Code";           slug = "vscode" },
-    @{ pattern = "Spotify";                              slug = "spotify" },
-    @{ pattern = "Obsidian";                             slug = "obsidian" },
-    @{ pattern = "Docker";                               slug = "docker" },
-    @{ pattern = "FxSound";                              slug = "fxsound" },
+    @{ pattern = "Mem Reduct";                           slug = "mem-reduct" },
     @{ pattern = "Malwarebytes";                         slug = "malwarebytes" },
-    @{ pattern = "ExitLag";                              slug = "exitlag" },
-    @{ pattern = "Valorant";                             slug = "valorant" },
-    @{ pattern = "\bRiot\b";                             slug = "riot-client" },
-    @{ pattern = "Epic Games";                           slug = "epic-games" },
-    @{ pattern = "Fortnite";                             slug = "fortnite" },
-    @{ pattern = "KovaaK";                               slug = "kovaaks" },
-    @{ pattern = "\bR\.E\.P\.O\b|\bREPO\b";              slug = "repo" },
-    @{ pattern = "Thunderstore";                         slug = "thunderstore" },
+    @{ pattern = "Chrome";                               slug = "chrome" },
+    @{ pattern = "\bEdge\b";                             slug = "edge" },
+    @{ pattern = "Firefox";                              slug = "firefox" },
+    @{ pattern = "Brave";                                slug = "brave" },
+    @{ pattern = "Opera";                                slug = "opera-gx" },
+    @{ pattern = "Vivaldi";                              slug = "vivaldi" },
+    @{ pattern = "Zen Browser|\bZen\b";                  slug = "zen-browser" },
+    @{ pattern = "Helium";                               slug = "helium" },
     @{ pattern = "ChatGPT";                              slug = "chatgpt" },
+    @{ pattern = "Claude";                               slug = "claude" },
     @{ pattern = "Gemini";                               slug = "gemini" },
     @{ pattern = "Perplexity";                           slug = "perplexity" },
-    @{ pattern = "Gmail";                                slug = "gmail" },
+    @{ pattern = "NotebookLM";                           slug = "notebooklm" },
+    @{ pattern = "AI Studio";                            slug = "ai-studio" },
+    @{ pattern = "Visual Studio Code|VS Code|VSCode";    slug = "vscode" },
+    @{ pattern = "Antigravity";                          slug = "antigravity" },
     @{ pattern = "GitHub";                               slug = "github" },
-    @{ pattern = "Mem Reduct";                           slug = "mem-reduct" },
-    @{ pattern = "Git Bash|Terminal|Windows Terminal";   slug = "terminal" },
-    @{ pattern = "\bGit\b";                              slug = "git" }
+    @{ pattern = "Git Bash|Terminal|Windows Terminal|PowerShell"; slug = "terminal" },
+    @{ pattern = "\bGit\b";                              slug = "git" },
+    @{ pattern = "Docker";                               slug = "docker" },
+    @{ pattern = "Python";                               slug = "python" },
+    @{ pattern = "Notion";                               slug = "notion" },
+    @{ pattern = "Obsidian";                             slug = "obsidian" },
+    @{ pattern = "Linear";                               slug = "linear" },
+    @{ pattern = "Figma";                                slug = "figma" },
+    @{ pattern = "Blender";                              slug = "blender" },
+    @{ pattern = "\bGIMP\b";                             slug = "gimp" },
+    @{ pattern = "Canva";                                slug = "canva" },
+    @{ pattern = "Microsoft Word|\bWord\b";              slug = "word" },
+    @{ pattern = "Microsoft Excel|\bExcel\b";            slug = "excel" },
+    @{ pattern = "PowerPoint";                           slug = "powerpoint" },
+    @{ pattern = "Acrobat|Adobe Reader";                 slug = "acrobat" },
+    @{ pattern = "Dropbox";                              slug = "dropbox" },
+    @{ pattern = "Google Drive";                         slug = "google-drive" },
+    @{ pattern = "Gmail";                                slug = "gmail" },
+    @{ pattern = "Slack";                                slug = "slack" },
+    @{ pattern = "Teams";                                slug = "teams" },
+    @{ pattern = "\bZoom\b";                             slug = "zoom" },
+    @{ pattern = "Spotify";                              slug = "spotify" },
+    @{ pattern = "YouTube Music|YT Music";               slug = "youtube-music" },
+    @{ pattern = "YouTube";                              slug = "youtube" },
+    @{ pattern = "\bVLC\b";                              slug = "vlc" },
+    @{ pattern = "Audacity";                             slug = "audacity" },
+    @{ pattern = "\bOBS\b|OBS Studio";                   slug = "obs-studio" },
+    @{ pattern = "FxSound";                              slug = "fxsound" },
+    @{ pattern = "NVIDIA";                               slug = "nvidia" },
+    @{ pattern = "Netflix";                              slug = "netflix" },
+    @{ pattern = "Twitch";                               slug = "twitch" },
+    @{ pattern = "Discord";                              slug = "discord" },
+    @{ pattern = "WhatsApp";                             slug = "whatsapp" },
+    @{ pattern = "Telegram";                             slug = "telegram" },
+    @{ pattern = "Instagram";                            slug = "instagram" },
+    @{ pattern = "TikTok";                               slug = "tiktok" },
+    @{ pattern = "Reddit";                               slug = "reddit" },
+    @{ pattern = "Steam";                                slug = "steam" },
+    @{ pattern = "Epic Games";                           slug = "epic-games" },
+    @{ pattern = "Valorant";                             slug = "valorant" },
+    @{ pattern = "League of Legends";                    slug = "league-of-legends" },
+    @{ pattern = "\bRiot\b";                             slug = "riot-client" },
+    @{ pattern = "Grand Theft Auto|GTA\s*V|\bGTAV\b";    slug = "gta-v" },
+    @{ pattern = "Minecraft";                            slug = "minecraft" },
+    @{ pattern = "Roblox";                               slug = "roblox" },
+    @{ pattern = "Counter-Strike|\bCS2\b|\bCSGO\b";      slug = "cs2" },
+    @{ pattern = "Fortnite";                             slug = "fortnite" },
+    @{ pattern = "Genshin";                              slug = "genshin" },
+    @{ pattern = "\bXbox\b";                             slug = "xbox" },
+    @{ pattern = "Terraria";                             slug = "terraria" },
+    @{ pattern = "KovaaK|Kovack";                        slug = "kovaaks" },
+    @{ pattern = "\bR\.E\.P\.O\b|\bREPO\b";              slug = "repo" },
+    @{ pattern = "Thunderstore";                         slug = "thunderstore" },
+    @{ pattern = "ExitLag";                              slug = "exitlag" },
+    @{ pattern = "\bHone\b";                             slug = "hone" },
+    @{ pattern = "Lossless Scaling";                     slug = "lossless-scaling" },
+    @{ pattern = "Wallpaper Engine";                     slug = "wallpaper-engine" }
 )
 
 function Write-PngIntoWdi2([string]$binPath, [string]$pngPath) {

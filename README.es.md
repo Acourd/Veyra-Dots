@@ -39,22 +39,24 @@ https://github.com/user-attachments/assets/16a8c861-c458-4227-ac5a-5ca4d9b1222f
 
 | Estilo | Carpeta | Estado | Qué incluye |
 | :--- | :--- | :--- | :--- |
-| **Material You** | [`themes/material-you/`](themes/material-you/README.md) | Listo (v2) | 44 widgets Rainmeter (Oscuro/Claro, ES/EN, 6 paletas + Auto Wallpaper), estilos web Stylus v4.2.1 (Oscuro y Claro), 23 wallpapers, 40 iconos Pastel (PNG + ICO) |
-| **One UI** | [`themes/one-ui/`](themes/one-ui/README.md) | Listo (v2) | 28 widgets Rainmeter (`OneUIZen`, OLED Dark / Pure Snow Light, 5 acentos + Auto Wallpaper, Retro Cassette, Smart Stack), 36 wallpapers 4K, 80 iconos (`oneui-vibrant` + `oneui-dark`) |
-| **macOS** | [`themes/macos/`](themes/macos/README.md) | Listo (v2) | 28 widgets Rainmeter (`MacOSZen`, Sonoma/Sequoia): Menu Bar, Control Center, StandBy Clock, Dynamic Notch Hub, iStat Hub, Almacenamiento, Menú de energía, Activity Rings, 6 acentos |
-| **Glass / Mica** | `themes/glass/` | Planeado | Transparencias esmeriladas nativas de Windows 11 |
-| **Nothing OS** | `themes/nothing/` | Planeado | Estética matricial de alto contraste |
+| **Material You** | [`themes/material-you/`](themes/material-you/README.md) | Listo (v2) | 44 widgets Rainmeter (Oscuro/Claro, ES/EN, 6 paletas + Auto Wallpaper), estilos web Stylus v4.2.1 (Oscuro y Claro), 23 wallpapers, 84 iconos Pastel (PNG + ICO) |
+| **One UI** | [`themes/one-ui/`](themes/one-ui/README.md) | Listo (v2) | 28 widgets Rainmeter (`OneUIZen`, OLED Dark / Pure Snow Light, 5 acentos + Auto Wallpaper, Retro Cassette, Smart Stack), 36 wallpapers 4K, 168 iconos (`oneui-vibrant` + `oneui-dark`) |
+| **macOS** | [`themes/macos/`](themes/macos/README.md) | Listo (v2) | 28 widgets Rainmeter (`MacOSZen`, Sonoma/Sequoia): Menu Bar, Control Center, StandBy Clock, Dynamic Notch Hub, iStat Hub, Almacenamiento, Menú de energía, Activity Rings, 6 acentos, 84 iconos (`macos-sequoia`) |
+| **Glass / Mica** | [`themes/glass/`](themes/glass/README.md) | Listo (v2) | 24 widgets Rainmeter (`GlassZen`, Smoked Glass Oscuro / Frosted Ice Claro, 6 acentos Fluent + Auto Wallpaper, ProHub), 84 iconos Frosted Acrylic (`glass-frosted`) |
+| **Nothing OS** | [`themes/nothing/`](themes/nothing/README.md) | Listo (v2) | 24 widgets Rainmeter (`NothingZen`, OLED Black / Chalk Paper, reloj LED matriz 5×7 real, batería 50 puntos, Vinyl Player, 5 acentos + Auto Sync), 84 iconos monocromáticos (`nothing-mono`) |
 
 ### Herramientas e Iconos
 
-- **Widgets:** 100 widgets de Rainmeter repartidos en las tres suites, sin `.dll` de terceros.
+- **Widgets:** 148 widgets de Rainmeter repartidos en las cinco suites, sin `.dll` de terceros.
 - **Dock:** Las capturas usan **[Muelle](https://github.com/crafter-station/Muelle)**. Tanto Muelle como el Escritorio y la Barra de Tareas nativa de Windows 11 tienen scripts reversibles en `scripts/`.
 - **Navegador:** Estilos Stylus v4.2.1 (`themes/material-you/stylus/`) para Google, YouTube, Reddit, GitHub, WhatsApp Web, Linear, Wikipedia, X, Twitch y apps de IA (ChatGPT, Gemini, Claude, Grok, Perplexity, DeepSeek, AI Studio y NotebookLM), junto con **[Mynt New Tab](https://chromewebstore.google.com/detail/mynt-material-you-new-tab/jjpokbgpiljgndebfoljdeihhkpcpfgl)**.
-- **Iconos (120 en total, PNG 256×256 + ICO multirresolución):** Basados en las siluetas de **[Graphite-Elegance](https://github.com/Acourd/Graphite-Elegance)**.
+- **Iconos (504 en total en 6 estilos — 84 apps diarias c/u en PNG 256×256 + ICO multirresolución):** Navegadores (`Chrome`, `Edge`, `Firefox`, `Brave`, `Opera GX`, `Vivaldi`, `Zen Browser`, `Helium`), Juegos (`Steam`, `Epic`, `Riot`, `Valorant`, `GTA V`, `Minecraft`, `Roblox`, `CS2`, `League of Legends`, `Fortnite`, `Genshin`, `Xbox`, `Terraria`, etc.), Productividad (`VS Code`, `Notion`, `Obsidian`, `Linear`, `Figma`, `Blender`, `Word`, `Excel`, `PowerPoint`, etc.), Música/Redes (`Spotify`, `YouTube Music`, `YouTube`, `VLC`, `OBS`, `Discord`, `WhatsApp`, `Telegram`, `Reddit`), IA y Utilidades — sobre siluetas de **[Graphite-Elegance](https://github.com/Acourd/Graphite-Elegance)** + vectores 512px propios.
 
-| Material You — Pastel Tonal (40) | One UI — Vibrant (40) | One UI — OLED Dark (40) |
+| Material You — Pastel (84) | One UI — Vibrant (84) | One UI — OLED Dark (84) |
 | :---: | :---: | :---: |
 | ![Iconos Material You](themes/material-you/icons/preview.png) | ![Iconos One UI Vibrant](themes/one-ui/icons/preview.png) | ![Iconos One UI Dark](themes/one-ui/icons/preview-dark.png) |
+| **macOS — Sequoia Glass (84)** | **Glass — Frosted Acrylic (84)** | **Nothing OS — Matte Mono (84)** |
+| ![Iconos macOS](themes/macos/icons/preview.png) | ![Iconos Glass](themes/glass/icons/preview.png) | ![Iconos Nothing OS](themes/nothing/icons/preview.png) |
 
 ---
 
@@ -69,6 +71,8 @@ Descarga y haz doble clic sobre el paquete que quieras en [`releases/`](releases
 - [`MaterialYZen-v2.rmskin`](releases/MaterialYZen-v2.rmskin) (44 widgets)
 - [`OneUIZen-v2.rmskin`](releases/OneUIZen-v2.rmskin) (28 widgets)
 - [`MacOSZen-v2.rmskin`](releases/MacOSZen-v2.rmskin) (28 widgets)
+- [`GlassZen-v2.rmskin`](releases/GlassZen-v2.rmskin) (24 widgets)
+- [`NothingZen-v2.rmskin`](releases/NothingZen-v2.rmskin) (24 widgets)
 
 </details>
 
@@ -80,15 +84,18 @@ Descarga y haz doble clic sobre el paquete que quieras en [`releases/`](releases
 git clone https://github.com/Acourd/Veyra-Dots.git
 cd Veyra-Dots
 
-# 2. Instala los widgets de Rainmeter (material-you, one-ui, macos o all)
+# 2. Instala los widgets de Rainmeter (material-you, one-ui, macos, glass, nothing o all)
 .\scripts\install-rainmeter.ps1 -Theme material-you
-# O instala las 3 suites (100 widgets) de una vez:
+# O instala las 5 suites (148 widgets) de una vez:
 .\scripts\install-rainmeter.ps1 -Theme all
 
 # 3. (Opcional) Aplica los iconos en el dock Muelle (con respaldo automático; -Scale 0.90–1.08, por defecto 1.05)
 .\scripts\apply-muelle-icons.ps1 -Theme material-you
 .\scripts\apply-muelle-icons.ps1 -Theme one-ui -Variant vibrant
 .\scripts\apply-muelle-icons.ps1 -Theme one-ui -Variant dark
+.\scripts\apply-muelle-icons.ps1 -Theme macos
+.\scripts\apply-muelle-icons.ps1 -Theme glass
+.\scripts\apply-muelle-icons.ps1 -Theme nothing
 
 # Restaura los iconos originales de Muelle cuando quieras:
 .\scripts\apply-muelle-icons.ps1 -Restore
