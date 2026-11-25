@@ -2,7 +2,7 @@
 
 [English](README.md) | **Español**
 
-Colección minimalista y modular de **dotfiles para Windows 11**, diseñada para personalizar el escritorio, el dock y el navegador por estilos visuales coherentes — **sin software pesado ni plugins `.dll` externos de Rainmeter**.
+Configuraciones de escritorio para Windows 11 — widgets de Rainmeter, iconos, fondos de pantalla y estilos web — organizadas por temática. Sin software pesado ni plugins `.dll` externos de Rainmeter.
 
 ---
 
@@ -10,7 +10,7 @@ Colección minimalista y modular de **dotfiles para Windows 11**, diseñada para
 
 https://github.com/user-attachments/assets/16a8c861-c458-4227-ac5a-5ca4d9b1222f
 
-> Fuente del teaser animado interactivo a 60fps estilo Material 3 Expressive (ES / EN, exportable en 16:9 y 9:16): abre [`showcase/teaser.html`](showcase/teaser.html) en cualquier navegador Chromium.
+> Código fuente de la animación de arriba: [`showcase/teaser.html`](showcase/teaser.html) (ábrelo en cualquier navegador Chromium).
 
 ### Material You (Oscuro y Claro)
 | Ámbar — Oscuro | Ámbar — Claro |
@@ -35,82 +35,57 @@ https://github.com/user-attachments/assets/16a8c861-c458-4227-ac5a-5ca4d9b1222f
 
 ---
 
-## Temáticas y Componentes
+## Temáticas
 
-| Estilo | Carpeta | Estado | Componentes incluidos |
+| Estilo | Carpeta | Estado | Qué incluye |
 | :--- | :--- | :--- | :--- |
-| **Material You** | [`themes/material-you/`](themes/material-you/README.md) | **Disponible (v2)** | **44 widgets Rainmeter** (Oscuro/Claro, ES/EN, 6 paletas + Auto Wallpaper, subsección **`ProHub`**), **Stylus v4.2.1** (Dark & Light, 7 paletas), **23 wallpapers**, **40 iconos Pastel Tonal** (PNG + ICO) y extensión recomendada **Mynt New Tab** |
-| **One UI** | [`themes/one-ui/`](themes/one-ui/README.md) | **Disponible (v2)** | **28 widgets Rainmeter (`OneUIZen`)** en OLED Dark / Pure Snow Light + 5 acentos Samsung + Auto Wallpaper + Good Lock Retro Cassette, Smart Stack, **`ProHub`**, **36 wallpapers 4K** (`18 Oscuros + 18 Claros`) y **80 iconos One UI** (`oneui-vibrant` + `oneui-dark`) |
-| **macOS** | [`themes/macos/`](themes/macos/README.md) | **Disponible (v2)** | **28 widgets Rainmeter (`MacOSZen`)** estilo Sonoma/Sequoia: Menu Bar, Control Center, StandBy Clock, Dynamic Notch Hub, iStat Hub, About Storage, Power Menu, Activity Rings, 6 acentos Apple HIG + **`ProHub`** |
+| **Material You** | [`themes/material-you/`](themes/material-you/README.md) | Listo (v2) | 44 widgets Rainmeter (Oscuro/Claro, ES/EN, 6 paletas + Auto Wallpaper), estilos web Stylus v4.2.1 (Oscuro y Claro), 23 wallpapers, 40 iconos Pastel (PNG + ICO) |
+| **One UI** | [`themes/one-ui/`](themes/one-ui/README.md) | Listo (v2) | 28 widgets Rainmeter (`OneUIZen`, OLED Dark / Pure Snow Light, 5 acentos + Auto Wallpaper, Retro Cassette, Smart Stack), 36 wallpapers 4K, 80 iconos (`oneui-vibrant` + `oneui-dark`) |
+| **macOS** | [`themes/macos/`](themes/macos/README.md) | Listo (v2) | 28 widgets Rainmeter (`MacOSZen`, Sonoma/Sequoia): Menu Bar, Control Center, StandBy Clock, Dynamic Notch Hub, iStat Hub, Almacenamiento, Menú de energía, Activity Rings, 6 acentos |
 | **Glass / Mica** | `themes/glass/` | Planeado | Transparencias esmeriladas nativas de Windows 11 |
 | **Nothing OS** | `themes/nothing/` | Planeado | Estética matricial de alto contraste |
 
----
+### Herramientas e Iconos
 
-## Capas del escritorio y herramientas empleadas
+- **Widgets:** 100 widgets de Rainmeter repartidos en las tres suites, sin `.dll` de terceros.
+- **Dock:** Las capturas usan **[Muelle](https://github.com/crafter-station/Muelle)**. Tanto Muelle como el Escritorio y la Barra de Tareas nativa de Windows 11 tienen scripts reversibles en `scripts/`.
+- **Navegador:** Estilos Stylus v4.2.1 (`themes/material-you/stylus/`) para Google, YouTube, Reddit, GitHub, WhatsApp Web, Linear, Wikipedia, X, Twitch y apps de IA (ChatGPT, Gemini, Claude, Grok, Perplexity, DeepSeek, AI Studio y NotebookLM), junto con **[Mynt New Tab](https://chromewebstore.google.com/detail/mynt-material-you-new-tab/jjpokbgpiljgndebfoljdeihhkpcpfgl)**.
+- **Iconos (120 en total, PNG 256×256 + ICO multirresolución):** Basados en las siluetas de **[Graphite-Elegance](https://github.com/Acourd/Graphite-Elegance)**.
 
-1. **Escritorio (Rainmeter):** 100 widgets vectoriales y modulares en `themes/<estilo>/rainmeter/`, instalados en un clic **sin `.dll` de terceros**.
-2. **Dock ([Muelle](https://github.com/crafter-station/Muelle)):** Todas las configuraciones emplean **[Muelle](https://github.com/crafter-station/Muelle)** como dock ligero estilo macOS para Windows 11. Veyra-Dots incluye un aplicador seguro y reversible en 1 clic (`scripts/apply-muelle-icons.ps1`) con copia de seguridad y restauración automática.
-3. **Packs de iconos de código libre (120 iconos — PNG 256×256 e ICO multirresolución):** Desarrollados a partir de la base de siluetas de **[Graphite-Elegance](https://github.com/Acourd/Graphite-Elegance)** y adaptados a cada estilo:
-   - **Material You Pastel Tonal (`40 iconos`):** `themes/material-you/icons/m3-pastel/`
-   - **One UI Vibrant (`40 iconos`):** `themes/one-ui/icons/oneui-vibrant/`
-   - **One UI OLED Dark (`40 iconos`):** `themes/one-ui/icons/oneui-dark/`
-4. **Navegador (Stylus v4.2.1 + Nueva Pestaña):**
-   - Estilos web unificados (Modo Oscuro y Modo Claro) en `themes/material-you/stylus/` para Google, YouTube, Reddit, GitHub, WhatsApp Web, Linear, Wikipedia, X, Twitch y toda la suite de IA (ChatGPT, Gemini, Claude, Grok, Perplexity, DeepSeek, AI Studio y NotebookLM).
-   - Complementado con **[Mynt — Material You New Tab](https://chromewebstore.google.com/detail/mynt-material-you-new-tab/jjpokbgpiljgndebfoljdeihhkpcpfgl)** en Chrome Web Store.
-5. **Fondos de Pantalla (`wallpapers/`):** Colecciones curadas acordes a cada paleta.
-
-### Vista previa de los packs de iconos
-
-| Material You — Pastel Tonal (40 iconos) | One UI — Vibrant (40 iconos) | One UI — OLED Dark (40 iconos) |
+| Material You — Pastel Tonal (40) | One UI — Vibrant (40) | One UI — OLED Dark (40) |
 | :---: | :---: | :---: |
 | ![Iconos Material You](themes/material-you/icons/preview.png) | ![Iconos One UI Vibrant](themes/one-ui/icons/preview.png) | ![Iconos One UI Dark](themes/one-ui/icons/preview-dark.png) |
 
 ---
 
-## Estructura del repositorio
-
-```text
-Veyra-Dots/
-├── README.md                    # Documentación en inglés
-├── README.es.md                 # Documentación en español
-├── showcase/                    # 12 capturas reales + teaser animado 60fps (ES/EN)
-├── scripts/
-│   ├── install-rainmeter.ps1    # Instalador 1-clic de cualquier estilo (o -Theme all)
-│   ├── apply-muelle-icons.ps1   # Aplicador 1-clic reversible de iconos para Muelle
-│   └── apply-windows-icons.ps1  # Aplicador 1-clic reversible para Escritorio y Barra de Tareas de Windows
-└── themes/
-    ├── material-you/            # 44 widgets, Stylus v4.2.1, 23 wallpapers, 40 iconos Pastel
-    ├── one-ui/                  # 28 widgets, 80 iconos One UI (Vibrant + OLED Dark)
-    ├── macos/                   # 28 widgets (Sonoma / Sequoia)
-    ├── glass/
-    └── nothing/
-```
-
----
-
 ## Instalación rápida
 
-### Opción 1 — La más fácil (Paquetes `.rmskin` en doble clic, sin terminal)
+Elige el método que prefieras y haz clic para desplegar los pasos:
+
+<details>
+<summary><strong>Opción 1 — Paquetes <code>.rmskin</code> en doble clic (la más fácil, sin terminal)</strong></summary>
 
 Descarga y haz doble clic sobre el paquete que quieras en [`releases/`](releases/):
 - [`MaterialYZen-v2.rmskin`](releases/MaterialYZen-v2.rmskin) (44 widgets)
 - [`OneUIZen-v2.rmskin`](releases/OneUIZen-v2.rmskin) (28 widgets)
 - [`MacOSZen-v2.rmskin`](releases/MacOSZen-v2.rmskin) (28 widgets)
 
-### Opción 2 — Instalación completa por PowerShell (Widgets + Iconos en Muelle)
+</details>
+
+<details>
+<summary><strong>Opción 2 — Instalación completa por PowerShell (Widgets + Iconos en Muelle)</strong></summary>
 
 ```powershell
 # 1. Clona el repositorio
 git clone https://github.com/Acourd/Veyra-Dots.git
 cd Veyra-Dots
 
-# 2. Instala los widgets de Rainmeter (elige: material-you, one-ui, macos o all)
+# 2. Instala los widgets de Rainmeter (material-you, one-ui, macos o all)
 .\scripts\install-rainmeter.ps1 -Theme material-you
 # O instala las 3 suites (100 widgets) de una vez:
 .\scripts\install-rainmeter.ps1 -Theme all
 
-# 3. (Opcional) Aplica los iconos personalizados en el dock Muelle (con respaldo automático; -Scale 1.05 por defecto, ajustable 0.90–1.08)
+# 3. (Opcional) Aplica los iconos en el dock Muelle (con respaldo automático; -Scale 0.90–1.08, por defecto 1.05)
 .\scripts\apply-muelle-icons.ps1 -Theme material-you
 .\scripts\apply-muelle-icons.ps1 -Theme one-ui -Variant vibrant
 .\scripts\apply-muelle-icons.ps1 -Theme one-ui -Variant dark
@@ -119,9 +94,12 @@ cd Veyra-Dots
 .\scripts\apply-muelle-icons.ps1 -Restore
 ```
 
-### Opción 3 — Iconos para el Escritorio y la Barra de Tareas nativa de Windows 11 (sin Muelle)
+</details>
 
-Aplica los packs `.ico` multirresolución directamente sobre tus accesos directos del Escritorio y las apps fijadas en la barra de tareas por defecto de Windows (con copia de seguridad automática en `%LOCALAPPDATA%\VeyraDots\` para revertir cuando quieras):
+<details>
+<summary><strong>Opción 3 — Iconos para Escritorio y Barra de Tareas nativa de Windows 11 (sin Muelle)</strong></summary>
+
+Aplica los packs `.ico` directamente a tus accesos directos del Escritorio y las apps fijadas en la barra de tareas de Windows. Guarda copia de seguridad automática en `%LOCALAPPDATA%\VeyraDots\` para revertir cuando quieras.
 
 ```powershell
 # Aplicar en Escritorio y Barra de Tareas (-Scope All | Desktop | Taskbar)
@@ -133,14 +111,16 @@ Aplica los packs `.ico` multirresolución directamente sobre tus accesos directo
 .\scripts\apply-windows-icons.ps1 -Restore -RestartExplorer
 ```
 
-Para instalar **Stylus v4.2.1**, la extensión **Mynt** y consultar el catálogo completo de widgets de cada estilo, abre el README correspondiente dentro de `themes/`.
+</details>
+
+Para instalar **Stylus v4.2.1**, **Mynt New Tab** o ver el catálogo completo de widgets de cada estilo, abre el README correspondiente dentro de `themes/`.
 
 ---
 
 ## Créditos, Aviso Legal y Licencia
 
-- Base de iconos de código libre: **[Graphite-Elegance](https://github.com/Acourd/Graphite-Elegance)** de Acourd — los 120 iconos de Material You y One UI incluidos en Veyra-Dots fueron desarrollados gracias a este proyecto.
-- Dock utilizado en todas las capturas: **[Muelle](https://github.com/crafter-station/Muelle)** de Crafter Station.
+- Base de siluetas de iconos: **[Graphite-Elegance](https://github.com/Acourd/Graphite-Elegance)** de Acourd.
+- Dock en las capturas: **[Muelle](https://github.com/crafter-station/Muelle)** de Crafter Station.
 - Extensión de Nueva Pestaña: **[Mynt — Material You New Tab](https://chromewebstore.google.com/detail/mynt-material-you-new-tab/jjpokbgpiljgndebfoljdeihhkpcpfgl)**.
 - **Aviso de Marcas Registradas:** Veyra-Dots es un proyecto independiente, gratuito y de código abierto sin fines de lucro. **No** está afiliado, patrocinado ni respaldado por Google LLC, Samsung Electronics, Apple Inc. ni por los creadores de las aplicaciones o videojuegos representados en los packs de iconos opcionales. Todos los nombres de productos, marcas comerciales y logotipos pertenecen a sus respectivos propietarios y se utilizan únicamente con fines identificativos en el escritorio del usuario.
-- Distribuido bajo licencia **MIT**.
+- Licencia: **MIT**.

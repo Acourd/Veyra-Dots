@@ -10,7 +10,7 @@
 
 Add-Type -AssemblyName System.Drawing
 
-$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$scriptDir = $PSScriptRoot
 $resDir = Split-Path -Parent $scriptDir
 $accDir = Join-Path $resDir "Accents"
 $varsFile = Join-Path $resDir "Variables.inc"
@@ -44,16 +44,18 @@ function HslToRgb([double]$h, [double]$s, [double]$l) {
   elseif ($h -lt 300) { $r1=$x; $g1=0; $b1=$c }
   else { $r1=$c; $g1=0; $b1=$x }
   return @(
-    [int][Math]::Round(($r1 + $m) * 255),
-    [int][Math]::Round(($g1 + $m) * 255),
-    [int][Math]::Round(($b1 + $m) * 255)
+    [Math]::Max(0, [Math]::Min(255, [int][Math]::Round(($r1 + $m) * 255))),
+    [Math]::Max(0, [Math]::Min(255, [int][Math]::Round(($g1 + $m) * 255))),
+    [Math]::Max(0, [Math]::Min(255, [int][Math]::Round(($b1 + $m) * 255)))
   )
 }
 
 function Get-AccentSeed {
   try {
     $dwm = Get-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\DWM" -ErrorAction Stop
-    $val = [uint32]$dwm.AccentColor
+    $raw = $dwm.AccentColor
+    if ($null -eq $raw) { throw "AccentColor missing" }
+    $val = if ($raw -lt 0) { [BitConverter]::ToUInt32([BitConverter]::GetBytes([int]$raw), 0) } else { [uint32]$raw }
     $hsl = RgbToHsl ($val -band 0xFF) (($val -shr 8) -band 0xFF) (($val -shr 16) -band 0xFF)
     return @{ h = $hsl[0]; s = $hsl[1]; monochrome = ($hsl[1] -lt 0.12) }
   } catch {
@@ -62,12 +64,16 @@ function Get-AccentSeed {
 }
 
 function Get-WallpaperSeed {
+  $bmp = $null
+  $ms = $null
   try {
     $wp = (Get-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name WallPaper -ErrorAction Stop).WallPaper
-    if (-not $wp -or -not (Test-Path $wp)) { $wp = Join-Path $env:APPDATA "Microsoft\Windows\Themes\TranscodedWallpaper" }
-    if (-not (Test-Path $wp)) { return Get-AccentSeed }
+    if (-not $wp -or -not (Test-Path -LiteralPath $wp)) { $wp = Join-Path $env:APPDATA "Microsoft\Windows\Themes\TranscodedWallpaper" }
+    if (-not $wp -or -not (Test-Path -LiteralPath $wp)) { return Get-AccentSeed }
 
-    $bmp = [System.Drawing.Bitmap]::FromFile($wp)
+    $imgBytes = [System.IO.File]::ReadAllBytes($wp)
+    $ms = New-Object System.IO.MemoryStream(,$imgBytes)
+    $bmp = [System.Drawing.Bitmap]::FromStream($ms)
     $buckets = @{}
     $totalPx = 0; $chromaPx = 0
     $stepX = [Math]::Max(1, [int]($bmp.Width / 48))
@@ -89,7 +95,6 @@ function Get-WallpaperSeed {
         }
       }
     }
-    $bmp.Dispose()
     $ratio = if ($totalPx -gt 0) { $chromaPx / [double]$totalPx } else { 0.0 }
     if ($ratio -lt 0.08 -or $buckets.Count -eq 0) { return @{ h = 0.0; s = 0.0; monochrome = $true } }
     $best = $buckets.Values | Sort-Object -Property score -Descending | Select-Object -First 1
@@ -97,12 +102,21 @@ function Get-WallpaperSeed {
     return @{ h = $avgHsl[0]; s = $avgHsl[1]; monochrome = $false }
   } catch {
     return Get-AccentSeed
+  } finally {
+    if ($bmp) { $bmp.Dispose() }
+    if ($ms) { $ms.Dispose() }
   }
 }
 
 function Write-Utf16Ini([string]$path, [string]$content) {
+  $dir = Split-Path -Parent $path
+  if ($dir -and -not (Test-Path -LiteralPath $dir)) {
+    New-Item -ItemType Directory -Path $dir -Force | Out-Null
+  }
   $enc = New-Object System.Text.UnicodeEncoding($false, $true)
-  [System.IO.File]::WriteAllText($path, ([regex]::Replace($content, "\r?\n", "`r`n")), $enc)
+  $tmp = "$path.tmp"
+  [System.IO.File]::WriteAllText($tmp, ([regex]::Replace($content, "\r?\n", "`r`n")), $enc)
+  Move-Item -LiteralPath $tmp -Destination $path -Force
 }
 
 $seed = if ($Source -eq "Accent") { Get-AccentSeed } else { Get-WallpaperSeed }

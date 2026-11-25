@@ -16,44 +16,83 @@ param(
 $ErrorActionPreference = "Stop"
 Add-Type -AssemblyName System.Drawing
 
-$repoRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
+$repoRoot = Split-Path -Parent $PSScriptRoot
 $muelleIcons = Join-Path $env:LOCALAPPDATA "Muelle\icons"
 $backupDir = Join-Path $env:LOCALAPPDATA "Muelle\icons_backup"
-$muelleExe = Join-Path $env:LOCALAPPDATA "Programs\Muelle\muelle.exe"
 
-if (-not (Test-Path $muelleIcons)) {
+if (-not (Test-Path -LiteralPath $muelleIcons)) {
     Write-Error "No se encontro la carpeta de iconos de Muelle en: $muelleIcons"
     exit 1
 }
 
-function Restart-Muelle {
+function Get-MuelleExePath {
+    $proc = Get-Process -Name "muelle" -ErrorAction SilentlyContinue | Select-Object -First 1
+    if ($proc -and $proc.Path -and (Test-Path -LiteralPath $proc.Path)) {
+        return $proc.Path
+    }
+    $candidates = @()
+    if ($env:LOCALAPPDATA) { $candidates += Join-Path $env:LOCALAPPDATA "Programs\Muelle\muelle.exe" }
+    if ($env:ProgramFiles) { $candidates += Join-Path $env:ProgramFiles "Muelle\muelle.exe" }
+    return ($candidates | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1)
+}
+
+$script:MuelleExe = Get-MuelleExePath
+$script:MuelleWasRunning = $false
+
+function Stop-MuelleIfRunning {
     $procs = Get-Process -Name "muelle" -ErrorAction SilentlyContinue
     if ($procs) {
+        $script:MuelleWasRunning = $true
         $procs | Stop-Process -Force -ErrorAction SilentlyContinue
         Start-Sleep -Milliseconds 600
     }
-    if (Test-Path $muelleExe) {
-        Start-Process -FilePath $muelleExe
+}
+
+function Start-MuelleIfAvailable {
+    if ($script:MuelleExe -and (Test-Path -LiteralPath $script:MuelleExe)) {
+        Start-Process -FilePath $script:MuelleExe
         Write-Host "Muelle reiniciado con los iconos actualizados." -ForegroundColor Cyan
+    } elseif ($script:MuelleWasRunning) {
+        Write-Warning "No se encontro muelle.exe para reiniciarlo automaticamente; abre Muelle manualmente."
     }
 }
 
 if ($Restore) {
-    if (-not (Test-Path $backupDir)) {
+    if (-not (Test-Path -LiteralPath $backupDir)) {
         Write-Error "No existe copia de seguridad en: $backupDir"
         exit 1
     }
-    Copy-Item (Join-Path $backupDir "*.bin") $muelleIcons -Force
-    Restart-Muelle
-    Write-Host "Iconos originales de Muelle restaurados." -ForegroundColor Green
+    $backupBins = Get-ChildItem -LiteralPath $backupDir -Filter "*.bin" -File -ErrorAction SilentlyContinue
+    if (-not $backupBins) {
+        Write-Error "La copia de seguridad en '$backupDir' no contiene archivos .bin."
+        exit 1
+    }
+    Stop-MuelleIfRunning
+    try {
+        foreach ($b in $backupBins) {
+            Copy-Item -LiteralPath $b.FullName -Destination (Join-Path $muelleIcons $b.Name) -Force
+        }
+        Write-Host "Iconos originales de Muelle restaurados ($($backupBins.Count) archivos)." -ForegroundColor Green
+    } finally {
+        Start-MuelleIfAvailable
+    }
     exit 0
 }
 
-# Crear backup automatico la primera vez
-if (-not (Test-Path $backupDir)) {
+# Backup incremental por archivo: guarda cada .bin original la primera vez sin sobrescribir respaldos previos
+if (-not (Test-Path -LiteralPath $backupDir)) {
     New-Item -ItemType Directory -Path $backupDir -Force | Out-Null
-    Copy-Item (Join-Path $muelleIcons "*.bin") $backupDir -Force
-    Write-Host "Respaldo original guardado en: $backupDir" -ForegroundColor DarkGray
+}
+$newBackups = 0
+Get-ChildItem -LiteralPath $muelleIcons -Filter "*.bin" -File -ErrorAction SilentlyContinue | ForEach-Object {
+    $dstBak = Join-Path $backupDir $_.Name
+    if (-not (Test-Path -LiteralPath $dstBak)) {
+        Copy-Item -LiteralPath $_.FullName -Destination $dstBak -Force
+        $newBackups++
+    }
+}
+if ($newBackups -gt 0) {
+    Write-Host "Respaldo original actualizado en: $backupDir (+$newBackups archivos)" -ForegroundColor DarkGray
 }
 
 $variantFolder = switch ($Theme) {
@@ -61,7 +100,7 @@ $variantFolder = switch ($Theme) {
     "material-you" { "m3-pastel" }
 }
 $pngDir = Join-Path $repoRoot "themes\$Theme\icons\$variantFolder\png"
-if (-not (Test-Path $pngDir)) {
+if (-not (Test-Path -LiteralPath $pngDir)) {
     Write-Error "No se encontraron iconos PNG en: $pngDir"
     exit 1
 }
@@ -77,13 +116,13 @@ $NameMap = @(
     @{ pattern = "Configuraci|Settings";                 slug = "settings" },
     @{ pattern = "Bloc de notas|Notepad";                slug = "notepad" },
     @{ pattern = "7-Zip";                                slug = "7-zip" },
-    @{ pattern = "Hone";                                 slug = "hone" },
+    @{ pattern = "\bHone\b";                             slug = "hone" },
     @{ pattern = "Discord";                              slug = "discord" },
-    @{ pattern = "Edge";                                 slug = "edge" },
+    @{ pattern = "\bEdge\b";                             slug = "edge" },
     @{ pattern = "Chrome";                               slug = "chrome" },
     @{ pattern = "Linear";                               slug = "linear" },
     @{ pattern = "Steam";                                slug = "steam" },
-    @{ pattern = "OBS";                                  slug = "obs-studio" },
+    @{ pattern = "\bOBS\b";                              slug = "obs-studio" },
     @{ pattern = "Visual Studio Code|VS Code";           slug = "vscode" },
     @{ pattern = "Spotify";                              slug = "spotify" },
     @{ pattern = "Obsidian";                             slug = "obsidian" },
@@ -92,7 +131,7 @@ $NameMap = @(
     @{ pattern = "Malwarebytes";                         slug = "malwarebytes" },
     @{ pattern = "ExitLag";                              slug = "exitlag" },
     @{ pattern = "Valorant";                             slug = "valorant" },
-    @{ pattern = "Riot";                                 slug = "riot-client" },
+    @{ pattern = "\bRiot\b";                             slug = "riot-client" },
     @{ pattern = "Epic Games";                           slug = "epic-games" },
     @{ pattern = "Fortnite";                             slug = "fortnite" },
     @{ pattern = "KovaaK";                               slug = "kovaaks" },
@@ -117,12 +156,15 @@ function Write-PngIntoWdi2([string]$binPath, [string]$pngPath) {
     $w = [BitConverter]::ToUInt32($orig, 12)
     $h = [BitConverter]::ToUInt32($orig, 16)
     $nLen = [BitConverter]::ToUInt32($orig, 20)
-    $pxOff = 24 + $nLen
-    if ($orig.Length -ne ($pxOff + $w * $h * 4)) { return $false }
+    if ($w -eq 0 -or $h -eq 0 -or $w -gt 4096 -or $h -gt 4096) { return $false }
+    [int64]$pxOff = 24 + [int64]$nLen
+    [int64]$expectedLen = $pxOff + ([int64]$w * [int64]$h * 4)
+    if ([int64]$orig.Length -ne $expectedLen) { return $false }
 
     $src = $null
     $resized = $null
     $g = $null
+    $bd = $null
     try {
         $src = [System.Drawing.Bitmap]::FromFile($pngPath)
         $resized = New-Object System.Drawing.Bitmap([int]$w, [int]$h, [System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
@@ -141,60 +183,78 @@ function Write-PngIntoWdi2([string]$binPath, [string]$pngPath) {
 
         $rect = New-Object System.Drawing.Rectangle(0, 0, [int]$w, [int]$h)
         $bd = $resized.LockBits($rect, [System.Drawing.Imaging.ImageLockMode]::ReadOnly, [System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
-        $pxBytes = New-Object byte[] ($w * $h * 4)
+        $pxBytes = New-Object byte[] ([int]($w * $h * 4))
         [System.Runtime.InteropServices.Marshal]::Copy($bd.Scan0, $pxBytes, 0, $pxBytes.Length)
-        $resized.UnlockBits($bd)
     } finally {
+        if ($bd -and $resized) { $resized.UnlockBits($bd) }
         if ($g) { $g.Dispose() }
         if ($src) { $src.Dispose() }
         if ($resized) { $resized.Dispose() }
     }
 
     $out = New-Object byte[] $orig.Length
-    [Array]::Copy($orig, 0, $out, 0, $pxOff)
-    [Array]::Copy($pxBytes, 0, $out, $pxOff, $pxBytes.Length)
-    [System.IO.File]::WriteAllBytes($binPath, $out)
+    [Array]::Copy($orig, 0, $out, 0, [int]$pxOff)
+    [Array]::Copy($pxBytes, 0, $out, [int]$pxOff, $pxBytes.Length)
+
+    $tmpPath = "$binPath.tmp"
+    [System.IO.File]::WriteAllBytes($tmpPath, $out)
+    Move-Item -LiteralPath $tmpPath -Destination $binPath -Force
     return $true
 }
 
 $applied = 0
-$bins = Get-ChildItem $muelleIcons -Filter "*-256.bin"
-foreach ($bin in $bins) {
-    $bytes = [System.IO.File]::ReadAllBytes($bin.FullName)
-    if ($bytes.Length -lt 28) { continue }
-    $magic = [System.Text.Encoding]::ASCII.GetString($bytes, 0, 4)
-    if ($magic -ne "WDI2") { continue }
-    $nLen = [BitConverter]::ToUInt32($bytes, 20)
-    if ((24 + $nLen) -gt $bytes.Length) { continue }
-    $name = [System.Text.Encoding]::UTF8.GetString($bytes, 24, $nLen)
+$bins = Get-ChildItem -LiteralPath $muelleIcons -Filter "*-256.bin" -File -ErrorAction SilentlyContinue
+Stop-MuelleIfRunning
+try {
+    foreach ($bin in $bins) {
+        $bytes = [System.IO.File]::ReadAllBytes($bin.FullName)
+        if ($bytes.Length -lt 28) { continue }
+        $magic = [System.Text.Encoding]::ASCII.GetString($bytes, 0, 4)
+        if ($magic -ne "WDI2") { continue }
+        $nLen = [BitConverter]::ToUInt32($bytes, 20)
+        if ((24 + [int64]$nLen) -gt $bytes.Length) { continue }
+        $name = [System.Text.Encoding]::UTF8.GetString($bytes, 24, [int]$nLen)
 
-    $slug = $null
-    if ($name -match "Papelera|Recycle Bin") {
-        # Distinguir Papelera vacia vs llena usando siempre el respaldo original (inmune a cambios repetidos de variante)
-        $refPath = Join-Path $backupDir $bin.Name
-        $refBytes = if (Test-Path $refPath) { [System.IO.File]::ReadAllBytes($refPath) } else { $bytes }
-        $pxOff = 24 + $nLen
-        $centerAlpha = $refBytes[$pxOff + (128 * 256 + 128) * 4 + 3]
-        $slug = if ($centerAlpha -gt 200) { "trash-full" } else { "trash-empty" }
-    } else {
-        foreach ($rule in $NameMap) {
-            if ($name -match $rule.pattern) {
-                $slug = $rule.slug
-                break
+        $slug = $null
+        if ($name -match "Papelera|Recycle Bin") {
+            # Distinguir Papelera vacia vs llena usando siempre el respaldo original (inmune a cambios repetidos de variante)
+            $refPath = Join-Path $backupDir $bin.Name
+            $refBytes = if (Test-Path -LiteralPath $refPath) { [System.IO.File]::ReadAllBytes($refPath) } else { $bytes }
+            $slug = "trash-empty"
+            if ($refBytes.Length -ge 28 -and ([System.Text.Encoding]::ASCII.GetString($refBytes, 0, 4) -eq "WDI2")) {
+                $rw = [BitConverter]::ToUInt32($refBytes, 12)
+                $rh = [BitConverter]::ToUInt32($refBytes, 16)
+                $rnLen = [BitConverter]::ToUInt32($refBytes, 20)
+                if ($rw -gt 0 -and $rh -gt 0) {
+                    [int64]$rPxOff = 24 + [int64]$rnLen
+                    [int64]$cx = [int]($rw / 2)
+                    [int64]$cy = [int]($rh / 2)
+                    [int64]$alphaIdx = $rPxOff + ($cy * [int64]$rw + $cx) * 4 + 3
+                    if ($alphaIdx -lt $refBytes.Length -and $refBytes[$alphaIdx] -gt 200) {
+                        $slug = "trash-full"
+                    }
+                }
+            }
+        } else {
+            foreach ($rule in $NameMap) {
+                if ($name -match $rule.pattern) {
+                    $slug = $rule.slug
+                    break
+                }
+            }
+        }
+
+        if ($slug) {
+            $pngPath = Join-Path $pngDir "$slug.png"
+            if (Test-Path -LiteralPath $pngPath) {
+                if (Write-PngIntoWdi2 $bin.FullName $pngPath) {
+                    Write-Host "  [OK] $name -> $slug.png" -ForegroundColor Green
+                    $applied++
+                }
             }
         }
     }
-
-    if ($slug) {
-        $pngPath = Join-Path $pngDir "$slug.png"
-        if (Test-Path $pngPath) {
-            if (Write-PngIntoWdi2 $bin.FullName $pngPath) {
-                Write-Host "  [OK] $name -> $slug.png" -ForegroundColor Green
-                $applied++
-            }
-        }
-    }
+    Write-Host "Aplicados $applied iconos ($Theme / $variantFolder) en Muelle." -ForegroundColor Cyan
+} finally {
+    Start-MuelleIfAvailable
 }
-
-Write-Host "Aplicados $applied iconos ($Theme / $Variant) en Muelle." -ForegroundColor Cyan
-Restart-Muelle
