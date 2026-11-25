@@ -1,15 +1,16 @@
 ﻿# Veyra-Dots — Native Windows Multi-Drive Storage Array Query (Zero external DLLs)
-[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+try { [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 } catch {}
 
 try {
   $disks = @([System.IO.DriveInfo]::GetDrives() |
     Where-Object {
-      ($_.DriveType -eq [System.IO.DriveType]::Fixed -or $_.DriveType -eq [System.IO.DriveType]::Removable) -and
-      $_.IsReady -and $_.TotalSize -gt 0
+      try {
+        ($_.DriveType -eq [System.IO.DriveType]::Fixed -or $_.DriveType -eq [System.IO.DriveType]::Removable) -and
+        $_.IsReady -and $_.TotalSize -gt 0
+      } catch { $false }
     } | Sort-Object -Property Name)
 
-  $lines = @("COUNT=$($disks.Count)")
-  $idx = 1
+  $entries = @()
   foreach ($d in ($disks | Select-Object -First 4)) {
     try {
       $id = $d.Name.TrimEnd('\')
@@ -21,9 +22,14 @@ try {
       $freeGB = [math]::Round($d.AvailableFreeSpace / 1GB, 0)
       $usedGB = [math]::Max(0, $totalGB - $freeGB)
       $pct = [math]::Max(0, [math]::Min(100, [math]::Round((($d.TotalSize - $d.AvailableFreeSpace) / [double]$d.TotalSize) * 100, 0)))
-      $lines += "DRV$idx=$id|$label|$kind|$usedGB|$totalGB|$freeGB|$pct"
-      $idx++
+      $entries += "$id|$label|$kind|$usedGB|$totalGB|$freeGB|$pct"
     } catch {}
+  }
+
+  $totalCount = if ($disks.Count -gt 4) { $disks.Count } else { $entries.Count }
+  $lines = @("COUNT=$totalCount")
+  for ($i = 0; $i -lt $entries.Count; $i++) {
+    $lines += "DRV$($i + 1)=$($entries[$i])"
   }
 
   [Console]::Out.Write(($lines -join "`n"))

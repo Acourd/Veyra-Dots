@@ -17,6 +17,10 @@ $ErrorActionPreference = "Stop"
 Add-Type -AssemblyName System.Drawing
 
 $repoRoot = Split-Path -Parent $PSScriptRoot
+if (-not $env:LOCALAPPDATA) {
+    Write-Error "La variable de entorno LOCALAPPDATA no esta definida."
+    exit 1
+}
 $muelleIcons = Join-Path $env:LOCALAPPDATA "Muelle\icons"
 $backupDir = Join-Path $env:LOCALAPPDATA "Muelle\icons_backup"
 
@@ -27,8 +31,12 @@ if (-not (Test-Path -LiteralPath $muelleIcons)) {
 
 function Get-MuelleExePath {
     $proc = Get-Process -Name "muelle" -ErrorAction SilentlyContinue | Select-Object -First 1
-    if ($proc -and $proc.Path -and (Test-Path -LiteralPath $proc.Path)) {
-        return $proc.Path
+    if ($proc) {
+        try {
+            if ($proc.Path -and (Test-Path -LiteralPath $proc.Path)) {
+                return $proc.Path
+            }
+        } catch {}
     }
     $candidates = @()
     if ($env:LOCALAPPDATA) { $candidates += Join-Path $env:LOCALAPPDATA "Programs\Muelle\muelle.exe" }
@@ -77,22 +85,6 @@ if ($Restore) {
         Start-MuelleIfAvailable
     }
     exit 0
-}
-
-# Backup incremental por archivo: guarda cada .bin original la primera vez sin sobrescribir respaldos previos
-if (-not (Test-Path -LiteralPath $backupDir)) {
-    New-Item -ItemType Directory -Path $backupDir -Force | Out-Null
-}
-$newBackups = 0
-Get-ChildItem -LiteralPath $muelleIcons -Filter "*.bin" -File -ErrorAction SilentlyContinue | ForEach-Object {
-    $dstBak = Join-Path $backupDir $_.Name
-    if (-not (Test-Path -LiteralPath $dstBak)) {
-        Copy-Item -LiteralPath $_.FullName -Destination $dstBak -Force
-        $newBackups++
-    }
-}
-if ($newBackups -gt 0) {
-    Write-Host "Respaldo original actualizado en: $backupDir (+$newBackups archivos)" -ForegroundColor DarkGray
 }
 
 $variantFolder = switch ($Theme) {
@@ -197,15 +189,47 @@ function Write-PngIntoWdi2([string]$binPath, [string]$pngPath) {
     [Array]::Copy($pxBytes, 0, $out, [int]$pxOff, $pxBytes.Length)
 
     $tmpPath = "$binPath.tmp"
-    [System.IO.File]::WriteAllBytes($tmpPath, $out)
-    Move-Item -LiteralPath $tmpPath -Destination $binPath -Force
-    return $true
+    try {
+        [System.IO.File]::WriteAllBytes($tmpPath, $out)
+        $moved = $false
+        for ($attempt = 1; $attempt -le 3; $attempt++) {
+            try {
+                Move-Item -LiteralPath $tmpPath -Destination $binPath -Force
+                $moved = $true
+                break
+            } catch {
+                if ($attempt -eq 3) { throw }
+                Start-Sleep -Milliseconds (150 * $attempt)
+            }
+        }
+        return $moved
+    } finally {
+        if (Test-Path -LiteralPath $tmpPath) {
+            Remove-Item -LiteralPath $tmpPath -Force -ErrorAction SilentlyContinue
+        }
+    }
 }
 
 $applied = 0
-$bins = Get-ChildItem -LiteralPath $muelleIcons -Filter "*-256.bin" -File -ErrorAction SilentlyContinue
 Stop-MuelleIfRunning
 try {
+    # Backup incremental por archivo: guarda cada .bin original la primera vez sin sobrescribir respaldos previos
+    if (-not (Test-Path -LiteralPath $backupDir)) {
+        New-Item -ItemType Directory -Path $backupDir -Force | Out-Null
+    }
+    $newBackups = 0
+    Get-ChildItem -LiteralPath $muelleIcons -Filter "*.bin" -File -ErrorAction SilentlyContinue | ForEach-Object {
+        $dstBak = Join-Path $backupDir $_.Name
+        if (-not (Test-Path -LiteralPath $dstBak)) {
+            Copy-Item -LiteralPath $_.FullName -Destination $dstBak -Force
+            $newBackups++
+        }
+    }
+    if ($newBackups -gt 0) {
+        Write-Host "Respaldo original actualizado en: $backupDir (+$newBackups archivos)" -ForegroundColor DarkGray
+    }
+
+    $bins = Get-ChildItem -LiteralPath $muelleIcons -Filter "*-256.bin" -File -ErrorAction SilentlyContinue
     foreach ($bin in $bins) {
         $bytes = [System.IO.File]::ReadAllBytes($bin.FullName)
         if ($bytes.Length -lt 28) { continue }
@@ -225,7 +249,7 @@ try {
                 $rw = [BitConverter]::ToUInt32($refBytes, 12)
                 $rh = [BitConverter]::ToUInt32($refBytes, 16)
                 $rnLen = [BitConverter]::ToUInt32($refBytes, 20)
-                if ($rw -gt 0 -and $rh -gt 0) {
+                if ($rw -gt 0 -and $rh -gt 0 -and $rw -le 4096 -and $rh -le 4096) {
                     [int64]$rPxOff = 24 + [int64]$rnLen
                     [int64]$cx = [int]($rw / 2)
                     [int64]$cy = [int]($rh / 2)

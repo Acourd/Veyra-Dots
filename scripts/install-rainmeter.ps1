@@ -10,18 +10,20 @@ $ErrorActionPreference = "Stop"
 $repoRoot = Split-Path -Parent $PSScriptRoot
 
 function Get-RainmeterSkinsPath {
-  $rmIni = Join-Path $env:APPDATA "Rainmeter\Rainmeter.ini"
-  if ($env:APPDATA -and (Test-Path -LiteralPath $rmIni)) {
-    try {
-      $match = Select-String -LiteralPath $rmIni -Pattern '^\s*SkinPath\s*=\s*(.+?)\s*$' -ErrorAction SilentlyContinue | Select-Object -First 1
-      if ($match) {
-        $custom = $match.Matches[0].Groups[1].Value.Trim().Trim('"')
-        if ($custom) { return $custom }
-      }
-    } catch {}
+  if ($env:APPDATA) {
+    $rmIni = Join-Path $env:APPDATA "Rainmeter\Rainmeter.ini"
+    if (Test-Path -LiteralPath $rmIni -PathType Leaf) {
+      try {
+        $match = Select-String -LiteralPath $rmIni -Pattern '^\s*SkinPath\s*=\s*(.+?)\s*$' -ErrorAction SilentlyContinue | Select-Object -First 1
+        if ($match) {
+          $custom = [Environment]::ExpandEnvironmentVariables($match.Matches[0].Groups[1].Value.Trim().Trim('"'))
+          if ($custom) { return $custom }
+        }
+      } catch {}
+    }
   }
   $docs = [Environment]::GetFolderPath("MyDocuments")
-  if (-not $docs) { $docs = Join-Path $env:USERPROFILE "Documents" }
+  if (-not $docs -and $env:USERPROFILE) { $docs = Join-Path $env:USERPROFILE "Documents" }
   return Join-Path $docs "Rainmeter\Skins"
 }
 
@@ -40,8 +42,11 @@ foreach ($t in $themesToInstall) {
     exit 1
   }
 
+  $ignoredNames = @("thumbs.db", ".ds_store", "desktop.ini")
   $srcPrefixLen = $srcSkins.TrimEnd("\").Length
-  Get-ChildItem -LiteralPath $srcSkins -Recurse -File | ForEach-Object {
+  Get-ChildItem -LiteralPath $srcSkins -Recurse -File | Where-Object {
+    ($ignoredNames -notcontains $_.Name.ToLowerInvariant()) -and ($_.Extension.ToLowerInvariant() -ne ".bak")
+  } | ForEach-Object {
     $rel = $_.FullName.Substring($srcPrefixLen).TrimStart("\")
     $target = Join-Path $dstSkins $rel
     $targetDir = Split-Path -Parent $target
@@ -69,8 +74,12 @@ foreach ($t in $themesToInstall) {
 
 $rm = $null
 $runningRm = Get-Process -Name "Rainmeter" -ErrorAction SilentlyContinue | Select-Object -First 1
-if ($runningRm -and $runningRm.Path -and (Test-Path -LiteralPath $runningRm.Path)) {
-  $rm = $runningRm.Path
+if ($runningRm) {
+  try {
+    if ($runningRm.Path -and (Test-Path -LiteralPath $runningRm.Path)) {
+      $rm = $runningRm.Path
+    }
+  } catch {}
 }
 if (-not $rm) {
   $candidates = @()

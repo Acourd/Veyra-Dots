@@ -1,5 +1,5 @@
 ﻿# Veyra-Dots — Native Windows Bluetooth & Connected Devices Query (Zero external DLLs)
-[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+try { [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 } catch {}
 
 function ConvertTo-BatteryPct($val) {
   if ($null -eq $val) { return -1 }

@@ -18,10 +18,14 @@
 $ErrorActionPreference = "Stop"
 
 $repoRoot = Split-Path -Parent $PSScriptRoot
+if (-not $env:LOCALAPPDATA) {
+    Write-Error "La variable de entorno LOCALAPPDATA no esta definida."
+    exit 1
+}
 $stateDir = Join-Path $env:LOCALAPPDATA "VeyraDots"
 $backupFile = Join-Path $stateDir "windows-icons-backup.json"
 $desktopDir = [Environment]::GetFolderPath("Desktop")
-$taskbarDir = Join-Path $env:APPDATA "Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar"
+$taskbarDir = if ($env:APPDATA) { Join-Path $env:APPDATA "Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar" } else { $null }
 
 $wsh = New-Object -ComObject WScript.Shell
 
@@ -60,7 +64,12 @@ try {
             Write-Error "El archivo de respaldo esta vacio: $backupFile"
             exit 1
         }
-        $saved = $rawJson | ConvertFrom-Json
+        try {
+            $saved = $rawJson | ConvertFrom-Json
+        } catch {
+            Write-Error "El archivo de respaldo JSON esta danado y no se puede leer: $backupFile"
+            exit 1
+        }
         if (-not $saved -or -not $saved.PSObject) {
             Write-Error "El archivo de respaldo no contiene entradas validas: $backupFile"
             exit 1
@@ -211,8 +220,14 @@ try {
 
     if ($backupMap.Count -gt 0) {
         $tmpBackup = "$backupFile.tmp"
-        $backupMap | ConvertTo-Json -Depth 3 | Set-Content -LiteralPath $tmpBackup -Encoding UTF8
-        Move-Item -LiteralPath $tmpBackup -Destination $backupFile -Force
+        try {
+            $backupMap | ConvertTo-Json -Depth 3 | Set-Content -LiteralPath $tmpBackup -Encoding UTF8
+            Move-Item -LiteralPath $tmpBackup -Destination $backupFile -Force
+        } finally {
+            if (Test-Path -LiteralPath $tmpBackup) {
+                Remove-Item -LiteralPath $tmpBackup -Force -ErrorAction SilentlyContinue
+            }
+        }
     }
 
     Write-Host "Aplicados $applied iconos ($Theme / $variantFolder · Scope: $Scope)." -ForegroundColor Cyan

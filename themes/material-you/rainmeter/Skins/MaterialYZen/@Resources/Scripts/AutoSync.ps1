@@ -76,15 +76,29 @@ function Get-WallpaperSeed {
   $bmp = $null
   $ms = $null
   try {
-    $wp = (Get-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name WallPaper -ErrorAction Stop).WallPaper
-    if (-not $wp -or -not (Test-Path -LiteralPath $wp)) {
-      $wp = Join-Path $env:APPDATA "Microsoft\Windows\Themes\TranscodedWallpaper"
+    $candidates = @()
+    try {
+      $wp = (Get-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name WallPaper -ErrorAction Stop).WallPaper
+      if ($wp -and (Test-Path -LiteralPath $wp -PathType Leaf)) { $candidates += $wp }
+    } catch {}
+    if ($env:APPDATA) {
+      $tc = Join-Path $env:APPDATA "Microsoft\Windows\Themes\TranscodedWallpaper"
+      if ((Test-Path -LiteralPath $tc -PathType Leaf) -and ($candidates -notcontains $tc)) { $candidates += $tc }
     }
-    if (-not $wp -or -not (Test-Path -LiteralPath $wp)) { return Get-AccentSeed }
+    if ($candidates.Count -eq 0) { return Get-AccentSeed }
 
-    $imgBytes = [System.IO.File]::ReadAllBytes($wp)
-    $ms = New-Object System.IO.MemoryStream(,$imgBytes)
-    $bmp = [System.Drawing.Bitmap]::FromStream($ms)
+    foreach ($cand in $candidates) {
+      try {
+        $imgBytes = [System.IO.File]::ReadAllBytes($cand)
+        $ms = New-Object System.IO.MemoryStream(,$imgBytes)
+        $bmp = [System.Drawing.Bitmap]::FromStream($ms)
+        break
+      } catch {
+        if ($bmp) { $bmp.Dispose(); $bmp = $null }
+        if ($ms) { $ms.Dispose(); $ms = $null }
+      }
+    }
+    if (-not $bmp) { return Get-AccentSeed }
     $buckets = @{}
     $totalPx = 0
     $chromaPx = 0
@@ -137,8 +151,14 @@ function Write-Utf16Ini([string]$path, [string]$content) {
   $enc = New-Object System.Text.UnicodeEncoding($false, $true)
   $normalized = [regex]::Replace($content, "\r?\n", "`r`n")
   $tmp = "$path.tmp"
-  [System.IO.File]::WriteAllText($tmp, $normalized, $enc)
-  Move-Item -LiteralPath $tmp -Destination $path -Force
+  try {
+    [System.IO.File]::WriteAllText($tmp, $normalized, $enc)
+    Move-Item -LiteralPath $tmp -Destination $path -Force
+  } finally {
+    if (Test-Path -LiteralPath $tmp) {
+      Remove-Item -LiteralPath $tmp -Force -ErrorAction SilentlyContinue
+    }
+  }
 }
 
 $seed = if ($Source -eq "Accent") { Get-AccentSeed } else { Get-WallpaperSeed }
@@ -236,14 +256,14 @@ OnSurfaceVariant=$(Rgba $h ($s * 0.24) 0.34 255)
 Write-Utf16Ini (Join-Path $palDir "Auto_Dark.inc") $darkInc
 Write-Utf16Ini (Join-Path $palDir "Auto_Light.inc") $lightInc
 
-if ($ApplyToActive -and (Test-Path $varsFile)) {
+if ($ApplyToActive -and (Test-Path -LiteralPath $varsFile -PathType Leaf)) {
   $varsText = [System.IO.File]::ReadAllText($varsFile)
-  $varsText = [regex]::Replace($varsText, "(?m)^ThemeColor=.*$", "ThemeColor=Auto")
+  $varsText = [regex]::Replace($varsText, "(?m)^ThemeColor=[^\r\n]*", "ThemeColor=Auto")
   if ($Source -eq "Accent") {
     try {
       $lightTheme = (Get-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name AppsUseLightTheme -ErrorAction Stop).AppsUseLightTheme
       $mode = if ($lightTheme -eq 1) { "Light" } else { "Dark" }
-      $varsText = [regex]::Replace($varsText, "(?m)^ThemeMode=.*$", "ThemeMode=$mode")
+      $varsText = [regex]::Replace($varsText, "(?m)^ThemeMode=[^\r\n]*", "ThemeMode=$mode")
     } catch {}
   }
   Write-Utf16Ini $varsFile $varsText
