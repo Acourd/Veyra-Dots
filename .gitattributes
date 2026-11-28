@@ -1,0 +1,9 @@
+*.lua text eol=lf
+*.ps1 text eol=crlf
+*.ini binary
+*.inc binary
+*.rmskin binary
+*.png binary
+*.jpg binary
+*.ico binary
+*.ttf binary
