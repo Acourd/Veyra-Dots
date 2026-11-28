@@ -39,11 +39,11 @@ https://github.com/user-attachments/assets/689d621e-6450-416e-b4cd-c3631081fab4
 
 | Theme | Folder | Status | What's inside |
 | :--- | :--- | :--- | :--- |
-| **Material You** | [`themes/material-you/`](themes/material-you/README.md) | Ready (v2) | 44 Rainmeter widgets (Dark/Light, EN/ES, 6 palettes + Auto Wallpaper), Stylus v4.2.1 web styles (Dark & Light), 23 wallpapers, 84 Expressive Pastel icons (`m3-pastel`) + 12 tonal palettes (`m3-palettes`) |
-| **One UI** | [`themes/one-ui/`](themes/one-ui/README.md) | Ready (v3.1) | 54 Rainmeter widgets (`OneUIZen`, OLED Dark / Pure Snow Light, 5 accents + Auto Wallpaper, Retro Cassette, Smart Stack), 36 4K wallpapers, 168 icons (`oneui-vibrant` + `oneui-dark`) |
-| **macOS** | [`themes/macos/`](themes/macos/README.md) | Ready (v2) | 28 Rainmeter widgets (`MacOSZen`, Sonoma/Sequoia): Menu Bar, Control Center, StandBy Clock, Dynamic Notch Hub, iStat Hub, Storage, Power Menu, Activity Rings, 6 accents, 84 icons (`macos-sequoia`) |
-| **Glass / Mica** | [`themes/glass/`](themes/glass/README.md) | Ready (v2) | 24 Direct2D Rainmeter widgets (`GlassZen`, Smoked Glass / Frosted Ice / Liquid Crystal, 6 Fluent accents + Auto Wallpaper, ProHub), 168 Frosted Ice icons (`glass-frosted` Dark + `glass-frosted-light` Light) |
-| **Nothing OS** | [`themes/nothing/`](themes/nothing/README.md) | Ready (v2.1) | 18 Direct2D Rainmeter widgets (`NothingZen`, OLED Matte / Chalk Paper / Wireframe AOD, 5×7 vector dot clock, radial tick dials, dot-matrix telemetry), 168 icons (`nothing-mono` OLED + `nothing-chalk` Light) |
+| **Material You** | [`themes/material-you/`](themes/material-you/README.md) | Ready (v3) | Material You widgets (Dark/Light, EN/ES, 6 palettes + Auto Wallpaper), Stylus v4.2.1 web styles, **59 4K wallpapers** (Material You Flat + AuraYou Ceramic), 84 Expressive Pastel icons + 12 tonal palettes |
+| **One UI** | [`themes/one-ui/`](themes/one-ui/README.md) | Ready (v3.1) | `OneUIZen` widgets (OLED Dark / Pure Snow Light, 5 accents + Auto Wallpaper, Retro Cassette, Now Bar, Weather), **36 4K wallpapers**, 168 icons (`oneui-vibrant` + `oneui-dark`) |
+| **macOS** | [`themes/macos/`](themes/macos/README.md) | Ready (v3) | `MacOSZen` widgets (Sonoma/Sequoia): Menu Bar, Control Center, StandBy Clock, Dynamic Notch Hub, Weather, Audio, Battery, Activity Rings, 6 accents + active ring, 84 icons (`macos-sequoia`) |
+| **Glass / Mica** | [`themes/glass/`](themes/glass/README.md) | Ready (v3) | `GlassZen` Direct2D widgets (Smoked Glass / Frosted Ice / Liquid Crystal, Weather, CPU Ring, Mic Slider, Focus Tracker, 6 Fluent accents + Auto Wall), **24 4K wallpapers** (`Crystal`, `Ice`, `Smoked`), 168 Frosted Ice icons |
+| **Nothing OS** | [`themes/nothing/`](themes/nothing/README.md) | Ready (v3) | `NothingZen` Direct2D widgets (OLED Matte `#141416`, 85–95% monochrome + surgical `#D71921` red, dot-matrix telemetry, Flip Clock, GPU Dial, Power Deck), **30 4K wallpapers**, 168 icons (`nothing-mono` + `nothing-chalk`) |
 
 ### Companion Tools & Icons
 
@@ -59,6 +59,26 @@ https://github.com/user-attachments/assets/689d621e-6450-416e-b4cd-c3631081fab4
 | ![Glass Dark Icons](themes/glass/icons/preview.png) | ![Glass Light Icons](themes/glass/icons/preview-light.png) | ![macOS Icons](themes/macos/icons/preview.png) |
 | **Nothing OS — OLED Matte (84)** | **Nothing OS — Chalk Paper Light (84)** | |
 | ![Nothing OLED Icons](themes/nothing/icons/preview.png) | ![Nothing Chalk Icons](themes/nothing/icons/preview-chalk.png) | |
+
+---
+
+## Ready-to-Load Desktop Layouts
+
+Want every widget already positioned out of the box? The [`layouts/`](layouts/) folder ships **5 curated 1920×1080 Rainmeter Layouts** pre-arranged into three clean zones (left: date/weather/notes, bottom-center: media player, right: battery/system/AI) with an open center canvas for your wallpaper:
+
+| Layout | Suite | Included Widgets | Quick Load Command |
+| :--- | :--- | :--- | :--- |
+| **`Veyra_OneUI`** | `OneUIZen` | `OneUIDatePill`, `OneUIWeatherCard`, `OneUIQuote`, `OneUINowBar`, `OneUICassette`, `OneUIBatteryPill`, `OneUIRamCard`, `OneUIAiRail`, `OneUISwitcher` | `.\scripts\install-layouts.ps1 -Layout Veyra_OneUI -Load Veyra_OneUI` |
+| **`Veyra_Nothing`** | `NothingZen` | `NothingFlipClock`, `NothingWeatherMatrix`, `NothingTodayDial`, `NothingMemoPad`, `NothingVinylPlayer`, `NothingBatteryPill`, `NothingRamMatrix`, `NothingAiPad`, `NothingSwitcher` | `.\scripts\install-layouts.ps1 -Layout Veyra_Nothing -Load Veyra_Nothing` |
+| **`Veyra_Glass`** | `GlassZen` | `GlassTodaySquircle`, `GlassWeatherCard`, `GlassMemoCard`, `GlassMusicBar`, `GlassBatteryRing`, `GlassCpuRing`, `GlassRamCapsule`, `GlassMicSlider`, `GlassSwitcher` | `.\scripts\install-layouts.ps1 -Layout Veyra_Glass -Load Veyra_Glass` |
+| **`Veyra_MacOS`** | `MacOSZen` | `MacOSCalendarDay`, `MacOSWeatherCard`, `MacOSNote`, `MacOSDock`, `MacOSNowPlayingCard`, `MacOSBatteryBar`, `MacOSAudioPill`, `MacOSSwitcher` | `.\scripts\install-layouts.ps1 -Layout Veyra_MacOS -Load Veyra_MacOS` |
+| **`Veyra_MaterialYou`** | `MaterialYZen` | `ClockAnalogHybrid`, `WeatherSquircle`, `QuickMemo`, `MusicCompact`, `BatteryPill`, `RamCard`, `UptimePill`, `ThemeSwitcher` | `.\scripts\install-layouts.ps1 -Layout Veyra_MaterialYou -Load Veyra_MaterialYou` |
+
+```powershell
+# Install all widget suites + all ready-to-load layouts and apply OneUI immediately:
+.\scripts\install-rainmeter.ps1 -Theme all
+.\scripts\install-layouts.ps1 -Layout all -Load Veyra_OneUI
+```
 
 ---
 
@@ -87,11 +107,16 @@ git clone https://github.com/Acourd/Veyra-Dots.git
 cd Veyra-Dots
 
 # 2. Install Rainmeter widgets (material-you, one-ui, macos, glass, nothing, or all)
-.\scripts\install-rainmeter.ps1 -Theme material-you
-# Or install all 5 suites (157 widgets) at once:
 .\scripts\install-rainmeter.ps1 -Theme all
 
-# 3. (Optional) Apply custom icons to Muelle dock (auto-backs up originals; -Scale 0.90–1.08, default 1.05)
+# 3. Install ready-to-load desktop layouts (all widgets pre-arranged for 1920x1080)
+.\scripts\install-layouts.ps1 -Layout all -Load Veyra_OneUI
+
+# Switch anytime between any of the 5 curated layouts:
+# Veyra_OneUI | Veyra_Nothing | Veyra_Glass | Veyra_MacOS | Veyra_MaterialYou
+.\scripts\install-layouts.ps1 -Layout Veyra_Nothing -Load Veyra_Nothing
+
+# 4. (Optional) Apply custom icons to Muelle dock (auto-backs up originals; -Scale 0.90–1.08, default 1.05)
 .\scripts\apply-muelle-icons.ps1 -Theme material-you
 .\scripts\apply-muelle-icons.ps1 -Theme one-ui -Variant vibrant
 .\scripts\apply-muelle-icons.ps1 -Theme one-ui -Variant dark
