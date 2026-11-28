@@ -1,91 +1,75 @@
-﻿# Veyra-Dots — Native Windows Bluetooth & Connected Devices Query (Zero external DLLs)
-try { [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 } catch {}
+# Paired endpoints, with connection state as reported by Windows.
+$ErrorActionPreference = 'Stop'
+[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)
 
-function ConvertTo-BatteryPct($val) {
-  if ($null -eq $val) { return -1 }
-  $parsed = 0
-  if ([int]::TryParse([string]$val, [ref]$parsed) -and $parsed -ge 0 -and $parsed -le 100) {
-    return $parsed
-  }
-  return -1
+function Get-DeviceKey([string]$Address, [string]$Id) {
+    $key = $Address -replace '[:-]', ''
+    if ($key -match '^[0-9A-Fa-f]{12}$') { return $key.ToUpperInvariant() }
+    if ($Id -match '(?i)(?:DEV_|[:#])([0-9A-F]{12})(?:\\|$)') { return $Matches[1].ToUpperInvariant() }
+    return $Id
 }
+
+$results = @{}
+$queried = $false
+try {
+    Add-Type -AssemblyName System.Runtime.WindowsRuntime
+    $info = [Windows.Devices.Enumeration.DeviceInformation,Windows.Devices.Enumeration,ContentType=WindowsRuntime]
+    $list = [Windows.Devices.Enumeration.DeviceInformationCollection,Windows.Devices.Enumeration,ContentType=WindowsRuntime]
+    $endpoint = [Windows.Devices.Enumeration.DeviceInformationKind,Windows.Devices.Enumeration,ContentType=WindowsRuntime]::AssociationEndpoint
+    $classic = [Windows.Devices.Bluetooth.BluetoothDevice,Windows.Devices.Bluetooth,ContentType=WindowsRuntime]
+    $lowEnergy = [Windows.Devices.Bluetooth.BluetoothLEDevice,Windows.Devices.Bluetooth,ContentType=WindowsRuntime]
+    $asTask = [System.WindowsRuntimeSystemExtensions].GetMethods() | Where-Object {
+        $_.Name -eq 'AsTask' -and $_.IsGenericMethod -and $_.GetParameters().Length -eq 1
+    } | Select-Object -First 1
+    [string[]]$properties = 'System.Devices.Aep.IsConnected','System.Devices.Aep.DeviceAddress'
+    foreach ($protocol in @($classic, $lowEnergy)) {
+        try {
+            $selector = $protocol::GetDeviceSelectorFromPairingState($true)
+            $query = $info::FindAllAsync($selector, $properties, $endpoint)
+            $task = $asTask.MakeGenericMethod($list).Invoke($null, @($query))
+            if (!$task.Wait(3200)) { continue }
+            $queried = $true
+            foreach ($device in $task.Result) {
+                $name = ($device.Name -replace '[\r\n|]', ' ').Trim()
+                if (!$name) { continue }
+                $address = [string]$device.Properties['System.Devices.Aep.DeviceAddress']
+                $key = Get-DeviceKey -Address $address -Id $device.Id
+                $state = $device.Properties['System.Devices.Aep.IsConnected']
+                $connected = if ($null -eq $state) { -1 } elseif ($state) { 1 } else { 0 }
+                if (!$results.ContainsKey($key) -or $connected -gt $results[$key].Connection) {
+                    $results[$key] = @{ Name = $name; Connection = $connected; Battery = -1 }
+                }
+            }
+        } catch { }
+    }
+} catch { }
 
 try {
-  $btDevices = @(Get-PnpDevice -Class Bluetooth -ErrorAction SilentlyContinue |
-    Where-Object { $_.InstanceId -match '^BTH(ENUM|LE)\\DEV_' -and $_.FriendlyName })
-
-  # Map battery percentages from active Bluetooth child/HF/LE devices if exposed
-  $battMap = @{}
-  $allBth = @(Get-PnpDevice -ErrorAction SilentlyContinue |
-    Where-Object { $_.Status -eq 'OK' -and $_.InstanceId -match '^(BTHENUM|BTHLE|BTHHFENUM)\\' })
-  foreach ($b in $allBth) {
-    $prop = Get-PnpDeviceProperty -InstanceId $b.InstanceId -KeyName '{104EA319-6EE2-4701-BD47-8DDBF425BBE5} 2' -ErrorAction SilentlyContinue
-    $pct = if ($prop) { ConvertTo-BatteryPct $prop.Data } else { -1 }
-    if ($pct -ge 0) {
-      if ($b.InstanceId -match '([0-9A-Fa-f]{12})') {
-        $battMap[$Matches[1].ToUpper()] = $pct
-      }
-      if ($b.FriendlyName) {
-        $cleanKey = ($b.FriendlyName -replace '[\r\n|]', ' ').Trim()
-        if ($cleanKey) { $battMap[$cleanKey] = $pct }
-      }
+    $pnp = @(Get-PnpDevice -Class Bluetooth | Where-Object { $_.InstanceId -match '^BTH(?:ENUM|LE)\\DEV_' })
+    $canFallback = !$queried
+    $queried = $true
+    foreach ($device in $pnp) {
+        $key = Get-DeviceKey -Address '' -Id $device.InstanceId
+        if (!$results.ContainsKey($key)) {
+            $name = ($device.FriendlyName -replace '[\r\n|]', ' ').Trim()
+            if (!$canFallback -or !$name) { continue }
+            $results[$key] = @{ Name = $name; Connection = -1; Battery = -1 }
+        }
+        $property = Get-PnpDeviceProperty -InstanceId $device.InstanceId -KeyName '{104EA319-6EE2-4701-BD47-8DDBF425BBE5} 2' -ErrorAction SilentlyContinue
+        $battery = -1
+        if ($property -and [int]::TryParse([string]$property.Data, [ref]$battery) -and $battery -ge 0 -and $battery -le 100) {
+            $results[$key].Battery = $battery
+        }
     }
-  }
+} catch { }
 
-  $byName = @{}
-  foreach ($d in $btDevices) {
-    $name = ($d.FriendlyName -replace '[\r\n|]', ' ').Trim()
-    if (-not $name) { continue }
-
-    $connProp = Get-PnpDeviceProperty -InstanceId $d.InstanceId -KeyName '{83DA6326-97A6-4088-9453-A1923F573B29} 15' -ErrorAction SilentlyContinue
-    $isConn = if ($connProp -and $connProp.Data -eq $true) { 1 } else { 0 }
-
-    $batt = -1
-    $bProp = Get-PnpDeviceProperty -InstanceId $d.InstanceId -KeyName '{104EA319-6EE2-4701-BD47-8DDBF425BBE5} 2' -ErrorAction SilentlyContinue
-    if ($bProp) {
-      $batt = ConvertTo-BatteryPct $bProp.Data
-    }
-    if ($batt -lt 0) {
-      if ($d.InstanceId -match '([0-9A-Fa-f]{12})' -and $battMap.ContainsKey($Matches[1].ToUpper())) {
-        $batt = $battMap[$Matches[1].ToUpper()]
-      } elseif ($battMap.ContainsKey($name)) {
-        $batt = $battMap[$name]
-      }
-    }
-
-    if ($byName.ContainsKey($name)) {
-      if ($isConn -gt $byName[$name].Conn) { $byName[$name].Conn = $isConn }
-      if ($byName[$name].Batt -lt 0 -and $batt -ge 0) { $byName[$name].Batt = $batt }
-      continue
-    }
-
-    $kind = 'DEV'
-    if ($name -match '(?i)airpod|bud|head|ear|audio|nc\d|sony|bose|jbl|beat|havit|speaker|sound|wh-|wf-|pod|mic') {
-      $kind = 'AUDIO'
-    } elseif ($name -match '(?i)mouse|keyb|mx |track|pad|xbox|dualsense|controller|joy|pen|stylus') {
-      $kind = 'INPUT'
-    }
-
-    $byName[$name] = [PSCustomObject]@{
-      Name = $name
-      Conn = $isConn
-      Batt = $batt
-      Kind = $kind
-    }
-  }
-
-  $sorted = @($byName.Values | Sort-Object -Property @{Expression = 'Conn'; Descending = $true}, @{Expression = 'Name'; Descending = $false})
-  $connCount = @($sorted | Where-Object { $_.Conn -eq 1 }).Count
-  $totalCount = $sorted.Count
-
-  $lines = @("COUNT=$connCount|$totalCount")
-  $idx = 1
-  foreach ($item in ($sorted | Select-Object -First 3)) {
-    $lines += "DEV$idx=$($item.Name)|$($item.Conn)|$($item.Batt)|$($item.Kind)"
-    $idx++
-  }
-
-  [Console]::Out.Write(($lines -join "`n"))
-} catch {
-  [Console]::Out.Write("COUNT=0|0")
+if (!$queried) { [Console]::Out.Write('STATUS=ERROR'); return }
+$rows = @($results.Values | Sort-Object -Property @{Expression = {$_.Connection}; Descending = $true}, @{Expression = {$_.Name}})
+$active = @($rows | Where-Object { $_.Connection -eq 1 }).Count
+$unknown = @($rows | Where-Object { $_.Connection -lt 0 }).Count
+$out = @("COUNT=$active|$($rows.Count)|$unknown")
+for ($i = 0; $i -lt [Math]::Min(3, $rows.Count); $i++) {
+    $row = $rows[$i]
+    $out += "DEV$($i + 1)=$($row.Name)|$($row.Connection)|$($row.Battery)"
 }
+[Console]::Out.Write($out -join [Environment]::NewLine)

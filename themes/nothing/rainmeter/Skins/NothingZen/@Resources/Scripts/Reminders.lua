@@ -22,6 +22,8 @@ function Update()
   return 1
 end
 
+local previousLines = {}
+
 function LoadReminders()
   local filePath = SKIN:GetVariable("@") .. "Reminders.txt"
   local lines = {}
@@ -44,11 +46,12 @@ function LoadReminders()
 
   for i = 1, 3 do
     local text = lines[i] or ""
-    SKIN:Bang("!SetVariable", "RemLine" .. i, text)
-    SKIN:Bang("!SetVariable", "RemHidden" .. i, (text ~= "") and "0" or "1")
+    if previousLines[i] ~= text then
+      SKIN:Bang("!SetVariable", "RemLine" .. i, text)
+      SKIN:Bang("!SetVariable", "RemHidden" .. i, (text ~= "") and "0" or "1")
+      previousLines[i] = text
+    end
   end
-  SKIN:Bang("!UpdateMeter", "*")
-  SKIN:Bang("!Redraw")
 end
 
 function AddPending()

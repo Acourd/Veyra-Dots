@@ -2,6 +2,11 @@
 # Construye MaterialYZen-v2.rmskin, OneUIZen-v2.rmskin, MacOSZen-v2.rmskin, GlassZen-v2.rmskin y NothingZen-v2.rmskin en releases/
 # Formato oficial Rainmeter SkinInstaller: ZIP estandar (RMSKIN.ini + Skins/<Suite>/...) + footer binario de 16 bytes.
 
+param(
+    [ValidateSet('all', 'material-you', 'one-ui', 'macos', 'glass', 'nothing')]
+    [string]$Theme = 'all'
+)
+
 $ErrorActionPreference = "Stop"
 Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -22,6 +27,9 @@ $suites = @(
         suite = "OneUIZen"
         file  = "OneUIZen-v2.rmskin"
         load  = "OneUIZen\ThemeSwitcher\OneUISwitcher.ini"
+        version = "3.1.1"
+        defaultMode = "Dark"
+        variableFiles = "OneUIZen\@Resources\Variables.inc | OneUIZen\@Resources\Agenda.inc | OneUIZen\@Resources\AIActivity.inc | OneUIZen\@Resources\Habits.inc | OneUIZen\@Resources\Tools.inc"
     },
     @{
         theme = "macos"
@@ -40,8 +48,15 @@ $suites = @(
         suite = "NothingZen"
         file  = "NothingZen-v2.rmskin"
         load  = "NothingZen\ThemeSwitcher\NothingSwitcher.ini"
+        version = "2.4.0"
+        defaultMode = "Dark"
+        variableFiles = "NothingZen\@Resources\Variables.inc | NothingZen\@Resources\SignalState.inc"
     }
 )
+
+if ($Theme -ne 'all') {
+    $suites = @($suites | Where-Object { $_.theme -eq $Theme })
+}
 
 $ignoredNames = @("thumbs.db", ".ds_store", "desktop.ini")
 
@@ -67,16 +82,20 @@ foreach ($s in $suites) {
         $zip = [System.IO.Compression.ZipFile]::Open($tmpZip, [System.IO.Compression.ZipArchiveMode]::Create)
         try {
             # 1. Manifest RMSKIN.ini at archive root
+            $version = if ($s.version) { $s.version } else { '2.0.0' }
             $manifest = @"
 [rmskin]
 Name=$($s.suite)
 Author=Veyra-Dots
-Version=2.0.0
+Version=$version
 LoadType=Skin
 Load=$($s.load)
 MinimumRainmeter=4.5.0
 MinimumWindows=10.0
 "@ -replace "`r?`n", "`r`n"
+            if ($s.variableFiles) {
+                $manifest += "`r`nVariableFiles=$($s.variableFiles)"
+            }
 
             $iniEntry = $zip.CreateEntry("RMSKIN.ini", [System.IO.Compression.CompressionLevel]::Optimal)
             $sw = New-Object System.IO.StreamWriter($iniEntry.Open(), [System.Text.Encoding]::ASCII)
@@ -94,6 +113,18 @@ MinimumWindows=10.0
             foreach ($f in $files) {
                 $rel = $f.FullName.Substring($srcPrefixLen).TrimStart("\").Replace("\", "/")
                 $entryName = "Skins/$($s.suite)/$rel"
+                if ($s.defaultMode -and $rel -eq '@Resources/Variables.inc') {
+                    $vars = [IO.File]::ReadAllText($f.FullName)
+                    $modeLine = '(?m)^ThemeMode=[^\r\n]*'
+                    if (![regex]::IsMatch($vars, $modeLine)) {
+                        throw "No se encontró ThemeMode en $($f.FullName)"
+                    }
+                    $vars = [regex]::Replace($vars, $modeLine, "ThemeMode=$($s.defaultMode)")
+                    $entry = $zip.CreateEntry($entryName, [System.IO.Compression.CompressionLevel]::Optimal)
+                    $writer = [IO.StreamWriter]::new($entry.Open(), [Text.Encoding]::Unicode)
+                    try { $writer.Write($vars) } finally { $writer.Dispose() }
+                    continue
+                }
                 [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile(
                     $zip, $f.FullName, $entryName, [System.IO.Compression.CompressionLevel]::Optimal
                 ) | Out-Null

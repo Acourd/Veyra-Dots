@@ -2,22 +2,33 @@
 
 Suite nativa de Rainmeter sin plugins externos inspirada en **Samsung One UI 7 / 8**: tarjetas *squircle* limpias en **OLED Obsidian (Oscuro)** o **Pure Snow (Claro)** con acentos vibrantes, modo **Auto Wallpaper** y barras píldora semánticas.
 
-## Widgets incluidos (`OneUIZen`, 28 widgets)
+## Widgets incluidos (`OneUIZen`, 54 widgets)
 
 | Categoría | Widgets |
 | :--- | :--- |
 | **ThemeSwitcher (1)** | `OneUISwitcher.ini` — Alterna en 1 clic entre **Oscuro (OLED) / Claro (Snow)**, **ES / EN**, **5 acentos Samsung** y modo **Auto (Wallpaper)**. |
-| **ProHub (3) — Subsección Productividad & Hardware** | `OneUIBluetoothHub.ini` (dispositivos Bluetooth conectados/emparejados + batería), `OneUIAIUsageHub.ini` (porcentaje de consumo diario de ChatGPT, Claude, Gemini y Grok con iconos HD) y `OneUIStorageVault.ini` (bóveda multi-unidad SSD/USB en vivo). |
-| **Clock (5)** | `OneUIFlipClock.ini`, `OneUINowBar.ini` (Now Bar), `OneUIAnalog.ini`, `OneUIDualClock.ini` y `OneUISmartStack.ini` (Smart Widget Stack interactivo de 3 páginas). |
-| **Calendar (3)** | `OneUICalendar.ini` (mes completo 6×7), `OneUICalendarStrip.ini` (tira semanal de 7 días con píldora del día actual) y `OneUICountdown.ini` (cuenta regresiva con días restantes). |
-| **Productivity (1)** | `OneUIFocus.ini` — Temporizador Pomodoro / Focus de 25 min con anillo circular, inicio/pausa y reinicio. |
-| **System (3)** | `OneUIDeviceCare.ini` (4 barras semánticas: Batería, Disco, RAM, CPU), `OneUIStoragePill.ini` y `OneUINetworkMonitor.ini` (tráfico de red en vivo con sparkline dual de 16 barras). |
-| **Battery (2)** | `OneUIBatteryPill.ini` (cápsula con rayo vectorial) y `OneUIBatteryCircle.ini` (dial circular con anillo dinámico verde/coral). |
-| **Audio (1)** | `OneUIAudioCard.ini` — Volumen vertical táctil + acceso a Bluetooth. |
-| **Music (3)** | `OneUIMusicPlayer.ini`, `OneUIMusicCompact.ini` y `OneUICassette.ini` (reproductor Retro Cassette estilo Samsung Good Lock con carretes animados). |
-| **Search & AI (3)** | `OneUISearchBar.ini`, `OneUIAiBar.ini` (ChatGPT, Gemini, Claude, Grok, Perplexity) y `OneUIQuickApps.ini` (Google, Gemini, Gmail, Chrome, YouTube, Meet) con iconos oficiales HD. |
-| **Notes (2)** | `OneUIReminders.ini` (lista de recordatorios con casillas circulares y botón `+`) y `OneUIQuote.ini` (tarjeta de frase diaria de alto contraste editable al hacer clic). |
-| **QuickSettings (1)** | `OneUIQuickPanel.ini` — Panel 2×2 (Wi-Fi, Bluetooth, Audio reactivo y Modo Oscuro/Claro). |
+| **ProHub (3)** | `OneUIBluetoothHub.ini` muestra el estado que informa Windows y la batería cuando está disponible. `OneUIAIUsageHub.ini` cuenta accesos diarios desde los widgets de IA. `OneUIStorageVault.ini` muestra las unidades SSD y USB. |
+| **Clock (10)** | Relojes Línea, Baldosa, Columna, Dueto, Pulso y Escritorio junto con Analógico, Dual, Now Bar y Smart Stack. |
+| **Calendar (6)** | Mes, tira semanal, cuenta regresiva, agenda local, fecha en píldora y tarjeta Hoy. |
+| **Productivity (3)** | Temporizador, Modos de enfoque con sesiones de 25 o 50 minutos y un descanso de 10, y Hábitos diarios. |
+| **System (4)** | Device Care en cuadrícula, Device Care clásico con cuatro barras horizontales, almacenamiento y monitor de red. |
+| **Battery (4)** | `OneUIBatteryPill.ini`, `OneUIBatteryCircle.ini`, `OneUIBatteryEnergy.ini` (alimentación y autonomía disponible) y `OneUIBatteryTrend.ini` (historial de quince minutos). |
+| **Audio (5)** | Sonido, salida, preajustes de volumen (15, 35 y 65 %), controles multimedia de Windows y deslizador. |
+| **Music (4)** | `OneUIMusicPlayer.ini`, `OneUIMusicCompact.ini`, `OneUICassette.ini` y `OneUIMediaPanel.ini` (pista, progreso y controles). |
+| **Search (2)** | Barra de búsqueda con accesos a Gemini, YouTube y Gmail, y Finder con web, YouTube y Wikipedia. |
+| **Shortcuts (5)** | Accesos rápidos, combos Social, Google e IA, y un lanzador de herramientas de Windows. |
+| **Notes (3)** | `OneUIReminders.ini`, `OneUIQuote.ini` y `OneUINoteCard.ini` (Cuaderno para recorrer las notas por clic o rueda). |
+| **QuickSettings (4)** | Panel de ajustes, barra de seis controles y dos widgets seleccionables mediante la rueda o el menú. |
+
+Los botones de sonido y tema actúan desde el widget. Los accesos de red, notificaciones y pantalla abren su página en Ajustes de Windows. En Combo IA, el menú contextual abre el borrador local. Usa Shortcuts y Search a la vez para tener un lanzador junto al buscador. En Sonido y Deslizador, pulsa el altavoz para silenciar o la pista para ajustar el nivel.
+
+AI Bar, Search Bar y Device Care clásico usan los fondos y el contraste recuperados de Alpha. El selector de tema de OneUIZen cambia también su modo y acento.
+
+Para añadir citas, abre **Editar** en Agenda y escribe una por `EventN` en `@Resources/Agenda.inc` con el formato `AAAA-MM-DD|HH:MM|Título`. Pulsa **↻** en el widget después de guardar.
+
+La tarjeta de energía muestra la autonomía cuando Windows la informa. Tendencia toma una muestra cada 15 segundos y comienza a registrar al cargar el widget.
+
+En Rainmeter, cada categoría admite una variante activa a la vez. En Hábitos diarios, el menú contextual permite editar los cuatro nombres o reiniciar el día. El estado se guarda en `@Resources/Habits.inc` y se reinicia al cambiar la fecha local. Los controles de IA contabilizan aperturas hechas desde la barra o el panel, con reinicio al cambiar de día.
 
 ## Pack de iconos (`icons/`, 168 iconos)
 
@@ -49,6 +60,7 @@ Incluye **36 wallpapers 4K** organizados en [`modo-claro/`](wallpapers/veyra-one
 ## Instalación rápida
 
 - **Opción más fácil (1 clic, sin terminal):** descarga y haz doble clic en **[`OneUIZen-v2.rmskin`](../../releases/OneUIZen-v2.rmskin)**.
+  En una instalación nueva abre en **Oscuro (OLED)**. La opción de respaldo de Rainmeter conserva el modo, el acento y las citas existentes al actualizar.
 - **Por PowerShell (desde la raíz de `Veyra-Dots`):**
 ```powershell
 .\scripts\install-rainmeter.ps1 -Theme one-ui

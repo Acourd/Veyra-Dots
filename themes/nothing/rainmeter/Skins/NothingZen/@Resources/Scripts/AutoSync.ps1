@@ -1,10 +1,11 @@
 ﻿param(
   [ValidateSet("Wallpaper", "Accent")]
   [string]$Source = "Wallpaper",
-  [switch]$ApplyToActive
+  [switch]$ApplyToActive,
+  [string]$ImagePath
 )
 
-# OneUIZen AutoSync.ps1
+# NothingZen AutoSync.ps1
 # Extrae el acento vibrante de tu fondo de pantalla (con detección monocromática para fondos grises)
 # o del acento de Windows 11, y genera @Resources\Accents\Auto.inc.
 
@@ -68,13 +69,18 @@ function Get-WallpaperSeed {
   $ms = $null
   try {
     $candidates = @()
-    try {
-      $wp = (Get-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name WallPaper -ErrorAction Stop).WallPaper
-      if ($wp -and (Test-Path -LiteralPath $wp -PathType Leaf)) { $candidates += $wp }
-    } catch {}
-    if ($env:APPDATA) {
+    if ($ImagePath) {
+      if (!(Test-Path -LiteralPath $ImagePath -PathType Leaf)) { throw 'Wallpaper fixture does not exist.' }
+      $candidates += $ImagePath
+    } elseif ($env:APPDATA) {
       $tc = Join-Path $env:APPDATA "Microsoft\Windows\Themes\TranscodedWallpaper"
       if ((Test-Path -LiteralPath $tc -PathType Leaf) -and ($candidates -notcontains $tc)) { $candidates += $tc }
+    }
+    if (!$ImagePath) {
+      try {
+        $wp = (Get-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name WallPaper -ErrorAction Stop).WallPaper
+        if ($wp -and (Test-Path -LiteralPath $wp -PathType Leaf) -and $wp -notin $candidates) { $candidates += $wp }
+      } catch {}
     }
     if ($candidates.Count -eq 0) { return Get-AccentSeed }
 
@@ -154,17 +160,26 @@ OnAccent=255,255,255,255
 } else {
   $h = $seed.h
   $s = [Math]::Max(0.58, [Math]::Min(0.90, $seed.s))
-  $rgb = HslToRgb $h $s 0.52
+  $rgb = HslToRgb $h $s 0.49
+  $linear = foreach ($component in $rgb) {
+    $fraction = $component / 255.0
+    if ($fraction -le 0.04045) { $fraction / 12.92 } else { [Math]::Pow(($fraction + 0.055) / 1.055, 2.4) }
+  }
+  $luminance = $linear[0] * 0.2126 + $linear[1] * 0.7152 + $linear[2] * 0.0722
+  $ink = if ($luminance -ge 0.179) { '0,0,0,255' } else { '255,255,255,255' }
   $autoInc = @"
 [Variables]
 ; Acento Auto ($Source -> H=$([int]$h))
 Accent=$($rgb[0]),$($rgb[1]),$($rgb[2]),255
 AccentSoft=$($rgb[0]),$($rgb[1]),$($rgb[2]),44
-OnAccent=255,255,255,255
+OnAccent=$ink
 "@
 }
 
-Write-Utf16Ini (Join-Path $accDir "Auto.inc") $autoInc
+$paletteFile = Join-Path $accDir 'Auto.inc'
+$current = if (Test-Path -LiteralPath $paletteFile) { [IO.File]::ReadAllText($paletteFile) } else { '' }
+$paletteChanged = ($current -replace '\r\n', "`n").TrimEnd() -ne ($autoInc -replace '\r\n', "`n").TrimEnd()
+if ($paletteChanged) { Write-Utf16Ini $paletteFile $autoInc }
 
 if ($ApplyToActive -and (Test-Path -LiteralPath $varsFile -PathType Leaf)) {
   $varsText = [System.IO.File]::ReadAllText($varsFile)
@@ -172,4 +187,4 @@ if ($ApplyToActive -and (Test-Path -LiteralPath $varsFile -PathType Leaf)) {
   Write-Utf16Ini $varsFile $varsText
 }
 
-Write-Output "ONEUI_AUTO_OK ($Source)"
+if ($paletteChanged) { Write-Output 'NOTHING_AUTO_CHANGED' } else { Write-Output 'NOTHING_AUTO_STABLE' }
